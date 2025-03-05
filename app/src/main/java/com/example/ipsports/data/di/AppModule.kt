@@ -1,6 +1,5 @@
 package com.example.ipsports.data.di
 
-import android.content.Context
 import com.example.ipsports.data.Auth.AuthRepository
 import com.example.ipsports.data.Usecase.LoginUseCase
 import com.example.ipsports.data.Usecase.RegisterUseCase
@@ -13,7 +12,6 @@ import com.google.firebase.firestore.FirebaseFirestore
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
-import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import javax.inject.Singleton
 
@@ -43,7 +41,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideUserRepository(firestore: FirebaseFirestore): UserRepository {
-        return UserRepository(firestore)
+        return UserRepository(firestore,FirebaseAuth.getInstance())
     }
 
     @Provides

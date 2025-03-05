@@ -1,17 +1,12 @@
 package com.example.ipsports.View.Event.pg4
 
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Cancel
-import androidx.compose.material.icons.filled.CheckCircle
-import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.PersonAdd
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -25,11 +20,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
-import com.example.ipsports.data.model.Friend
+import com.example.ipsports.data.model.User
 
 @Composable
-fun FriendItem(
-    friend: Friend,
+fun UserItem(
+    user: User,
     isInvited: Boolean,
     onInvite: () -> Unit
 ) {
@@ -48,7 +43,7 @@ fun FriendItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = friend.name, // 🔹 Ahora usamos el objeto `Friend`
+                text = user.name, // 🔹 Ahora usamos `User`
                 color = Color.White,
                 style = MaterialTheme.typography.bodyLarge
             )
@@ -65,4 +60,3 @@ fun FriendItem(
         }
     }
 }
-

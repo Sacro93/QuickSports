@@ -14,21 +14,22 @@ import com.google.firebase.auth.FirebaseAuth
 
 class UserRepository @Inject constructor(
     private val firestore: FirebaseFirestore,
+    private val auth: FirebaseAuth
 ) {
     private val usersCollection = firestore.collection("users")
 
-    /** Guarda un nuevo usuario en Firestore */
-    suspend fun addUser(user: User): Result<Unit> {
+    /** 🔹 Guarda un nuevo usuario en Firestore con ID automático */
+    suspend fun addUser(user: User): Result<String> {
         return try {
-            usersCollection.document(user.id).set(user).await()
-            Result.success(Unit) // 🔹 Devuelve `Unit` si fue exitoso
+            val newUserRef = usersCollection.add(user).await()
+            Result.success(newUserRef.id) // ✅ Retornamos el ID generado
         } catch (e: Exception) {
             Log.e("UserRepository", "Error al guardar usuario: ${e.localizedMessage}")
             Result.failure(e)
         }
     }
 
-    /** Obtiene un usuario por su ID */
+    /** 🔹 Obtiene un usuario por su ID */
     suspend fun getUser(userId: String): Result<User?> {
         return try {
             val document = usersCollection.document(userId).get().await()
@@ -39,13 +40,61 @@ class UserRepository @Inject constructor(
         }
     }
 
-    /** 🔹 Actualiza el usuario en Firestore */
-    suspend fun updateUser(user: User): Result<Unit> {
+    /** 🔹 Actualiza los datos del usuario */
+    suspend fun updateUser(userId: String, user: User): Result<Unit> {
         return try {
-            usersCollection.document(user.id).set(user, SetOptions.merge()).await()
+            usersCollection.document(userId).set(user, SetOptions.merge()).await()
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
         }
     }
+
+    /** 🔹 Enviar solicitud de amistad */
+    suspend fun sendFriendRequest(friendId: String): Boolean {
+        val userId = auth.currentUser?.uid ?: return false
+        return try {
+            usersCollection.document(friendId)
+                .collection("friend_requests")
+                .document(userId)
+                .set(mapOf("status" to "pending"))
+                .await()
+            true
+        } catch (e: Exception) {
+            false
+        }
+    }
+
+    /** 🔹 Obtener lista de amigos del usuario actual */
+    suspend fun getFriends(): List<User> {
+        val userId = auth.currentUser?.uid ?: return emptyList()
+        return try {
+            val friendIds = usersCollection.document(userId)
+                .collection("friends")
+                .get()
+                .await()
+                .documents
+                .map { it.id } // 🔹 Obtener solo los IDs de los amigos
+
+            friendIds.mapNotNull { friendId ->
+                usersCollection.document(friendId).get().await().toObject(User::class.java)
+            }
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
+
+    /** 🔹 Obtener usuarios disponibles (excluyendo al usuario actual) */
+    suspend fun getAvailableUsers(): List<User> {
+        val userId = auth.currentUser?.uid ?: return emptyList()
+        return try {
+            usersCollection.get().await()
+                .documents
+                .mapNotNull { it.toObject(User::class.java)?.copy() }
+                .filter { it.email != auth.currentUser?.email } // 🔹 Excluye al usuario actual
+        } catch (e: Exception) {
+            emptyList()
+        }
+    }
 }
+

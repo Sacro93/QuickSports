@@ -85,7 +85,8 @@ fun EditProfileScreen(
 
         // 🔹 **Imagen de perfil**
         Box(
-            modifier = Modifier.size(110.dp).clip(CircleShape).background(Color.Gray).clickable { showPhotoDialog = true },
+            modifier = Modifier.size(110.dp).clip(CircleShape).background(Color.Gray)
+                .clickable { showPhotoDialog = true },
             contentAlignment = Alignment.Center
         ) {
             Image(
@@ -124,10 +125,30 @@ fun EditProfileScreen(
             colors = CardDefaults.cardColors(containerColor = Color.Black.copy(alpha = 0.3f))
         ) {
             Column(modifier = Modifier.padding(16.dp)) {
-                ReusableInputField(value = nombre, onValueChange = { nombre = it }, label = "Nombre", leadingIcon = Icons.Default.Person)
-                ReusableInputField(value = apellido, onValueChange = { apellido = it }, label = "Apellido", leadingIcon = Icons.Default.Person)
-                ReusableInputField(value = email, onValueChange = { email = it }, label = "Email", leadingIcon = Icons.Default.Email)
-                ReusableInputField(value = domicilio, onValueChange = { domicilio = it }, label = "Domicilio", leadingIcon = Icons.Default.LocationOn)
+                ReusableInputField(
+                    value = nombre,
+                    onValueChange = { nombre = it },
+                    label = "Nombre",
+                    leadingIcon = Icons.Default.Person
+                )
+                ReusableInputField(
+                    value = apellido,
+                    onValueChange = { apellido = it },
+                    label = "Apellido",
+                    leadingIcon = Icons.Default.Person
+                )
+                ReusableInputField(
+                    value = email,
+                    onValueChange = { email = it },
+                    label = "Email",
+                    leadingIcon = Icons.Default.Email
+                )
+                ReusableInputField(
+                    value = domicilio,
+                    onValueChange = { domicilio = it },
+                    label = "Domicilio",
+                    leadingIcon = Icons.Default.LocationOn
+                )
             }
         }
 
@@ -145,23 +166,24 @@ fun EditProfileScreen(
                     profileImageUrl = selectedAvatar.toString() // 🔹 Guarda el ID del avatar en Firestore
                 )
 
-                userViewModel.updateUser(updatedUser)
+                val userId = FirebaseAuth.getInstance().currentUser?.uid
+                    ?: return@ButtonPrimary // ✅ Obtener ID actual del usuario
+                userViewModel.updateUser(userId, updatedUser) // ✅ Pasamos el `userId`
             },
             modifier = Modifier.align(Alignment.CenterHorizontally).width(250.dp)
         )
-    }
 
-    // **Diálogo para elegir avatar**
-    if (showPhotoDialog) {
-        AvatarSelectionDialog(
-            avatarList = avatarList,
-            selectedAvatar = selectedAvatar,
-            onAvatarSelected = { selectedAvatar = it },
-            onDismiss = { showPhotoDialog = false }
-        )
+        // **Diálogo para elegir avatar**
+        if (showPhotoDialog) {
+            AvatarSelectionDialog(
+                avatarList = avatarList,
+                selectedAvatar = selectedAvatar,
+                onAvatarSelected = { selectedAvatar = it },
+                onDismiss = { showPhotoDialog = false }
+            )
+        }
     }
 }
-
 @Composable
 fun AvatarSelectionDialog(
     avatarList: List<Int>,

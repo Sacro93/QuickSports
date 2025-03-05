@@ -19,6 +19,7 @@ import com.example.ipsports.View.CentersScreen
 import com.example.ipsports.View.Event.pg1.SportSelectionScreen
 import com.example.ipsports.View.Event.pg2.EventInfoScreen
 import com.example.ipsports.View.Event.pg3.EventSummaryScreen
+import com.example.ipsports.View.Event.pg4.AddFriendsScreen
 import com.example.ipsports.View.HomeScreen.HomeScreen
 import com.example.ipsports.View.Login.LoginEntryScreen
 import com.example.ipsports.View.Login.LoginScreen
@@ -36,8 +37,8 @@ fun Navigation(
     val authViewModel: AuthViewModel = hiltViewModel()
     val isLoggedIn by authViewModel.isUserLoggedIn.collectAsStateWithLifecycle()
 
-    LaunchedEffect(isLoggedIn, navController) {
-        if (!isLoggedIn && navController.currentDestination?.route != Routes.LOGIN_ENTRY) {
+    LaunchedEffect(isLoggedIn) {
+        if (!isLoggedIn) {
             navController.navigate(Routes.LOGIN_ENTRY) {
                 popUpTo(0) { inclusive = true }
             }
@@ -74,8 +75,6 @@ fun Navigation(
             )
         }
 
-
-
         composable(Routes.HOME) {
             HomeScreen(
                 currentRoute = Routes.HOME,
@@ -95,20 +94,17 @@ fun Navigation(
 
         //  **Pantalla de Información del Evento**
         composable("event_info/{selectedSport}") { backStackEntry ->
-            val selectedSport =
-                backStackEntry.arguments?.getString("selectedSport") ?: return@composable
+            val selectedSport = backStackEntry.arguments?.getString("selectedSport") ?: return@composable
 
             EventInfoScreen(
                 sportId = selectedSport,
                 navController = navController,
-                onContinue = { event ->
-                    val invitedFriendsString = event.usersInvited.joinToString(",")
-                    navController.navigate(
-                        "event_summary/${event.sportId}/${event.date.seconds}/${event.centerId}/${event.maxParticipants}/$invitedFriendsString"
-                    )
-                },
                 onBack = { navController.popBackStack() }
             )
+        }
+
+        composable(Routes.FRIENDS) {
+            AddFriendsScreen(navController = navController)
         }
 
 //  Pantalla de Resumen del Evento

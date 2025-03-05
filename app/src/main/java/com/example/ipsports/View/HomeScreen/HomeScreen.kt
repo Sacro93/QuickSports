@@ -19,7 +19,7 @@ import com.example.ipsports.View.Reusable.FeatureCard
 import com.example.ipsports.View.theme.Font.QuickSportsTitleGradient
 import com.example.ipsports.ViewModel.ui.EventViewModel
 import com.example.ipsports.data.DatosDefault.populateFirestore
-import com.example.ipsports.data.DatosDefault.populateFriends
+import com.example.ipsports.data.DatosDefault.populateUsers
 import com.example.ipsports.data.routesNavigation.Routes
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
@@ -81,12 +81,12 @@ fun HomeScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // 📌 **Nombre de la App**
+            //  **Nombre de la App**
             QuickSportsTitleGradient()
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // 📌 **Tarjetas de eventos**
+            //  **Tarjetas de eventos**
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -116,25 +116,24 @@ fun HomeScreen(
                 } else {
                     latestEvent?.let { event ->
                         EventCard(
-                            sport = event.sportId, // ✅ Mostrar nombre del deporte
-                            date = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(
-                                event.date.toDate()
-                            ),
-                            location = event.centerId, // 🔹 ID del centro (puedes hacer un mapping para mostrar el nombre)
+                            sport = event.sportId,
+                            date = SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(event.date.toDate()),
+                            location = event.centerId,
                             participants = event.usersInvited,
                             maxParticipants = event.maxParticipants,
                             modifier = Modifier.padding(16.dp)
                         )
-                    }
+                    } ?: Text("No hay eventos recientes", color = Color.White)
                 }
             }
         }
     }
 
-      DebugFirestoreScreen(firestore = FirebaseFirestore.getInstance())
-    Spacer(modifier = Modifier.height(24.dp))
+    //  DebugFirestoreScreen(firestore = FirebaseFirestore.getInstance())
 
-    DebugFirestoreScreen2(firestore = FirebaseFirestore.getInstance())
+   // Spacer(modifier = Modifier.height(24.dp))
+
+   // DebugFirestoreScreen2(firestore = FirebaseFirestore.getInstance())
 }
 
 
@@ -168,7 +167,7 @@ fun DebugFirestoreScreen2(firestore: FirebaseFirestore) {
     ) {
         Button(onClick = {
             CoroutineScope(Dispatchers.IO).launch {
-                populateFriends(firestore)
+                populateUsers(firestore)
             }
         }) {
             Text("🔄 Poblar Firestore")
