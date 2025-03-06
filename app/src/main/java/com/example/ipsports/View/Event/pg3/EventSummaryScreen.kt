@@ -12,14 +12,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.CalendarToday
-import androidx.compose.material.icons.filled.Event
 import androidx.compose.material.icons.filled.People
 import androidx.compose.material.icons.filled.Place
 import androidx.compose.foundation.layout.FlowRow
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Sports
-import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.graphics.Brush
@@ -37,29 +35,44 @@ import kotlinx.coroutines.launch
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.runtime.produceState
 import androidx.compose.runtime.remember
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.ipsports.ViewModel.ui.EventInfoViewModel
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 
 @OptIn(ExperimentalMaterial3Api::class, ExperimentalLayoutApi::class)
 @Composable
 fun EventSummaryScreen(
-    sport: String,
-    date: String,
-    location: String,
+    sportId: String,
+    timestamp: Long,
+    centerId: String,
     maxParticipants: Int,
-    selectedCourt: String,
-    friends: List<String>,
+    invitedFriends: List<String>,
     navController: NavController,
-    currentPage: Int = 4,
-    totalPages: Int = 4,
     onBack: () -> Unit = {}
 ) {
+    val eventViewModel: EventViewModel = hiltViewModel()
+    val eventInfoViewModel: EventInfoViewModel = hiltViewModel()
 
-    val viewModel: EventViewModel = hiltViewModel()
-    val isLoading by viewModel.isLoading.collectAsState()
-
+    val isLoading by eventViewModel.isLoading.collectAsStateWithLifecycle()
     val snackbarHostState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
+
+    // ✅ Convertir `timestamp` a `Date`
+    val date = remember { Date(timestamp * 1000) }
+    val formattedDate = remember(date) { SimpleDateFormat("dd/MM/yyyy HH:mm", Locale.getDefault()).format(date) }
+
+    // ✅ Obtener nombres del deporte y centro
+    val sportName by produceState(initialValue = "Cargando...") {
+        value = eventInfoViewModel.getSportName(sportId)
+    }
+    val centerName by produceState(initialValue = "Cargando...") {
+        value = eventInfoViewModel.getCenterName(centerId)
+    }
 
     Scaffold(
         snackbarHost = { SnackbarHost(snackbarHostState) },
@@ -80,11 +93,7 @@ fun EventSummaryScreen(
                 .fillMaxSize()
                 .background(
                     brush = Brush.verticalGradient(
-                        colors = listOf(
-                            Color(0xFF337C8D), // Azul verdoso claro
-                            Color(0xFF15272D), // Azul grisáceo oscuro
-                            Color(0xFF17272B)  // Casi negro
-                        )
+                        colors = listOf(Color(0xFF337C8D), Color(0xFF15272D), Color(0xFF17272B))
                     )
                 )
                 .padding(padding),
@@ -97,17 +106,12 @@ fun EventSummaryScreen(
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Spacer(modifier = Modifier.height(16.dp))
-
-                // 🔹 Barra de progreso del evento
-                EventCreationProgressBar(currentPage = currentPage, totalPages = totalPages)
-
+                EventCreationProgressBar(currentPage = 4, totalPages = 4)
                 Spacer(modifier = Modifier.height(35.dp))
 
                 // 🔹 Tarjeta de resumen del evento
                 Card(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 8.dp),
+                    modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = Color.Black.copy(alpha = 0.3f))
                 ) {
                     Column(
@@ -117,14 +121,13 @@ fun EventSummaryScreen(
                         Text(
                             text = "Resumen del Evento",
                             style = MaterialTheme.typography.headlineMedium,
-                            color = Color(0xFFBFD7EA) // Azul claro que contrasta con fondo oscuro
+                            color = Color(0xFFBFD7EA)
                         )
 
-                        InfoRow("Deporte", sport, Icons.Default.Sports)
-                        InfoRow("Fecha", date, Icons.Default.CalendarToday)
-                        InfoRow("Lugar", location, Icons.Default.Place)
+                        InfoRow("Deporte", sportName, Icons.Default.Sports)
+                        InfoRow("Fecha", formattedDate, Icons.Default.CalendarToday)
+                        InfoRow("Lugar", centerName, Icons.Default.Place)
                         InfoRow("Máx. Participantes", maxParticipants.toString(), Icons.Default.People)
-                        InfoRow("Cancha", selectedCourt, Icons.Default.Event)
 
                         Text(
                             text = "Amigos Invitados:",
@@ -133,12 +136,12 @@ fun EventSummaryScreen(
                             fontWeight = FontWeight.Bold
                         )
 
-                        if (friends.isNotEmpty()) {
+                        if (invitedFriends.isNotEmpty()) {
                             FlowRow(
                                 modifier = Modifier.fillMaxWidth(),
                                 horizontalArrangement = Arrangement.spacedBy(8.dp)
                             ) {
-                                friends.forEach { friend ->
+                                invitedFriends.forEach { friend ->
                                     AssistChip(
                                         onClick = {},
                                         label = { Text(friend, color = Color.White) },
@@ -146,7 +149,7 @@ fun EventSummaryScreen(
                                             Icon(
                                                 imageVector = Icons.Default.Person,
                                                 contentDescription = null,
-                                                tint = Color(0xFFBFD7EA) // Azul claro
+                                                tint = Color(0xFFBFD7EA)
                                             )
                                         },
                                         colors = AssistChipDefaults.assistChipColors(
@@ -170,19 +173,19 @@ fun EventSummaryScreen(
                         text = "Confirmar Evento",
                         onClick = {
                             val event = Event(
-                                sportId = sport,
-                                centerId = location,
+                                sportId = sportId,
+                                centerId = centerId,
                                 userId = FirebaseAuth.getInstance().currentUser?.uid ?: "",
-                                date = Timestamp.now(),
+                                date = Timestamp(date), // ✅ Fecha en formato correcto para Firestore
                                 maxParticipants = maxParticipants,
-                                usersInvited = friends,
+                                usersInvited = invitedFriends,
                                 status = "pending"
                             )
 
-                            viewModel.addEvento(event) { // ✅ Ahora usa `addEvento()` para guardar en Firestore
+                            eventViewModel.addEvento(event) {
                                 coroutineScope.launch {
                                     snackbarHostState.showSnackbar("✅ ¡Evento creado exitosamente!")
-                                    navController.navigate("home") // ✅ Navegar solo después de que se guarde en Firestore
+                                    navController.navigate("home")
                                 }
                             }
                         },
@@ -190,7 +193,6 @@ fun EventSummaryScreen(
                             .align(Alignment.CenterHorizontally)
                             .width(250.dp)
                     )
-
                 }
 
                 Spacer(modifier = Modifier.height(20.dp))
@@ -214,4 +216,3 @@ fun InfoRow(label: String, value: String, icon: ImageVector) {
         Text("$label: $value", style = MaterialTheme.typography.bodyLarge, color = Color.White)
     }
 }
-

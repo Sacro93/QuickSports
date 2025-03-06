@@ -104,17 +104,8 @@ class UserViewModel @Inject constructor(
         }
     }
 
-    /** 🔹 Enviar solicitud de amistad */
-    fun sendFriendRequest(friendId: String) {
-        viewModelScope.launch {
-            _isLoading.value = true
-            val success = userRepository.sendFriendRequest(friendId)
-            if (!success) {
-                _errorMessage.value = "No se pudo enviar la solicitud"
-            }
-            _isLoading.value = false
-        }
-    }
+
+
 }
 
 

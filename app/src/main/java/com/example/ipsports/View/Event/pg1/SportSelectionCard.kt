@@ -25,7 +25,6 @@ import androidx.compose.ui.unit.sp
 import androidx.compose.ui.graphics.Color
 import com.example.ipsports.data.model.Sport
 
-
 @Composable
 fun SportSelectionCard(
     sport: Sport,
@@ -41,20 +40,15 @@ fun SportSelectionCard(
                 if (isSelected) MaterialTheme.colorScheme.primary.copy(alpha = 0.1f)
                 else MaterialTheme.colorScheme.surface
             )
-            .clickable { onClick(sport) }
+            .clickable { onClick(sport) } // ✅ Solo un `clickable`
     ) {
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .clickable { onClick(sport) }
-        ) {
+        Box(modifier = Modifier.fillMaxSize()) {
             Image(
                 painter = painterResource(id = getSportDrawable(sport.name)),
                 contentDescription = sport.name,
                 contentScale = ContentScale.Crop,
                 modifier = Modifier.fillMaxSize()
             )
-
 
             Box(
                 modifier = Modifier
@@ -107,4 +101,5 @@ fun getSportDrawable(sportName: String): Int {
         else -> R.drawable.grupo
     }
 }
+
 

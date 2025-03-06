@@ -1,5 +1,6 @@
 package com.example.ipsports.View.Event.pg4
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -31,7 +32,8 @@ fun UserItem(
     Card(
         modifier = Modifier
             .fillMaxWidth()
-            .clip(RoundedCornerShape(12.dp)),
+            .clip(RoundedCornerShape(12.dp))
+            .clickable { onInvite() },
         colors = CardDefaults.cardColors(
             containerColor = if (isInvited) Color(0xFF1E88E5) else Color.Black.copy(alpha = 0.2f)
         )
@@ -43,14 +45,14 @@ fun UserItem(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Text(
-                text = user.name, // 🔹 Ahora usamos `User`
+                text = user.name,
                 color = Color.White,
                 style = MaterialTheme.typography.bodyLarge
             )
 
             Spacer(modifier = Modifier.weight(1f))
 
-            IconButton(onClick = onInvite) { // 🔹 Maneja la selección de invitación
+            IconButton(onClick = onInvite) {
                 Icon(
                     imageVector = if (isInvited) Icons.Default.Cancel else Icons.Default.PersonAdd,
                     contentDescription = if (isInvited) "Cancelar invitación" else "Invitar a jugar",
@@ -60,3 +62,4 @@ fun UserItem(
         }
     }
 }
+

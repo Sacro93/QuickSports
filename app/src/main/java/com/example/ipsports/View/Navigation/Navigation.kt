@@ -12,14 +12,17 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.navArgument
 import com.example.ipsports.View.ActiveEventsScreen
 import com.example.ipsports.View.CentersScreen
 import com.example.ipsports.View.Event.pg1.SportSelectionScreen
 import com.example.ipsports.View.Event.pg2.EventInfoScreen
 import com.example.ipsports.View.Event.pg3.EventSummaryScreen
 import com.example.ipsports.View.Event.pg4.AddFriendsScreen
+import com.example.ipsports.View.Friend.FriendRequestsScreen
 import com.example.ipsports.View.HomeScreen.HomeScreen
 import com.example.ipsports.View.Login.LoginEntryScreen
 import com.example.ipsports.View.Login.LoginScreen
@@ -84,6 +87,10 @@ fun Navigation(
 
         }
 
+        composable(Routes.FRIENDS) {
+            FriendRequestsScreen(navController = navController)
+        }
+
         // **Pantalla de Selección de Deportes**
         composable(Routes.SPORT_SELECTION) {
             SportSelectionScreen(
@@ -103,30 +110,36 @@ fun Navigation(
             )
         }
 
-        composable(Routes.FRIENDS) {
-            AddFriendsScreen(navController = navController)
-        }
 
-//  Pantalla de Resumen del Evento
-        composable("event_summary/{sport}/{date}/{location}/{maxParticipants}/{friends}") { backStackEntry ->
-            val sport = backStackEntry.arguments?.getString("sport") ?: ""
-            val date = backStackEntry.arguments?.getString("date") ?: ""
-            val location = backStackEntry.arguments?.getString("location") ?: ""
-            val maxParticipants =
-                backStackEntry.arguments?.getString("maxParticipants")?.toIntOrNull() ?: 0
+
+// Pantalla de Resumen del Evento
+        composable(
+            route = "event_summary/{sportId}/{timestamp}/{centerId}/{maxParticipants}/{friends}",
+            arguments = listOf(
+                navArgument("sportId") { type = NavType.StringType },
+                navArgument("timestamp") { type = NavType.LongType },
+                navArgument("centerId") { type = NavType.StringType },
+                navArgument("maxParticipants") { type = NavType.IntType },
+                navArgument("friends") { type = NavType.StringType; defaultValue = "" }
+            )
+        ) { backStackEntry ->
+            val sportId = backStackEntry.arguments?.getString("sportId") ?: ""
+            val timestamp = backStackEntry.arguments?.getLong("timestamp") ?: 0L
+            val centerId = backStackEntry.arguments?.getString("centerId") ?: ""
+            val maxParticipants = backStackEntry.arguments?.getInt("maxParticipants") ?: 0
             val friends = backStackEntry.arguments?.getString("friends")?.split(",") ?: emptyList()
 
             EventSummaryScreen(
-                sport = sport,
-                date = date,
-                location = location,
+                sportId = sportId,
+                timestamp = timestamp,
+                centerId = centerId,
                 maxParticipants = maxParticipants,
-                selectedCourt = location, // 🔹 Se usa el ID del centro deportivo
-                friends = friends,
+                invitedFriends = friends,
                 navController = navController,
                 onBack = { navController.popBackStack() }
             )
         }
+
         composable(Routes.CENTERS) {
             CentersScreen(
                 onNavigateBack = { navController.popBackStack() }
@@ -143,9 +156,9 @@ fun Navigation(
             ProfileScreen(
                 onNavigate = { route -> navController.navigate(route) },
                 onEditProfileClick = { navController.navigate(Routes.EDIT_PROFILE) },
-                onHelpClick = { navController.navigate(Routes.HELP) },  // ✅ Navega a la pantalla de ayuda
-                onTermsClick = { navController.navigate(Routes.TERMS) }, // ✅ Navega a Términos y Condiciones
-                onNotificationsClick = { navController.navigate(Routes.NOTIFICATIONS) }, // ✅ Navega a Notificaciones
+                onHelpClick = { navController.navigate(Routes.HELP) },
+                onTermsClick = { navController.navigate(Routes.TERMS) },
+                onNotificationsClick = { navController.navigate(Routes.NOTIFICATIONS) },
             )
         }
 

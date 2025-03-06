@@ -51,19 +51,21 @@ class EventInfoViewModel @Inject constructor(
         }
     }
 
+     fun getSportName(sportId: String): String {
+        return _sports.value.find { it.id == sportId }?.name ?: "Desconocido"
+    }
+
+     fun getCenterName(centerId: String): String {
+        return _centersWithSports.value.find { it.center.id == centerId }?.center?.name ?: "Desconocido"
+    }
+
     /** Filtra los centros que tienen el deporte seleccionado */
     fun loadCentersForSport(sportId: String) {
-        viewModelScope.launch {
-            val allCenters = centerRepository.getCentersWithSports()
-            val filteredCenters = allCenters.filter { it.sports.any { sport -> sport.id == sportId } }
-
-            if (filteredCenters.isEmpty()) {
-                println("⚠️ No hay centros disponibles para el deporte con ID: $sportId")
-            } else {
-                println("✅ Centros disponibles para el deporte $sportId: ${filteredCenters.map { it.center.name }}")
+        if (_centersWithSports.value.isEmpty()) {
+            viewModelScope.launch {
+                val allCenters = centerRepository.getCentersWithSports()
+                _centersWithSports.value = allCenters.filter { it.sports.any { sport -> sport.id == sportId } }
             }
-
-            _centersWithSports.value = filteredCenters
         }
     }
 
@@ -77,8 +79,8 @@ class EventInfoViewModel @Inject constructor(
         _uiState.update { it.copy(selectedCenter = center) }
     }
 
-    /** Actualiza el número máximo de participantes */
-    fun updateMaxParticipants(value: String) {
+    /** Actualiza el número máximo de participantes (Manteniendo como Int) */
+    fun updateMaxParticipants(value: Int) {
         _uiState.update { it.copy(maxParticipants = value) }
     }
 
@@ -86,4 +88,6 @@ class EventInfoViewModel @Inject constructor(
     fun updateInvitedFriends(friends: List<String>) {
         _uiState.update { it.copy(invitedFriends = friends) }
     }
+
+
 }

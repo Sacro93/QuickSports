@@ -29,12 +29,12 @@ fun SportSelectionScreen(
     onBack: () -> Unit
 ) {
     val viewModel: SportViewModel = hiltViewModel()
-
     val sportsList by viewModel.sports.collectAsStateWithLifecycle()
     val selectedSport by viewModel.selectedSport.collectAsStateWithLifecycle()
     val isLoading by viewModel.isLoading.collectAsStateWithLifecycle()
 
-    LaunchedEffect(true) {
+    // ✅ Evita recargar la lista de deportes en cada recomposición
+    LaunchedEffect(Unit) {
         viewModel.loadSports()
     }
 
@@ -84,7 +84,9 @@ fun SportSelectionScreen(
                 if (isLoading) {
                     CircularProgressIndicator(modifier = Modifier.align(Alignment.CenterHorizontally))
                 } else {
-                    LazyColumn {
+                    LazyColumn(
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
                         items(sportsList) { sport ->
                             SportSelectionCard(
                                 sport = sport,
@@ -109,13 +111,13 @@ fun SportSelectionScreen(
                             .width(280.dp)
                     )
 
-
                     Spacer(modifier = Modifier.height(24.dp))
                 }
             }
         }
     }
 }
+
 
 
 

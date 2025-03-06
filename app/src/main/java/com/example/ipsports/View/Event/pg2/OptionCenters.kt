@@ -21,28 +21,38 @@ fun OptionCenters(
 ) {
     var expanded by remember { mutableStateOf(false) }
 
-    Box {
+    Box(
+        modifier = Modifier.fillMaxWidth()
+    ) {
         Button(
             onClick = { expanded = true },
             modifier = Modifier.fillMaxWidth()
         ) {
             Text(selectedCenter?.name ?: "Seleccionar Centro Deportivo")
-            Icon(Icons.Default.ArrowDropDown, contentDescription = null)
+            Icon(Icons.Default.ArrowDropDown, contentDescription = "Abrir menú")
         }
 
         DropdownMenu(
             expanded = expanded,
             onDismissRequest = { expanded = false }
         ) {
-            centers.forEach { center ->
+            if (centers.isEmpty()) {
                 DropdownMenuItem(
-                    text = { Text(center.name) },
-                    onClick = {
-                        onCenterSelected(center)
-                        expanded = false
-                    }
+                    text = { Text("No hay centros disponibles") },
+                    onClick = { expanded = false }
                 )
+            } else {
+                centers.forEach { center ->
+                    DropdownMenuItem(
+                        text = { Text(center.name) },
+                        onClick = {
+                            onCenterSelected(center)
+                            expanded = false
+                        }
+                    )
+                }
             }
         }
     }
 }
+

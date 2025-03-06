@@ -3,7 +3,6 @@ package com.example.ipsports.data.repository
 import com.example.ipsports.data.model.Center
 import com.example.ipsports.data.model.CenterWithSports
 import com.example.ipsports.data.model.Sport
-import com.example.ipsports.data.model.SportInCenter
 import com.google.firebase.firestore.FirebaseFirestore
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
@@ -22,17 +21,18 @@ class CenterRepository @Inject constructor(
 
             val centersWithSports = centers.map { center ->
                 val sportsResult = centersCollection.document(center.id)
-                    .collection("sports") // 🔹 Subcolección de deportes en cada centro
+                    .collection("sports")
                     .get()
                     .await()
 
-                val sports = sportsResult.documents.mapNotNull { it.toObject(SportInCenter::class.java) }
+                val sports = sportsResult.documents.mapNotNull { it.toObject(Sport::class.java) }
                 CenterWithSports(center, sports)
             }
 
+            println("✅ Centros con deportes cargados correctamente")
             centersWithSports
         } catch (e: Exception) {
-            println("❌ Error al obtener centros con deportes: ${e.localizedMessage}")
+            println(" Error al obtener centros con deportes: ${e.localizedMessage}")
             emptyList()
         }
     }
