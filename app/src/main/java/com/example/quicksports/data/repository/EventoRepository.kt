@@ -9,11 +9,6 @@ class EventoRepository(context: Context) {
 
     private val storage = EventoStorage(context)
 
-//    suspend fun guardarEvento(evento: Evento) {
-//        val eventos = obtenerEventos().toMutableList()
-//        eventos.add(evento)
-//        storage.saveEventos(eventos)
-//    }
 
     suspend fun obtenerEventos(): List<Evento> {
         return storage.loadEventos()
@@ -25,6 +20,11 @@ class EventoRepository(context: Context) {
             eventos.removeAt(index)
             storage.saveEventos(eventos)
         }
+    }
+    suspend fun guardarEvento(evento: Evento) {
+        val eventos = obtenerEventos().toMutableList()
+        eventos.add(evento)
+        storage.saveEventos(eventos)
     }
 
 //    suspend fun eliminarTodos() {

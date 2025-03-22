@@ -33,15 +33,20 @@ fun FriendSelectorScreen(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
+    // Carga de amigos desde persistencia si aún no están cargados
     val friends by friendsViewModel.friends.collectAsState()
     val amigosInvitados by crearEventoViewModel.amigosInvitados.collectAsState()
 
+    // Lista mutable de selección actual
     val selectedFriends = remember { mutableStateListOf<Friend>() }
+
+    // Al entrar a la pantalla, copiar los que ya estaban seleccionados
     LaunchedEffect(amigosInvitados) {
         selectedFriends.clear()
         selectedFriends.addAll(amigosInvitados)
     }
 
+    // Búsqueda
     var searchQuery by remember { mutableStateOf("") }
     val filteredFriends = friends.filter { it.name.contains(searchQuery, ignoreCase = true) }
 
@@ -80,8 +85,11 @@ fun FriendSelectorScreen(
                     Checkbox(
                         checked = selectedFriends.contains(friend),
                         onCheckedChange = {
-                            if (selectedFriends.contains(friend)) selectedFriends.remove(friend)
-                            else selectedFriends.add(friend)
+                            if (selectedFriends.contains(friend)) {
+                                selectedFriends.remove(friend)
+                            } else {
+                                selectedFriends.add(friend)
+                            }
                         }
                     )
                 }
@@ -90,9 +98,9 @@ fun FriendSelectorScreen(
 
         Button(onClick = {
             crearEventoViewModel.updateAmigosInvitados(selectedFriends)
-            Toast.makeText(context, "Solicitud de invitación enviada", Toast.LENGTH_SHORT).show()
+            Toast.makeText(context, "Amigos guardados", Toast.LENGTH_SHORT).show()
             scope.launch {
-                delay(1000)
+                delay(800)
                 navController.popBackStack()
             }
         }) {

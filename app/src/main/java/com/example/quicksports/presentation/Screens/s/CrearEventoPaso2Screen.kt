@@ -36,7 +36,6 @@ fun CrearEventoPaso2Screen(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
-    // Repositorio para guardar eventos
     val eventoRepository = remember { EventoRepository(context) }
 
     val fechaHora by viewModel.fechaHora.collectAsState()
@@ -47,7 +46,6 @@ fun CrearEventoPaso2Screen(
     var showConfirmDialog by remember { mutableStateOf(false) }
     var cantidad by remember { mutableStateOf(maxParticipantes.takeIf { it > 0 } ?: 0) }
 
-    val formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm")
     val dateText = remember(localDateTime) { localDateTime.toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) }
     val timeText = remember(localDateTime) { localDateTime.toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm")) }
 
@@ -62,7 +60,6 @@ fun CrearEventoPaso2Screen(
         ) {
             Text("Selecciona fecha y hora", style = MaterialTheme.typography.headlineSmall)
 
-            // Fecha
             Card(
                 modifier = Modifier.clickable {
                     DatePickerDialog(
@@ -78,16 +75,12 @@ fun CrearEventoPaso2Screen(
                         localDateTime.dayOfMonth
                     ).show()
                 },
-                shape = RoundedCornerShape(12.dp),
+                shape = MaterialTheme.shapes.medium,
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
             ) {
-                Text(
-                    text = "📅 $dateText",
-                    modifier = Modifier.padding(16.dp)
-                )
+                Text("📅 $dateText", modifier = Modifier.padding(16.dp))
             }
 
-            // Hora
             Card(
                 modifier = Modifier.clickable {
                     TimePickerDialog(
@@ -103,16 +96,12 @@ fun CrearEventoPaso2Screen(
                         true
                     ).show()
                 },
-                shape = RoundedCornerShape(12.dp),
+                shape = MaterialTheme.shapes.medium,
                 colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
             ) {
-                Text(
-                    text = "⏰ $timeText",
-                    modifier = Modifier.padding(16.dp)
-                )
+                Text("⏰ $timeText", modifier = Modifier.padding(16.dp))
             }
 
-            // Participantes
             Text("Máximo de participantes", style = MaterialTheme.typography.titleMedium)
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Button(onClick = {
@@ -132,7 +121,6 @@ fun CrearEventoPaso2Screen(
                 }
             }
 
-            // Botón agregar amigos
             Button(onClick = {
                 friendsViewModel.loadFriends()
                 scope.launch {
@@ -146,13 +134,12 @@ fun CrearEventoPaso2Screen(
             if (amigosInvitados.isNotEmpty()) {
                 Text("Amigos seleccionados:", style = MaterialTheme.typography.titleMedium)
                 amigosInvitados.forEach { amigo ->
-                    Text("• ${amigo.name} (${amigo.phone})")
+                    Text("• ${'$'}{amigo.name} (${'$'}{amigo.phone})")
                 }
             }
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // Confirmar evento
             Button(onClick = {
                 showConfirmDialog = true
             }) {
@@ -161,7 +148,6 @@ fun CrearEventoPaso2Screen(
         }
     }
 
-    // Diálogo de confirmación
     if (showConfirmDialog) {
         AlertDialog(
             onDismissRequest = { showConfirmDialog = false },
@@ -171,7 +157,7 @@ fun CrearEventoPaso2Screen(
                     val evento = viewModel.armarEvento()
                     if (evento != null) {
                         scope.launch {
-                            eventoRepository.guardarEvento(evento) // <-- 🔥 PERSISTENCIA REAL
+                            eventoRepository.guardarEvento(evento)
                             Toast.makeText(context, "Evento guardado correctamente", Toast.LENGTH_SHORT).show()
                             showConfirmDialog = false
                             navController.navigate("home") {
@@ -187,9 +173,7 @@ fun CrearEventoPaso2Screen(
                 }
             },
             dismissButton = {
-                TextButton(onClick = {
-                    showConfirmDialog = false
-                }) {
+                TextButton(onClick = { showConfirmDialog = false }) {
                     Text("Volver")
                 }
                 TextButton(onClick = {
@@ -203,4 +187,3 @@ fun CrearEventoPaso2Screen(
         )
     }
 }
-

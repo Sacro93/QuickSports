@@ -33,4 +33,10 @@ class FriendsViewModel(application: Application) : AndroidViewModel(application)
             _friends.value = cargados
         }
     }
+
+    fun loadFriends() {
+        viewModelScope.launch {
+            cargarSiVacioFriends()
+        }
+    }
 }
