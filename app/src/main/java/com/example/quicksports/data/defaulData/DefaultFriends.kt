@@ -1,10 +1,10 @@
-package com.example.quicksports.data.Repository
+package com.example.quicksports.data.defaulData
 
 import com.example.quicksports.R
 import com.example.quicksports.data.models.Friend
 
-class FriendsRepository {
-    fun getFriends(): List<Friend> = listOf(
+object DefaultFriends {
+    fun get(): List<Friend> = listOf(
         Friend("Juan Pérez", "123456789", R.drawable.ic_launcher_foreground, 28),
         Friend("María Gómez", "987654321", R.drawable.ic_launcher_foreground, 26),
         Friend("Carlos López", "456789123", R.drawable.ic_launcher_foreground, 30),

@@ -1,9 +1,9 @@
-package com.example.quicksports.data.Repository
+package com.example.quicksports.data.defaulData
 
 import com.example.quicksports.data.models.Center
 
-class CenterRepository {
-    fun getCenters(): List<Center> = listOf(
+object DefaultCenters {
+    fun get(): List<Center> = listOf(
         Center(
             1,
             "Polideportivo Les Corts",

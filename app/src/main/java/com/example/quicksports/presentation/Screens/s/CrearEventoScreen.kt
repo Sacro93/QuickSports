@@ -10,8 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.quicksports.data.models.Sport
-import com.example.quicksports.R
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.ui.unit.dp
@@ -21,21 +20,24 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import com.example.quicksports.Screen
+import com.example.quicksports.presentation.ViewModel.CenterViewModel
 import com.example.quicksports.presentation.ViewModel.CrearEventoViewModel
+import com.example.quicksports.presentation.ViewModel.SportsViewModel
+
 @Composable
-fun CrearEventoScreen(navController: NavController, viewModel: CrearEventoViewModel = viewModel()) {
-    val selectedSport by viewModel.selectedSport.collectAsState()
-    val selectedCenter by viewModel.selectedCenter.collectAsState()
+fun CrearEventoScreen(
+    navController: NavController,
+    crearEventoViewModel: CrearEventoViewModel = viewModel(),
+    centerViewModel: CenterViewModel = viewModel(),
+    sportsViewModel: SportsViewModel = viewModel()
+) {
+    val selectedSport by crearEventoViewModel.selectedSport.collectAsState()
+    val selectedCenter by crearEventoViewModel.selectedCenter.collectAsState()
+    val sports by sportsViewModel.sports.collectAsState()
+    val centers by centerViewModel.centros.collectAsState()
 
-    val sports = listOf(
-        Sport(1, "Fútbol", R.drawable.futbol),
-        Sport(2, "Básquet", R.drawable.basquet),
-        Sport(3, "Tenis", R.drawable.tenis),
-        Sport(4, "Pádel", R.drawable.padel)
-    )
-
-    val filteredCenters by remember(selectedSport, viewModel.centers) {
-        mutableStateOf(viewModel.getFilteredCenters())
+    val filteredCenters = remember(selectedSport, centers) {
+        centers.filter { it.sportPrices.containsKey(selectedSport?.id) }
     }
 
     Scaffold { innerPadding ->
@@ -56,7 +58,7 @@ fun CrearEventoScreen(navController: NavController, viewModel: CrearEventoViewMo
                 items(sports) { sport ->
                     Column(
                         modifier = Modifier
-                            .clickable { viewModel.selectSport(sport) }
+                            .clickable { crearEventoViewModel.selectSport(sport) }
                             .padding(vertical = 8.dp),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
@@ -84,8 +86,8 @@ fun CrearEventoScreen(navController: NavController, viewModel: CrearEventoViewMo
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .padding(vertical = 8.dp)
-                                .clickable { viewModel.selectCenter(center) },
-                            border = if (viewModel.isCentroSeleccionado(center)) BorderStroke(2.dp, Color.Cyan) else null,
+                                .clickable { crearEventoViewModel.selectCenter(center) },
+                            border = if (crearEventoViewModel.isCentroSeleccionado(center)) BorderStroke(2.dp, Color.Cyan) else null,
                             colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E))
                         ) {
                             Column(modifier = Modifier.padding(16.dp)) {
@@ -104,7 +106,6 @@ fun CrearEventoScreen(navController: NavController, viewModel: CrearEventoViewMo
                     if (filteredCenters.isNotEmpty() && selectedCenter != null) {
                         Spacer(modifier = Modifier.height(16.dp))
                         Button(onClick = {
-                            // Redirigir a la segunda pantalla de creación
                             navController.navigate(Screen.CrearEventoPaso2.route)
                         }) {
                             Text("Siguiente")

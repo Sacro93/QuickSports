@@ -64,6 +64,7 @@ dependencies {
     //coil para imagenes
     implementation(libs.coil.compose)
 
+    implementation(libs.kotlinx.serialization.json)
 
     //material 3
 

@@ -12,7 +12,7 @@ import com.example.quicksports.presentation.Screens.HomeScreen
 import com.example.quicksports.presentation.Screens.s.CrearEventoPaso2Screen
 import com.example.quicksports.presentation.Screens.s.EventosZonaScreen
 import com.example.quicksports.presentation.Screens.s.TusEventosScreen
-import com.example.quicksports.presentation.components.FriendSelectorScreen
+import com.example.quicksports.presentation.Screens.s.FriendSelectorScreen
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable

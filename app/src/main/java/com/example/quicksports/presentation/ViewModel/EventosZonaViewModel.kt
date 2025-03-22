@@ -4,7 +4,7 @@ package com.example.quicksports.presentation.ViewModel
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
-import com.example.quicksports.data.Repository.EventosZonaRepository
+import com.example.quicksports.data.repository.EventosZonaRepository
 import com.example.quicksports.data.models.EventoZona
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow

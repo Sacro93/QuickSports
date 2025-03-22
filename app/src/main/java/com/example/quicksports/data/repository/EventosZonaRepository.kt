@@ -1,4 +1,4 @@
-package com.example.quicksports.data.Repository
+package com.example.quicksports.data.repository
 
 import android.os.Build
 import androidx.annotation.RequiresApi
