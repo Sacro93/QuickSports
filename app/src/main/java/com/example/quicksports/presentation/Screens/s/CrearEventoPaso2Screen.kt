@@ -21,6 +21,7 @@ import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import androidx.compose.foundation.shape.RoundedCornerShape
+import com.example.quicksports.Screen
 import com.example.quicksports.data.repository.EventoRepository
 import com.example.quicksports.presentation.ViewModel.FriendsViewModel
 import kotlinx.coroutines.delay
@@ -30,7 +31,7 @@ import kotlinx.coroutines.launch
 @Composable
 fun CrearEventoPaso2Screen(
     navController: NavController,
-    viewModel: CrearEventoViewModel = viewModel(),
+    crearEventoViewModel: CrearEventoViewModel,
     friendsViewModel: FriendsViewModel = viewModel()
 ) {
     val context = LocalContext.current
@@ -38,9 +39,11 @@ fun CrearEventoPaso2Screen(
 
     val eventoRepository = remember { EventoRepository(context) }
 
-    val fechaHora by viewModel.fechaHora.collectAsState()
-    val maxParticipantes by viewModel.maxParticipantes.collectAsState()
-    val amigosInvitados by viewModel.amigosInvitados.collectAsState()
+    val selectedSport by crearEventoViewModel.selectedSport.collectAsState()
+    val selectedCenter by crearEventoViewModel.selectedCenter.collectAsState()
+    val fechaHora by crearEventoViewModel.fechaHora.collectAsState()
+    val maxParticipantes by crearEventoViewModel.maxParticipantes.collectAsState()
+    val amigosInvitados by crearEventoViewModel.amigosInvitados.collectAsState()
 
     var localDateTime by remember { mutableStateOf(fechaHora ?: LocalDateTime.now()) }
     var showConfirmDialog by remember { mutableStateOf(false) }
@@ -58,7 +61,26 @@ fun CrearEventoPaso2Screen(
             verticalArrangement = Arrangement.spacedBy(16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text("Selecciona fecha y hora", style = MaterialTheme.typography.headlineSmall)
+            Text("Confirmación de evento", style = MaterialTheme.typography.headlineSmall)
+
+            selectedSport?.let {
+                Text("Deporte seleccionado: ${it.name}", style = MaterialTheme.typography.titleMedium)
+            }
+
+            selectedCenter?.let {
+                Text("Centro: ${it.name}", style = MaterialTheme.typography.titleMedium)
+            }
+
+            if (amigosInvitados.isNotEmpty()) {
+                Text("Amigos invitados:", style = MaterialTheme.typography.titleMedium)
+                amigosInvitados.forEach { amigo ->
+                    Text("• ${amigo.name} (${amigo.phone})")
+                }
+            } else {
+                Text("No se han seleccionado amigos aún.", style = MaterialTheme.typography.bodyMedium)
+            }
+
+            Text("Selecciona fecha y hora", style = MaterialTheme.typography.titleMedium)
 
             Card(
                 modifier = Modifier.clickable {
@@ -68,7 +90,7 @@ fun CrearEventoPaso2Screen(
                             val newDate = LocalDate.of(year, month + 1, day)
                             val currentTime = localDateTime.toLocalTime()
                             localDateTime = LocalDateTime.of(newDate, currentTime)
-                            viewModel.updateFechaHora(localDateTime)
+                            crearEventoViewModel.updateFechaHora(localDateTime)
                         },
                         localDateTime.year,
                         localDateTime.monthValue - 1,
@@ -89,7 +111,7 @@ fun CrearEventoPaso2Screen(
                             val currentDate = localDateTime.toLocalDate()
                             val newTime = LocalTime.of(hour, minute)
                             localDateTime = LocalDateTime.of(currentDate, newTime)
-                            viewModel.updateFechaHora(localDateTime)
+                            crearEventoViewModel.updateFechaHora(localDateTime)
                         },
                         localDateTime.hour,
                         localDateTime.minute,
@@ -107,7 +129,7 @@ fun CrearEventoPaso2Screen(
                 Button(onClick = {
                     if (cantidad > 0) {
                         cantidad--
-                        viewModel.updateMaxParticipantes(cantidad)
+                        crearEventoViewModel.updateMaxParticipantes(cantidad)
                     }
                 }) {
                     Text("-")
@@ -115,27 +137,20 @@ fun CrearEventoPaso2Screen(
                 Text(text = "$cantidad", modifier = Modifier.padding(horizontal = 16.dp))
                 Button(onClick = {
                     cantidad++
-                    viewModel.updateMaxParticipantes(cantidad)
+                    crearEventoViewModel.updateMaxParticipantes(cantidad)
                 }) {
                     Text("+")
                 }
             }
 
             Button(onClick = {
-                friendsViewModel.loadFriends()
                 scope.launch {
-                    delay(150)
-                    navController.navigate("friend_selector")
+                    friendsViewModel.loadFriends()
+                    delay(100)
+                    navController.navigate(Screen.FriendSelector.route)
                 }
             }) {
                 Text("Agregar amigos")
-            }
-
-            if (amigosInvitados.isNotEmpty()) {
-                Text("Amigos seleccionados:", style = MaterialTheme.typography.titleMedium)
-                amigosInvitados.forEach { amigo ->
-                    Text("• ${'$'}{amigo.name} (${'$'}{amigo.phone})")
-                }
             }
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -154,13 +169,13 @@ fun CrearEventoPaso2Screen(
             title = { Text("¿Estás seguro de confirmar?") },
             confirmButton = {
                 TextButton(onClick = {
-                    val evento = viewModel.armarEvento()
+                    val evento = crearEventoViewModel.armarEvento()
                     if (evento != null) {
                         scope.launch {
                             eventoRepository.guardarEvento(evento)
                             Toast.makeText(context, "Evento guardado correctamente", Toast.LENGTH_SHORT).show()
                             showConfirmDialog = false
-                            navController.navigate("home") {
+                            navController.navigate(Screen.Home.route) {
                                 popUpTo(0) { inclusive = true }
                             }
                         }
@@ -177,7 +192,7 @@ fun CrearEventoPaso2Screen(
                     Text("Volver")
                 }
                 TextButton(onClick = {
-                    navController.navigate("home") {
+                    navController.navigate(Screen.Home.route) {
                         popUpTo(0) { inclusive = true }
                     }
                 }) {

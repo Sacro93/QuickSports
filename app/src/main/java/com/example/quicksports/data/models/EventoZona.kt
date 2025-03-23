@@ -1,5 +1,6 @@
 package com.example.quicksports.data.models
 
+import kotlinx.serialization.Contextual
 import java.time.LocalDateTime
 
 
@@ -11,5 +12,5 @@ data class EventoZona(
     val centro: String,
     val direccion: String,
     val creador: String,
-    val fechaHora: LocalDateTime
+  @Contextual  val fechaHora: LocalDateTime
 )

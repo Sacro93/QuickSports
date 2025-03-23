@@ -27,26 +27,22 @@ import androidx.compose.foundation.lazy.items
 @Composable
 fun FriendSelectorScreen(
     navController: NavController,
-    friendsViewModel: FriendsViewModel = viewModel(),
-    crearEventoViewModel: CrearEventoViewModel = viewModel()
+    crearEventoViewModel: CrearEventoViewModel,
+    friendsViewModel: FriendsViewModel = viewModel()
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
-    // Carga de amigos desde persistencia si aún no están cargados
     val friends by friendsViewModel.friends.collectAsState()
     val amigosInvitados by crearEventoViewModel.amigosInvitados.collectAsState()
 
-    // Lista mutable de selección actual
-    val selectedFriends = remember { mutableStateListOf<Friend>() }
+    val selectedFriends = remember { mutableStateListOf<String>() }
 
-    // Al entrar a la pantalla, copiar los que ya estaban seleccionados
     LaunchedEffect(amigosInvitados) {
         selectedFriends.clear()
-        selectedFriends.addAll(amigosInvitados)
+        selectedFriends.addAll(amigosInvitados.map { it.phone }) // usar teléfono como identificador
     }
 
-    // Búsqueda
     var searchQuery by remember { mutableStateOf("") }
     val filteredFriends = friends.filter { it.name.contains(searchQuery, ignoreCase = true) }
 
@@ -68,6 +64,7 @@ fun FriendSelectorScreen(
 
         LazyColumn(modifier = Modifier.weight(1f)) {
             items(filteredFriends) { friend ->
+                val isSelected = selectedFriends.contains(friend.phone)
                 Row(
                     modifier = Modifier.fillMaxWidth(),
                     verticalAlignment = Alignment.CenterVertically
@@ -83,12 +80,12 @@ fun FriendSelectorScreen(
                         Text(friend.phone, style = MaterialTheme.typography.bodySmall)
                     }
                     Checkbox(
-                        checked = selectedFriends.contains(friend),
+                        checked = isSelected,
                         onCheckedChange = {
-                            if (selectedFriends.contains(friend)) {
-                                selectedFriends.remove(friend)
+                            if (isSelected) {
+                                selectedFriends.remove(friend.phone)
                             } else {
-                                selectedFriends.add(friend)
+                                selectedFriends.add(friend.phone)
                             }
                         }
                     )
@@ -97,7 +94,8 @@ fun FriendSelectorScreen(
         }
 
         Button(onClick = {
-            crearEventoViewModel.updateAmigosInvitados(selectedFriends)
+            val amigosSeleccionados = friends.filter { selectedFriends.contains(it.phone) }
+            crearEventoViewModel.updateAmigosInvitados(amigosSeleccionados)
             Toast.makeText(context, "Amigos guardados", Toast.LENGTH_SHORT).show()
             scope.launch {
                 delay(800)

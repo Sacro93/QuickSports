@@ -1,5 +1,7 @@
 package com.example.quicksports.presentation.Screens
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -24,10 +26,12 @@ import com.example.quicksports.presentation.ViewModel.CenterViewModel
 import com.example.quicksports.presentation.ViewModel.CrearEventoViewModel
 import com.example.quicksports.presentation.ViewModel.SportsViewModel
 
+
+@RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CrearEventoScreen(
     navController: NavController,
-    crearEventoViewModel: CrearEventoViewModel = viewModel(),
+    crearEventoViewModel: CrearEventoViewModel,
     centerViewModel: CenterViewModel = viewModel(),
     sportsViewModel: SportsViewModel = viewModel()
 ) {
@@ -35,10 +39,7 @@ fun CrearEventoScreen(
     val selectedCenter by crearEventoViewModel.selectedCenter.collectAsState()
     val sports by sportsViewModel.sports.collectAsState()
     val centers by centerViewModel.centros.collectAsState()
-
-    val filteredCenters = remember(selectedSport, centers) {
-        centers.filter { it.sportPrices.containsKey(selectedSport?.id) }
-    }
+    val filteredCenters by crearEventoViewModel.getFilteredCenters(centers).collectAsState()
 
     Scaffold { innerPadding ->
         Column(
@@ -69,7 +70,7 @@ fun CrearEventoScreen(
                         )
                         Text(
                             text = sport.name,
-                            color = if (selectedSport == sport) Color.Cyan else Color.White
+                            color = if (selectedSport?.id == sport.id) Color.Cyan else Color.White
                         )
                     }
                 }
@@ -77,8 +78,16 @@ fun CrearEventoScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
+            selectedSport?.let {
+                Text("Deporte seleccionado: ${it.name}", style = MaterialTheme.typography.titleMedium)
+            }
+
+            selectedCenter?.let {
+                Text("Centro seleccionado: ${it.name}", style = MaterialTheme.typography.titleMedium)
+            }
+
             if (selectedSport != null) {
-                Text("Centros disponibles para ${selectedSport?.name}", style = MaterialTheme.typography.titleMedium)
+                Text("Centros disponibles para ${selectedSport!!.name}", style = MaterialTheme.typography.titleMedium)
 
                 Column(modifier = Modifier.padding(16.dp)) {
                     filteredCenters.forEach { center ->
@@ -103,7 +112,7 @@ fun CrearEventoScreen(
                         }
                     }
 
-                    if (filteredCenters.isNotEmpty() && selectedCenter != null) {
+                    if (filteredCenters.isNotEmpty() && selectedCenter != null && selectedSport != null) {
                         Spacer(modifier = Modifier.height(16.dp))
                         Button(onClick = {
                             navController.navigate(Screen.CrearEventoPaso2.route)
@@ -116,3 +125,97 @@ fun CrearEventoScreen(
         }
     }
 }
+
+/*
+@RequiresApi(Build.VERSION_CODES.O)
+@Composable
+fun CrearEventoScreen(
+    navController: NavController,
+    crearEventoViewModel: CrearEventoViewModel,
+    centerViewModel: CenterViewModel = viewModel(),
+    sportsViewModel: SportsViewModel = viewModel()
+) {
+    val selectedSport by crearEventoViewModel.selectedSport.collectAsState()
+    val selectedCenter by crearEventoViewModel.selectedCenter.collectAsState()
+    val sports by sportsViewModel.sports.collectAsState()
+    val centers by centerViewModel.centros.collectAsState()
+    val filteredCenters by crearEventoViewModel.getFilteredCenters(centers).collectAsState()
+
+    Scaffold { innerPadding ->
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(innerPadding)
+                .verticalScroll(rememberScrollState()),
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text("Selecciona un deporte", style = MaterialTheme.typography.headlineSmall)
+
+            LazyRow(
+                modifier = Modifier.fillMaxWidth(),
+                contentPadding = PaddingValues(horizontal = 16.dp),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                items(sports) { sport ->
+                    Column(
+                        modifier = Modifier
+                            .clickable { crearEventoViewModel.selectSport(sport) }
+                            .padding(vertical = 8.dp),
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Image(
+                            painter = painterResource(id = sport.imageRes),
+                            contentDescription = sport.name,
+                            modifier = Modifier.size(72.dp)
+                        )
+                        Text(
+                            text = sport.name,
+                            color = if (selectedSport?.id == sport.id) Color.Cyan else Color.White
+                        )
+                    }
+                }
+            }
+
+            Spacer(modifier = Modifier.height(24.dp))
+
+            if (selectedSport != null) {
+                Text("Centros disponibles para ${selectedSport!!.name}", style = MaterialTheme.typography.titleMedium)
+
+                Column(modifier = Modifier.padding(16.dp)) {
+                    filteredCenters.forEach { center ->
+                        Card(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 8.dp)
+                                .clickable { crearEventoViewModel.selectCenter(center) },
+                            border = if (crearEventoViewModel.isCentroSeleccionado(center)) BorderStroke(2.dp, Color.Cyan) else null,
+                            colors = CardDefaults.cardColors(containerColor = Color(0xFF1E1E1E))
+                        ) {
+                            Column(modifier = Modifier.padding(16.dp)) {
+                                Text(text = center.name, style = MaterialTheme.typography.titleMedium, color = Color.White)
+                                Text(text = center.address, color = Color.LightGray)
+                                Text(text = "Tel: ${center.contactPhone}", color = Color.LightGray)
+                                selectedSport?.id?.let { sportId ->
+                                    center.sportPrices[sportId]?.let { price ->
+                                        Text(text = "Precio: €$price", color = Color.Cyan)
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    if (filteredCenters.isNotEmpty() && selectedCenter != null && selectedSport != null) {
+                        Spacer(modifier = Modifier.height(16.dp))
+                        Button(onClick = {
+                            navController.navigate(Screen.CrearEventoPaso2.route)
+                        }) {
+                            Text("Siguiente")
+                        }
+                    }
+                }
+            }
+        }
+    }
+}
+
+*/
