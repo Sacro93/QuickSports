@@ -33,4 +33,14 @@ class CenterViewModel(application: Application) : AndroidViewModel(application) 
             _centros.value = cargados
         }
     }
+    fun toggleFavorite(centro: Center) {
+        viewModelScope.launch {
+            val nuevos = _centros.value.map {
+                if (it.id == centro.id) it.copy(isFavorite = !it.isFavorite) else it
+            }
+            repository.guardarCentros(nuevos)
+            _centros.value = nuevos
+        }
+    }
+
 }

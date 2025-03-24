@@ -7,5 +7,6 @@ data class Center(
     val name: String,
     val address: String,
     val contactPhone: String,
-    val sportPrices: Map<Int, Double> // Int es el ID del deporte
+    val sportPrices: Map<Int, Double>,
+    val isFavorite: Boolean = false // << Nuevo campo
 )

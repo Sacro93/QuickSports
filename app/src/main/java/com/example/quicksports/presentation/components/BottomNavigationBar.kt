@@ -5,6 +5,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.AccountCircle
+import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Person
 import androidx.compose.material.icons.filled.Place
 import androidx.navigation.NavController
@@ -13,6 +14,11 @@ import com.example.quicksports.Screen
 @Composable
 fun BottomNavigationBar(navController: NavController) {
     NavigationBar {
+        BottomNavItem(
+            label = "Inicio",
+            icon = Icons.Default.Home,
+            onClick = { navController.navigate(Screen.Home.route) }
+        )
         BottomNavItem(
             label = "Amistades",
             icon = Icons.Default.Person,
@@ -33,7 +39,7 @@ fun BottomNavigationBar(navController: NavController) {
 
 @Composable
 fun BottomNavItem(label: String, icon: ImageVector, onClick: () -> Unit) {
-    NavigationRailItem (
+    NavigationRailItem(
         selected = false,
         onClick = onClick,
         icon = {

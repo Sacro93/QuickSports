@@ -1,0 +1,68 @@
+{
+  "project_info": {
+    "project_number": "459425189163",
+    "project_id": "quick-sports",
+    "storage_bucket": "quick-sports.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:459425189163:android:b43f1ccc33793780cfc96e",
+        "android_client_info": {
+          "package_name": "com.example.ipsports"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "459425189163-3287etnrtaqpika2l5966rqkhcq98j1d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSFMm-Qo9JwUtF5NEMfMhly9Zq0QZrnsM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "459425189163-3287etnrtaqpika2l5966rqkhcq98j1d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:459425189163:android:9250e31b1ae18f44cfc96e",
+        "android_client_info": {
+          "package_name": "com.example.quicksports"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "459425189163-3287etnrtaqpika2l5966rqkhcq98j1d.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCSFMm-Qo9JwUtF5NEMfMhly9Zq0QZrnsM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "459425189163-3287etnrtaqpika2l5966rqkhcq98j1d.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -3,6 +3,7 @@ plugins {
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     kotlin("plugin.serialization") version "1.9.0"
+    id("com.google.gms.google-services")
 }
 
 android {
@@ -71,7 +72,14 @@ dependencies {
     //material 3
 
     implementation(libs.material3)
+    implementation(libs.androidx.material.icons.extended)
 
+
+    //firestore
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.analytics)
+    implementation(libs.firebase.auth)
 
 
 }

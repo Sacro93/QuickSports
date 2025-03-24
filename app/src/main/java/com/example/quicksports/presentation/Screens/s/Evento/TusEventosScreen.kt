@@ -1,4 +1,4 @@
-package com.example.quicksports.presentation.Screens.s
+package com.example.quicksports.presentation.Screens.s.Evento
 
 
 import com.example.quicksports.presentation.ViewModel.TusEventosViewModel

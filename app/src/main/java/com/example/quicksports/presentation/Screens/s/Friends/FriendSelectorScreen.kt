@@ -1,4 +1,4 @@
-package com.example.quicksports.presentation.Screens.s
+package com.example.quicksports.presentation.Screens.s.Friends
 
 
 import android.os.Build
@@ -15,7 +15,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.quicksports.data.models.Friend
 import com.example.quicksports.presentation.ViewModel.CrearEventoViewModel
 import com.example.quicksports.presentation.ViewModel.FriendsViewModel
 import kotlinx.coroutines.delay

@@ -1,4 +1,4 @@
-package com.example.quicksports.presentation.Screens.s
+package com.example.quicksports.presentation.Screens.s.Evento
 
 
 import android.os.Build
@@ -8,10 +8,14 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.compose.rememberNavController
+import com.example.quicksports.presentation.Screens.BottomNavigationBar
 import com.example.quicksports.presentation.ViewModel.EventosZonaViewModel
 import java.time.format.DateTimeFormatter
 
@@ -22,9 +26,15 @@ fun EventosZonaScreen(viewModel: EventosZonaViewModel = viewModel()) {
     val context = LocalContext.current
     val eventos = viewModel.eventosZona.collectAsState().value
 
+    // Estado local para saber a qué eventos ya se envió solicitud
+    val solicitudesEnviadas = remember { mutableStateMapOf<Int, Boolean>() }
+
     Scaffold(
         topBar = {
             TopAppBar(title = { Text("Eventos de tu zona") })
+        },
+        bottomBar = {
+            BottomNavigationBar(navController = rememberNavController()) // Asegúrate de pasar tu NavController real
         }
     ) { innerPadding ->
         Column(
@@ -35,6 +45,8 @@ fun EventosZonaScreen(viewModel: EventosZonaViewModel = viewModel()) {
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             eventos.forEach { evento ->
+                val solicitudEnviada = solicitudesEnviadas[evento.hashCode()] == true
+
                 Card(
                     modifier = Modifier.fillMaxWidth(),
                     colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
@@ -48,10 +60,14 @@ fun EventosZonaScreen(viewModel: EventosZonaViewModel = viewModel()) {
 
                         Spacer(modifier = Modifier.height(8.dp))
 
-                        Button(onClick = {
-                            Toast.makeText(context, "Solicitud de unirse al evento enviada", Toast.LENGTH_SHORT).show()
-                        }) {
-                            Text("Unirme")
+                        Button(
+                            onClick = {
+                                solicitudesEnviadas[evento.hashCode()] = true
+                                Toast.makeText(context, "Solicitud enviada", Toast.LENGTH_SHORT).show()
+                            },
+                            enabled = !solicitudEnviada
+                        ) {
+                            Text(if (solicitudEnviada) "Solicitud enviada" else "Unirme")
                         }
                     }
                 }

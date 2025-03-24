@@ -1,4 +1,4 @@
-package com.example.quicksports.presentation.Screens.s
+package com.example.quicksports.presentation.Screens.s.Evento
 
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
@@ -20,7 +20,6 @@ import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
-import androidx.compose.foundation.shape.RoundedCornerShape
 import com.example.quicksports.Screen
 import com.example.quicksports.data.repository.EventoRepository
 import com.example.quicksports.presentation.ViewModel.FriendsViewModel
