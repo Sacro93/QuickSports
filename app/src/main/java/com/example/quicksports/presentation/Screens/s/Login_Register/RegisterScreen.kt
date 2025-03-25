@@ -75,8 +75,10 @@ fun RegisterScreen(
             onValueChange = viewModel::onFechaNacimientoChanged,
             label = { Text("Fecha de nacimiento (dd/mm/aaaa)") },
             singleLine = true,
-            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number)
+            keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
+            modifier = Modifier.fillMaxWidth()
         )
+
 
         OutlinedTextField(
             value = uiState.email,

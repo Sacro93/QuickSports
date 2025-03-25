@@ -1,14 +1,31 @@
 package com.example.quicksports.data.repository
 
+import com.example.quicksports.data.models.UserProfile
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.tasks.await
+import com.google.firebase.firestore.FirebaseFirestore
 
+class AuthRepository(
+    private val auth: FirebaseAuth = FirebaseAuth.getInstance(),
+    private val firestore: FirebaseFirestore = FirebaseFirestore.getInstance()
+) {
 
-class AuthRepository(private val auth: FirebaseAuth = FirebaseAuth.getInstance()) {
-
-    suspend fun registerUser(email: String, password: String): Result<Unit> {
+    suspend fun registerUserAndSaveProfile(
+        email: String,
+        password: String,
+        profile: UserProfile
+    ): Result<Unit> {
         return try {
-            auth.createUserWithEmailAndPassword(email, password).await()
+            val result = auth.createUserWithEmailAndPassword(email, password).await()
+            result.user?.sendEmailVerification()?.await()
+
+            val uid = result.user?.uid ?: return Result.failure(Exception("Usuario sin UID"))
+
+            firestore.collection("users")
+                .document(uid)
+                .set(profile.copy(uid = uid))
+                .await()
+
             Result.success(Unit)
         } catch (e: Exception) {
             Result.failure(e)
@@ -28,7 +45,6 @@ class AuthRepository(private val auth: FirebaseAuth = FirebaseAuth.getInstance()
             Result.failure(e)
         }
     }
-
 
     fun getCurrentUser() = auth.currentUser
     fun currentUser() = auth.currentUser

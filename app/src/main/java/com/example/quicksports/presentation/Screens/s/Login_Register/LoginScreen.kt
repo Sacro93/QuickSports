@@ -21,6 +21,10 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.quicksports.presentation.ViewModel.LoginViewModel
+import com.example.quicksports.R
+import com.example.quicksports.Screen
+
 @Composable
 fun LoginScreen(
     navController: NavController,
@@ -86,17 +90,19 @@ fun LoginScreen(
         Button(
             onClick = {
                 focusManager.clearFocus()
-                viewModel.login(
+                viewModel.onLoginClick(
+                    context = context,
                     onSuccess = {
                         Toast.makeText(context, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show()
-                        navController.navigate("home") {
-                            popUpTo(0) { inclusive = true }
+                        navController.navigate(Screen.Home.route) {
+                            popUpTo(Screen.Start.route) { inclusive = true }
                         }
                     },
                     onError = {
                         Toast.makeText(context, it, Toast.LENGTH_LONG).show()
                     }
                 )
+
             },
             modifier = Modifier.fillMaxWidth()
         ) {
@@ -108,7 +114,7 @@ fun LoginScreen(
         // Logo decorativo de Gmail
         Row(verticalAlignment = Alignment.CenterVertically) {
             Icon(
-                painter = painterResource(id = R.drawable.ic_gmail_logo), // Reemplaza por tu recurso
+                painter = painterResource(id = R.drawable.gmail),
                 contentDescription = "Gmail",
                 modifier = Modifier.size(32.dp)
             )

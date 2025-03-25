@@ -1,7 +1,9 @@
 package com.example.quicksports.presentation.ViewModel
 
+import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.quicksports.data.PreferenceManager
 import com.example.quicksports.data.models.LoginUiState
 import com.example.quicksports.data.repository.AuthRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,16 +23,21 @@ class LoginViewModel(private val repository: AuthRepository = AuthRepository()) 
         _uiState.value = _uiState.value.copy(password = value.trim())
     }
 
-    fun onRememberMeChange(value: Boolean) {
-        _uiState.value = _uiState.value.copy(rememberMe = value)
+    fun onKeepLoggedInChange(value: Boolean) {
+        _uiState.value = _uiState.value.copy(keepLoggedIn = value)
     }
 
-    fun onLoginClick(onSuccess: () -> Unit, onError: (String) -> Unit) {
+    fun onLoginClick(context: Context, onSuccess: () -> Unit, onError: (String) -> Unit) {
         val state = _uiState.value
 
         viewModelScope.launch {
             val result = repository.login(state.email, state.password)
             if (result.isSuccess) {
+                if (state.keepLoggedIn) {
+                    PreferenceManager.setKeepLoggedIn(context, true)
+                } else {
+                    PreferenceManager.setKeepLoggedIn(context, false)
+                }
                 onSuccess()
             } else {
                 _uiState.value = _uiState.value.copy(errorMessage = result.exceptionOrNull()?.message)
@@ -38,4 +45,5 @@ class LoginViewModel(private val repository: AuthRepository = AuthRepository()) 
             }
         }
     }
+
 }

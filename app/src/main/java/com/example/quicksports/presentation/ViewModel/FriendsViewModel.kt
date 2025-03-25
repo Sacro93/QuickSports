@@ -39,4 +39,14 @@ class FriendsViewModel(application: Application) : AndroidViewModel(application)
             cargarSiVacioFriends()
         }
     }
+
+    fun eliminarAmigo(phone: String) {
+        viewModelScope.launch {
+            val actual = repository.obtenerAmigos()
+            val nuevos = actual.filter { it.phone != phone }
+            repository.guardarAmigos(nuevos)
+            _friends.value = nuevos
+        }
+    }
+
 }

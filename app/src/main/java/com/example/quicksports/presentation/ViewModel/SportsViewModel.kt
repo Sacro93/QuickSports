@@ -4,6 +4,7 @@ package com.example.quicksports.presentation.ViewModel
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.quicksports.R
 import com.example.quicksports.data.models.Sport
 import com.example.quicksports.data.repository.SportsRepository
 import com.example.quicksports.data.defaulData.DefaultSports
@@ -31,7 +32,20 @@ class SportsViewModel(application: Application) : AndroidViewModel(application) 
             repository.guardarSports(porDefecto)
             _sports.value = porDefecto
         } else {
-            _sports.value = cargados
+            // Asignar imágenes por ID
+            val conImagenes = cargados.map { sport ->
+                sport.copy(
+                    imageRes = when (sport.id) {
+                        1 -> R.drawable.futbol
+                        2 -> R.drawable.basquet
+                        3 -> R.drawable.tenis
+                        4 -> R.drawable.padel
+                        else -> 0
+                    }
+                )
+            }
+            _sports.value = conImagenes
         }
     }
+
 }
