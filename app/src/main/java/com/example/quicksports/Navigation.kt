@@ -94,17 +94,17 @@ fun Navigation() {
 
         // Amistades
         composable(Screen.Amistades.route) {
-            AmistadesScreen()
+            AmistadesScreen(navController)
         }
 
         // Centros deportivos
         composable(Screen.Centros.route) {
-            CentrosScreen()
+            CentrosScreen(navController)
         }
 
-        // Perfil
         composable(Screen.Perfil.route) {
             PerfilScreen(
+                navController = navController,
                 onEditProfileClick = { navController.navigate(Screen.EditarPerfil.route) },
                 onLogout = {
                     navController.navigate(Screen.Login.route) {
@@ -115,7 +115,10 @@ fun Navigation() {
         }
 
         composable(Screen.EditarPerfil.route) {
-            EditarPerfilScreen(navController = navController)
+            EditarPerfilScreen(
+                userViewModel = viewModel(),
+                navController = navController
+            )
         }
 
     }

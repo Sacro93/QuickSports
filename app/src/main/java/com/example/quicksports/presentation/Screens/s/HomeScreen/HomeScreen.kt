@@ -1,34 +1,59 @@
 package com.example.quicksports.presentation.Screens
 
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.quicksports.Screen
 import com.example.quicksports.R
+import com.example.quicksports.presentation.components.QuickSportsTitle
 
 @Composable
 fun HomeScreen(navController: NavController) {
-    val context = LocalContext.current
-
     Scaffold(
         bottomBar = {
-            BottomNavigationBar(navController)
-        }
+            BottomNavigationBar(
+                navController,
+                containerColor = Color.Transparent // Cambio a transparente
+            )
+        },
+        containerColor = Color.Transparent
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .padding(innerPadding),
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(
+                            Color(0xFF2B6070), // Verde azulado medio
+                            Color(0xFF1F3F4C), // Azul oscuro con verde
+                            Color(0xFF162F3C),
+                            Color(0xFF0F1D20)  // Combinando con AmistadesScreen
+                        )
+                    )
+                )
+                .padding(innerPadding)
+                .padding(horizontal = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
+            Spacer(modifier = Modifier.height(56.dp))
+            QuickSportsTitle()
+            Spacer(modifier = Modifier.height(32.dp))
+
             EventCard(
-                imageResId = R.drawable.ic_launcher_foreground,
-                    title = "Crear evento",
+                imageResId = R.drawable.grupo,
+                title = "Crear evento",
                 onClick = { navController.navigate(Screen.CrearEvento.route) }
             )
 
