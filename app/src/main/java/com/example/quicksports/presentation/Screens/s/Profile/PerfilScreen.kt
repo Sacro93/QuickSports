@@ -21,18 +21,16 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.quicksports.presentation.ViewModel.UserViewModel
+import android.net.Uri
 import android.widget.Toast
 import androidx.compose.foundation.BorderStroke
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Edit
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
-import com.example.quicksports.R
+import coil.compose.AsyncImage
 import com.example.quicksports.presentation.Screens.BottomNavigationBar
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -62,10 +60,33 @@ fun PerfilScreen(
         val userData = user!!
         val context = LocalContext.current
 
-        val profileImageRes = if (userData.name.lowercase().contains("a")) R.drawable.mujer else R.drawable.hombre
+        var profileImage by rememberSaveable { mutableStateOf<Uri?>(null) }
+
+        val launcher = rememberLauncherForActivityResult(
+            contract = ActivityResultContracts.GetContent()
+        ) { uri: Uri? ->
+            profileImage = uri
+        }
+
+        val userInitials = "${userData.name.firstOrNull() ?: ""}${userData.lastName.firstOrNull() ?: ""}".uppercase()
 
         Scaffold(
-
+            topBar = {
+                Box(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp),
+                    contentAlignment = Alignment.TopStart
+                ) {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(
+                            imageVector = Icons.Default.ArrowBack,
+                            contentDescription = "Volver",
+                            tint = Color.White
+                        )
+                    }
+                }
+            },
             bottomBar = {
                 BottomNavigationBar(navController)
             },
@@ -77,10 +98,7 @@ fun PerfilScreen(
                     .verticalScroll(rememberScrollState())
                     .background(
                         Brush.verticalGradient(
-                            colors = listOf(
-                                Color(0xFF0D47A1),
-                                Color(0xFF121212),
-                                Color(0xFF000000))
+                            colors = listOf(Color(0xFF121212), Color(0xFF000000))
                         )
                     )
                     .padding(paddingValues)
@@ -94,21 +112,23 @@ fun PerfilScreen(
                         .size(100.dp)
                         .clip(CircleShape)
                         .background(Color.Gray.copy(alpha = 0.3f))
-                        .clickable { /* No accede a la galería */ },
+                        .clickable { launcher.launch("image/*") },
                     contentAlignment = Alignment.Center
                 ) {
-                    Image(
-                        painter = painterResource(id = profileImageRes),
-                        contentDescription = "Profile Picture",
-                        modifier = Modifier.fillMaxSize().clip(CircleShape),
-                        contentScale = ContentScale.Crop
-                    )
-                    Icon(
-                        imageVector = Icons.Default.Edit,
-                        contentDescription = "Editar imagen",
-                        tint = Color.White,
-                        modifier = Modifier.align(Alignment.BottomEnd).padding(6.dp).size(18.dp)
-                    )
+                    if (profileImage != null) {
+                        AsyncImage(
+                            model = profileImage,
+                            contentDescription = "Profile Picture",
+                            modifier = Modifier.fillMaxSize().clip(CircleShape),
+                            contentScale = ContentScale.Crop
+                        )
+                    } else {
+                        Text(
+                            text = userInitials,
+                            style = MaterialTheme.typography.headlineSmall,
+                            color = Color.White
+                        )
+                    }
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -176,7 +196,6 @@ fun PerfilScreen(
         }
     }
 }
-
 
 
 
