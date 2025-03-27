@@ -17,12 +17,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import java.time.format.DateTimeFormatter
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TusEventosScreen(viewModel: TusEventosViewModel = viewModel()) {
+fun TusEventosScreen(viewModel: TusEventosViewModel = viewModel(),navController: NavController) {
     val context = LocalContext.current
     val eventos by viewModel.eventos.collectAsState()
     var showDialog by remember { mutableStateOf(false) }

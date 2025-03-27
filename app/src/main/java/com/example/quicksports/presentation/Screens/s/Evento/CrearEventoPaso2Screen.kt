@@ -5,13 +5,28 @@ import android.app.TimePickerDialog
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.CreditCard
+import androidx.compose.material.icons.filled.Person
+import androidx.compose.material.icons.filled.Remove
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Brush
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.text.font.Font
+import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -25,7 +40,9 @@ import com.example.quicksports.data.repository.EventoRepository
 import com.example.quicksports.presentation.ViewModel.FriendsViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import com.example.quicksports.R
 
+@OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CrearEventoPaso2Screen(
@@ -51,113 +68,208 @@ fun CrearEventoPaso2Screen(
     val dateText = remember(localDateTime) { localDateTime.toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) }
     val timeText = remember(localDateTime) { localDateTime.toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm")) }
 
-    Scaffold { innerPadding ->
+    val isFormValid = selectedSport != null && selectedCenter != null && fechaHora != null
+
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = {},
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Volver",
+                            tint = Color.White
+                        )
+                    }
+                },
+                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
+            )
+        },
+        containerColor = Color.Transparent
+    ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
+                .verticalScroll(rememberScrollState())
+                .background(
+                    Brush.verticalGradient(
+                        colors = listOf(Color(0xFF4B5320), Color.Black)
+                    )
+                )
                 .padding(innerPadding)
-                .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp),
-            horizontalAlignment = Alignment.CenterHorizontally
+                .padding(horizontal = 16.dp),
         ) {
-            Text("Confirmación de evento", style = MaterialTheme.typography.headlineSmall)
-
-            selectedSport?.let {
-                Text("Deporte seleccionado: ${it.name}", style = MaterialTheme.typography.titleMedium)
-            }
-
-            selectedCenter?.let {
-                Text("Centro: ${it.name}", style = MaterialTheme.typography.titleMedium)
-            }
-
-            if (amigosInvitados.isNotEmpty()) {
-                Text("Amigos invitados:", style = MaterialTheme.typography.titleMedium)
-                amigosInvitados.forEach { amigo ->
-                    Text("• ${amigo.name} (${amigo.phone})")
-                }
-            } else {
-                Text("No se han seleccionado amigos aún.", style = MaterialTheme.typography.bodyMedium)
-            }
-
-            Text("Selecciona fecha y hora", style = MaterialTheme.typography.titleMedium)
+            Text(
+                text = "Confirmación de evento",
+                style = MaterialTheme.typography.titleLarge.copy(
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold,
+                    fontFamily = FontFamily(Font(R.font.poppins_regular))
+                ),
+                modifier = Modifier.padding(bottom = 16.dp)
+            )
 
             Card(
-                modifier = Modifier.clickable {
-                    DatePickerDialog(
-                        context,
-                        { _, year, month, day ->
-                            val newDate = LocalDate.of(year, month + 1, day)
-                            val currentTime = localDateTime.toLocalTime()
-                            localDateTime = LocalDateTime.of(newDate, currentTime)
-                            crearEventoViewModel.updateFechaHora(localDateTime)
-                        },
-                        localDateTime.year,
-                        localDateTime.monthValue - 1,
-                        localDateTime.dayOfMonth
-                    ).show()
-                },
-                shape = MaterialTheme.shapes.medium,
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
+                modifier = Modifier.fillMaxWidth(),
+                colors = CardDefaults.cardColors(containerColor = Color(0xFF1C1C1C)),
+                shape = RoundedCornerShape(12.dp)
             ) {
-                Text("📅 $dateText", modifier = Modifier.padding(16.dp))
-            }
-
-            Card(
-                modifier = Modifier.clickable {
-                    TimePickerDialog(
-                        context,
-                        { _, hour, minute ->
-                            val currentDate = localDateTime.toLocalDate()
-                            val newTime = LocalTime.of(hour, minute)
-                            localDateTime = LocalDateTime.of(currentDate, newTime)
-                            crearEventoViewModel.updateFechaHora(localDateTime)
-                        },
-                        localDateTime.hour,
-                        localDateTime.minute,
-                        true
-                    ).show()
-                },
-                shape = MaterialTheme.shapes.medium,
-                colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.secondaryContainer)
-            ) {
-                Text("⏰ $timeText", modifier = Modifier.padding(16.dp))
-            }
-
-            Text("Máximo de participantes", style = MaterialTheme.typography.titleMedium)
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Button(onClick = {
-                    if (cantidad > 0) {
-                        cantidad--
-                        crearEventoViewModel.updateMaxParticipantes(cantidad)
+                Column(modifier = Modifier.padding(16.dp)) {
+                    selectedSport?.let {
+                        Text("Deporte: ${it.name}", color = Color.White, fontFamily = FontFamily(Font(R.font.poppins_regular)))
                     }
-                }) {
-                    Text("-")
-                }
-                Text(text = "$cantidad", modifier = Modifier.padding(horizontal = 16.dp))
-                Button(onClick = {
-                    cantidad++
-                    crearEventoViewModel.updateMaxParticipantes(cantidad)
-                }) {
-                    Text("+")
+                    selectedCenter?.let {
+                        Text("Centro: ${it.name}", color = Color.White, fontFamily = FontFamily(Font(R.font.poppins_regular)))
+                    }
+                    if (amigosInvitados.isNotEmpty()) {
+                        Text("Amigos invitados:", color = Color.White, fontWeight = FontWeight.Bold)
+                        amigosInvitados.forEach { amigo ->
+                            Text("• ${amigo.name} (${amigo.phone})", color = Color.White)
+                        }
+                    } else {
+                        Text("No se han seleccionado amigos.", color = Color.Gray)
+                    }
                 }
             }
 
-            Button(onClick = {
-                scope.launch {
-                    friendsViewModel.loadFriends()
-                    delay(100)
-                    navController.navigate(Screen.FriendSelector.route)
+            Spacer(modifier = Modifier.height(16.dp))
+            Text("Selecciona fecha y hora", color = Color.White, fontWeight = FontWeight.Bold)
+            Spacer(modifier = Modifier.height(8.dp))
+
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
+                Card(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(end = 4.dp)
+                        .clickable {
+                            DatePickerDialog(
+                                context,
+                                { _, year, month, day ->
+                                    val newDate = LocalDate.of(year, month + 1, day)
+                                    val currentTime = localDateTime.toLocalTime()
+                                    localDateTime = LocalDateTime.of(newDate, currentTime)
+                                    crearEventoViewModel.updateFechaHora(localDateTime)
+                                },
+                                localDateTime.year,
+                                localDateTime.monthValue - 1,
+                                localDateTime.dayOfMonth
+                            ).show()
+                        },
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFF2A2A2A))
+                ) {
+                    Text("📅 $dateText", modifier = Modifier.padding(16.dp), color = Color.White)
                 }
-            }) {
-                Text("Agregar amigos")
+                Card(
+                    modifier = Modifier
+                        .weight(1f)
+                        .padding(start = 4.dp)
+                        .clickable {
+                            TimePickerDialog(
+                                context,
+                                { _, hour, minute ->
+                                    val currentDate = localDateTime.toLocalDate()
+                                    val newTime = LocalTime.of(hour, minute)
+                                    localDateTime = LocalDateTime.of(currentDate, newTime)
+                                    crearEventoViewModel.updateFechaHora(localDateTime)
+                                },
+                                localDateTime.hour,
+                                localDateTime.minute,
+                                true
+                            ).show()
+                        },
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFF2A2A2A))
+                ) {
+                    Text("⏰ $timeText", modifier = Modifier.padding(16.dp), color = Color.White)
+                }
             }
 
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(16.dp))
+            Text("Participantes", color = Color.White, fontWeight = FontWeight.Bold)
+            Card(
+                modifier = Modifier
+                    .width(200.dp)
+                    .align(Alignment.CenterHorizontally),
+                colors = CardDefaults.cardColors(containerColor = Color(0xFF1C1C1C)),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Row(
+                    modifier = Modifier.padding(12.dp),
+                    horizontalArrangement = Arrangement.SpaceEvenly,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    IconButton(onClick = {
+                        if (cantidad > 0) {
+                            cantidad--
+                            crearEventoViewModel.updateMaxParticipantes(cantidad)
+                        }
+                    }) {
+                        Icon(Icons.Default.Remove, contentDescription = null, tint = Color.White)
+                    }
+                    Text("$cantidad", color = Color.White, modifier = Modifier.padding(horizontal = 8.dp))
+                    IconButton(onClick = {
+                        cantidad++
+                        crearEventoViewModel.updateMaxParticipantes(cantidad)
+                    }) {
+                        Icon(Icons.Default.Add, contentDescription = null, tint = Color.White)
+                    }
+                }
+            }
 
-            Button(onClick = {
-                showConfirmDialog = true
-            }) {
-                Text("Confirmar evento")
+            Spacer(modifier = Modifier.height(16.dp))
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { Toast.makeText(context, "Funcionalidad a futuro", Toast.LENGTH_SHORT).show() },
+                colors = CardDefaults.cardColors(containerColor = Color(0xFF1C1C1C)),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Row(
+                    modifier = Modifier.padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(imageVector = Icons.Default.CreditCard, contentDescription = null, tint = Color.White)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Método de pago", color = Color.White)
+                }
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable {
+                        scope.launch {
+                            friendsViewModel.loadFriends()
+                            delay(100)
+                            navController.navigate(Screen.FriendSelector.route)
+                        }
+                    },
+                colors = CardDefaults.cardColors(containerColor = Color(0xFF1C1C1C)),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Row(
+                    modifier = Modifier.padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(imageVector = Icons.Default.Person, contentDescription = null, tint = Color.White)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Agregar amigos", color = Color.White)
+                }
+            }
+
+            Spacer(modifier = Modifier.height(12.dp))
+            Button(
+                onClick = { showConfirmDialog = true },
+                modifier = Modifier
+                    .fillMaxWidth(0.9f)
+                    .height(48.dp)
+                    .align(Alignment.CenterHorizontally),
+                colors = ButtonDefaults.buttonColors(containerColor = if (isFormValid) Color(0xFFCCCCCC) else Color.Gray),
+                shape = RoundedCornerShape(10.dp),
+                enabled = isFormValid
+            ) {
+                Text("Confirmar evento", color = Color.Black, fontFamily = FontFamily(Font(R.font.poppins_regular)))
             }
         }
     }
@@ -165,7 +277,13 @@ fun CrearEventoPaso2Screen(
     if (showConfirmDialog) {
         AlertDialog(
             onDismissRequest = { showConfirmDialog = false },
-            title = { Text("¿Estás seguro de confirmar?") },
+            title = {
+                Text(
+                    text = "¿Estás seguro de confirmar?",
+                    fontFamily = FontFamily(Font(R.font.poppins_regular)),
+                    fontWeight = FontWeight.SemiBold
+                )
+            },
             confirmButton = {
                 TextButton(onClick = {
                     val evento = crearEventoViewModel.armarEvento()
@@ -183,21 +301,30 @@ fun CrearEventoPaso2Screen(
                         showConfirmDialog = false
                     }
                 }) {
-                    Text("Sí")
+                    Text("Sí", fontFamily = FontFamily(Font(R.font.poppins_regular)))
                 }
             },
             dismissButton = {
-                TextButton(onClick = { showConfirmDialog = false }) {
-                    Text("Volver")
-                }
-                TextButton(onClick = {
-                    navController.navigate(Screen.Home.route) {
-                        popUpTo(0) { inclusive = true }
+                Row(modifier = Modifier.padding(horizontal = 8.dp)) {
+                    TextButton(onClick = { showConfirmDialog = false }) {
+                        Text("Volver", fontFamily = FontFamily(Font(R.font.poppins_regular)))
                     }
-                }) {
-                    Text("Cancelar")
+                    Spacer(modifier = Modifier.width(8.dp))
+                    TextButton(onClick = {
+                        navController.navigate(Screen.Home.route) {
+                            popUpTo(0) { inclusive = true }
+                        }
+                    }) {
+                        Text("Cancelar", fontFamily = FontFamily(Font(R.font.poppins_regular)))
+                    }
                 }
-            }
+            },
+            containerColor = Color(0xFF1C1C1C),
+            titleContentColor = Color.White,
+            textContentColor = Color.White
         )
     }
 }
+1.
+
+

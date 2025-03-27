@@ -73,6 +73,8 @@ dependencies {
 
     implementation(libs.material3)
     implementation(libs.androidx.material.icons.extended)
+    implementation (libs.androidx.core.ktx.v1120)
+    implementation(libs.coil.compose.v240)
 
 
     //firestore
