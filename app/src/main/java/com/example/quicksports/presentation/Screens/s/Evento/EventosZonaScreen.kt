@@ -5,6 +5,8 @@ import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -14,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.example.quicksports.presentation.Screens.BottomNavigationBar
 import com.example.quicksports.presentation.ViewModel.EventosZonaViewModel
@@ -22,7 +25,7 @@ import java.time.format.DateTimeFormatter
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun EventosZonaScreen(viewModel: EventosZonaViewModel = viewModel()) {
+fun EventosZonaScreen(viewModel: EventosZonaViewModel = viewModel(),  navController: NavController,) {
     val context = LocalContext.current
     val eventos = viewModel.eventosZona.collectAsState().value
 
@@ -40,7 +43,9 @@ fun EventosZonaScreen(viewModel: EventosZonaViewModel = viewModel()) {
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-                .padding(16.dp)
+            .verticalScroll(rememberScrollState())
+
+            .padding(16.dp)
                 .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {

@@ -85,11 +85,11 @@ fun Navigation() {
         }
 
         composable(Screen.TusEventos.route) {
-            TusEventosScreen()
+            TusEventosScreen(navController= navController)
         }
 
         composable(Screen.EventosZona.route) {
-            EventosZonaScreen()
+            EventosZonaScreen(navController= navController)
         }
 
         // Amistades
