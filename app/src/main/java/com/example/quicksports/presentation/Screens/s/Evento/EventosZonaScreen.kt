@@ -17,7 +17,6 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
 import com.example.quicksports.presentation.Screens.BottomNavigationBar
 import com.example.quicksports.presentation.ViewModel.EventosZonaViewModel
 import java.time.format.DateTimeFormatter
@@ -37,7 +36,7 @@ fun EventosZonaScreen(viewModel: EventosZonaViewModel = viewModel(),  navControl
             TopAppBar(title = { Text("Eventos de tu zona") })
         },
         bottomBar = {
-            BottomNavigationBar(navController = rememberNavController()) // Asegúrate de pasar tu NavController real
+            BottomNavigationBar(navController = navController) // Asegúrate de pasar tu NavController real
         }
     ) { innerPadding ->
         Column(

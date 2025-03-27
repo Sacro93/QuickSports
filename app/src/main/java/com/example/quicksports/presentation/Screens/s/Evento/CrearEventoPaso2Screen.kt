@@ -28,6 +28,7 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.quicksports.presentation.ViewModel.CrearEventoViewModel
@@ -98,11 +99,11 @@ fun CrearEventoPaso2Screen(
                     )
                 )
                 .padding(innerPadding)
-                .padding(horizontal = 16.dp),
+                .padding(horizontal = 16.dp, vertical = 8.dp),
         ) {
             Text(
                 text = "Confirmación de evento",
-                style = MaterialTheme.typography.titleLarge.copy(
+                style = MaterialTheme.typography.headlineSmall.copy(
                     color = Color.White,
                     fontWeight = FontWeight.Bold,
                     fontFamily = FontFamily(Font(R.font.poppins_regular))
@@ -134,7 +135,7 @@ fun CrearEventoPaso2Screen(
             }
 
             Spacer(modifier = Modifier.height(16.dp))
-            Text("Selecciona fecha y hora", color = Color.White, fontWeight = FontWeight.Bold)
+            Text("Selecciona fecha y hora", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
             Spacer(modifier = Modifier.height(8.dp))
 
             Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
@@ -185,16 +186,17 @@ fun CrearEventoPaso2Screen(
             }
 
             Spacer(modifier = Modifier.height(16.dp))
-            Text("Participantes", color = Color.White, fontWeight = FontWeight.Bold)
+            Text("Participantes", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+            Spacer(modifier = Modifier.height(6.dp))
             Card(
-                modifier = Modifier
-                    .width(200.dp)
-                    .align(Alignment.CenterHorizontally),
+                modifier = Modifier.width(160.dp),
                 colors = CardDefaults.cardColors(containerColor = Color(0xFF1C1C1C)),
                 shape = RoundedCornerShape(12.dp)
             ) {
                 Row(
-                    modifier = Modifier.padding(12.dp),
+                    modifier = Modifier
+                        .padding(12.dp)
+                        .fillMaxWidth(),
                     horizontalArrangement = Arrangement.SpaceEvenly,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -213,24 +215,6 @@ fun CrearEventoPaso2Screen(
                     }) {
                         Icon(Icons.Default.Add, contentDescription = null, tint = Color.White)
                     }
-                }
-            }
-
-            Spacer(modifier = Modifier.height(16.dp))
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { Toast.makeText(context, "Funcionalidad a futuro", Toast.LENGTH_SHORT).show() },
-                colors = CardDefaults.cardColors(containerColor = Color(0xFF1C1C1C)),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Row(
-                    modifier = Modifier.padding(16.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Icon(imageVector = Icons.Default.CreditCard, contentDescription = null, tint = Color.White)
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("Método de pago", color = Color.White)
                 }
             }
 
@@ -258,7 +242,25 @@ fun CrearEventoPaso2Screen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(12.dp))
+            Spacer(modifier = Modifier.height(16.dp))
+            Card(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .clickable { Toast.makeText(context, "Funcionalidad a futuro", Toast.LENGTH_SHORT).show() },
+                colors = CardDefaults.cardColors(containerColor = Color(0xFF1C1C1C)),
+                shape = RoundedCornerShape(12.dp)
+            ) {
+                Row(
+                    modifier = Modifier.padding(16.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(imageVector = Icons.Default.CreditCard, contentDescription = null, tint = Color.White)
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Método de pago", color = Color.White)
+                }
+            }
+
+            Spacer(modifier = Modifier.height(180.dp))
             Button(
                 onClick = { showConfirmDialog = true },
                 modifier = Modifier
@@ -271,6 +273,8 @@ fun CrearEventoPaso2Screen(
             ) {
                 Text("Confirmar evento", color = Color.Black, fontFamily = FontFamily(Font(R.font.poppins_regular)))
             }
+
+            //Spacer(modifier = Modifier.height(56.dp))
         }
     }
 
@@ -325,6 +329,3 @@ fun CrearEventoPaso2Screen(
         )
     }
 }
-1.
-
-
