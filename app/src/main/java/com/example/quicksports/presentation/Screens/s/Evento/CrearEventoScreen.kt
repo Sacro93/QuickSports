@@ -198,7 +198,7 @@ fun CrearEventoScreen(
             Spacer(modifier = Modifier.height(24.dp))
 
             Text(
-                text = if (selectedSport != null) "Centros disponibles para ${'$'}{selectedSport!!.name}" else "Todos los centros deportivos",
+                text = if (selectedSport != null) "Centros disponibles para ${selectedSport!!.name}" else "Todos los centros deportivos",
                 style = MaterialTheme.typography.titleLarge.copy(
                     color = Color.White,
                     fontWeight = FontWeight.Bold,
@@ -236,7 +236,8 @@ fun CrearEventoScreen(
                                 fontFamily = FontFamily(Font(R.font.poppins_regular))
                             )
                             Text(
-                                text = "Tel: ${'$'}{center.contactPhone}",
+                                text = "Tel: ${center.contactPhone}"
+                                ,
                                 color = Color.LightGray,
                                 style = MaterialTheme.typography.bodySmall,
                                 fontFamily = FontFamily(Font(R.font.poppins_regular))
@@ -244,7 +245,8 @@ fun CrearEventoScreen(
                             selectedSport?.id?.let { sportId ->
                                 center.sportPrices[sportId]?.let { price ->
                                     Text(
-                                        text = "Precio: €${'$'}price",
+                                        text = "Precio: €$price"
+                                        ,
                                         color = Color(0xFF64FFDA),
                                         style = MaterialTheme.typography.bodyMedium,
                                         fontFamily = FontFamily(Font(R.font.poppins_regular))
