@@ -1,14 +1,12 @@
 package com.example.quicksports.presentation.Screens.s.Profile
+import android.content.Context
 import android.os.Build
-import androidx.activity.compose.rememberLauncherForActivityResult
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -21,17 +19,18 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.quicksports.presentation.ViewModel.UserViewModel
-import android.net.Uri
+import com.example.quicksports.R
 import android.widget.Toast
+import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
-import coil.compose.AsyncImage
 import com.example.quicksports.presentation.Screens.BottomNavigationBar
+import androidx.core.content.edit
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -60,33 +59,16 @@ fun PerfilScreen(
         val userData = user!!
         val context = LocalContext.current
 
-        var profileImage by rememberSaveable { mutableStateOf<Uri?>(null) }
-
-        val launcher = rememberLauncherForActivityResult(
-            contract = ActivityResultContracts.GetContent()
-        ) { uri: Uri? ->
-            profileImage = uri
+        var selectedAvatar by rememberSaveable {
+            mutableIntStateOf(
+                context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+                    .getInt("selected_avatar", R.drawable.hombre)
+            )
         }
 
-        val userInitials = "${userData.name.firstOrNull() ?: ""}${userData.lastName.firstOrNull() ?: ""}".uppercase()
+        var showDialog by remember { mutableStateOf(false) }
 
         Scaffold(
-            topBar = {
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    contentAlignment = Alignment.TopStart
-                ) {
-                    IconButton(onClick = { navController.popBackStack() }) {
-                        Icon(
-                            imageVector = Icons.Default.ArrowBack,
-                            contentDescription = "Volver",
-                            tint = Color.White
-                        )
-                    }
-                }
-            },
             bottomBar = {
                 BottomNavigationBar(navController)
             },
@@ -98,37 +80,68 @@ fun PerfilScreen(
                     .verticalScroll(rememberScrollState())
                     .background(
                         Brush.verticalGradient(
-                            colors = listOf(Color(0xFF121212), Color(0xFF000000))
+                            colors = listOf(Color(0xFF0D47A1), Color(0xFF121212), Color(0xFF000000))
                         )
                     )
                     .padding(paddingValues)
                     .padding(horizontal = 24.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
-                Spacer(modifier = Modifier.height(60.dp))
+                Spacer(modifier = Modifier.height(90.dp))
 
                 Box(
                     modifier = Modifier
                         .size(100.dp)
                         .clip(CircleShape)
                         .background(Color.Gray.copy(alpha = 0.3f))
-                        .clickable { launcher.launch("image/*") },
+                        .clickable { showDialog = true },
                     contentAlignment = Alignment.Center
                 ) {
-                    if (profileImage != null) {
-                        AsyncImage(
-                            model = profileImage,
-                            contentDescription = "Profile Picture",
-                            modifier = Modifier.fillMaxSize().clip(CircleShape),
-                            contentScale = ContentScale.Crop
-                        )
-                    } else {
-                        Text(
-                            text = userInitials,
-                            style = MaterialTheme.typography.headlineSmall,
-                            color = Color.White
-                        )
-                    }
+                    Image(
+                        painter = painterResource(id = selectedAvatar),
+                        contentDescription = "Avatar Seleccionado",
+                        modifier = Modifier.fillMaxSize().clip(CircleShape)
+                    )
+                }
+
+                if (showDialog) {
+                    AlertDialog(
+                        onDismissRequest = { showDialog = false },
+                        title = { Text("Selecciona un avatar", color = Color.White) },
+                        containerColor = Color(0xFF1E1E1E),
+                        confirmButton = {},
+                        text = {
+                            Column {
+                                listOf(R.drawable.hombre, R.drawable.mujer).forEach { avatarRes ->
+                                    Row(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clickable {
+                                                selectedAvatar = avatarRes
+                                                context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+                                                    .edit() { putInt("selected_avatar", avatarRes) }
+                                                showDialog = false
+                                            }
+                                            .padding(12.dp),
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Image(
+                                            painter = painterResource(id = avatarRes),
+                                            contentDescription = null,
+                                            modifier = Modifier
+                                                .size(40.dp)
+                                                .clip(CircleShape)
+                                        )
+                                        Spacer(modifier = Modifier.width(12.dp))
+                                        Text(
+                                            if (avatarRes == R.drawable.hombre) "Avatar Hombre" else "Avatar Mujer",
+                                            color = Color.White
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
@@ -141,7 +154,7 @@ fun PerfilScreen(
 
                 Spacer(modifier = Modifier.height(4.dp))
                 Text(
-                    text = "@${userData.email}",
+                    text = userData.email,
                     color = Color.White.copy(alpha = 0.6f),
                     style = MaterialTheme.typography.bodyMedium
                 )
@@ -196,6 +209,7 @@ fun PerfilScreen(
         }
     }
 }
+
 
 
 
@@ -259,4 +273,76 @@ fun PerfilCardSection(items: List<Pair<String, () -> Unit>>) {
             }
         }
     }
+}
+
+
+
+@Composable
+fun AvatarSelector(
+    modifier: Modifier = Modifier,
+    @DrawableRes defaultAvatar: Int = R.drawable.hombre, // valor por defecto
+    avatarOptions: List<Int> = listOf(R.drawable.hombre, R.drawable.mujer)
+): Int {
+    val context = LocalContext.current
+    val prefs = remember { context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE) }
+    val savedAvatar = prefs.getInt("selected_avatar", defaultAvatar)
+
+    var selectedAvatar by remember { mutableIntStateOf(savedAvatar) }
+    var showDialog by remember { mutableStateOf(false) }
+
+    Box(
+        modifier = modifier
+            .size(100.dp)
+            .clip(CircleShape)
+            .background(Color.Gray.copy(alpha = 0.3f))
+            .clickable { showDialog = true },
+        contentAlignment = Alignment.Center
+    ) {
+        Image(
+            painter = painterResource(id = selectedAvatar),
+            contentDescription = "Avatar",
+            modifier = Modifier.fillMaxSize().clip(CircleShape)
+        )
+    }
+
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text("Selecciona un avatar", color = Color.White) },
+            containerColor = Color(0xFF1E1E1E),
+            confirmButton = {},
+            text = {
+                Column {
+                    avatarOptions.forEach { avatarRes ->
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    selectedAvatar = avatarRes
+                                    prefs.edit() { putInt("selected_avatar", avatarRes) }
+                                    showDialog = false
+                                }
+                                .padding(12.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Image(
+                                painter = painterResource(id = avatarRes),
+                                contentDescription = null,
+                                modifier = Modifier
+                                    .size(40.dp)
+                                    .clip(CircleShape)
+                            )
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Text(
+                                if (avatarRes == R.drawable.hombre) "Avatar Hombre" else "Avatar Mujer",
+                                color = Color.White
+                            )
+                        }
+                    }
+                }
+            }
+        )
+    }
+
+    return selectedAvatar
 }

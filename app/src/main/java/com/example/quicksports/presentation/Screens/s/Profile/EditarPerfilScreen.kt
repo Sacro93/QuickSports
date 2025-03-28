@@ -74,7 +74,7 @@ fun EditarPerfilScreen(
                 .verticalScroll(rememberScrollState())
                 .background(
                     Brush.verticalGradient(
-                        colors = listOf(Color(0xFF0D47A1), Color.Black)
+                        colors = listOf(Color(0xFF0D47A1), Color(0xFF000000))
                     )
                 )
                 .padding(paddingValues)
