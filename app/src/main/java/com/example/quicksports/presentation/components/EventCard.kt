@@ -19,6 +19,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.graphicsLayer
@@ -32,6 +33,41 @@ import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontStyle
 
+@Composable
+fun EventCard(
+    imageResId: Int,
+    title: String,
+    onClick: () -> Unit,
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier
+            .height(140.dp)
+            .clip(RoundedCornerShape(20.dp))
+            .clickable { onClick() },
+        elevation = CardDefaults.cardElevation(8.dp)
+    ) {
+        Box {
+            Image(
+                painter = painterResource(id = imageResId),
+                contentDescription = null,
+                contentScale = ContentScale.Crop,
+                modifier = Modifier.fillMaxSize()
+            )
+            Text(
+                text = title,
+                style = MaterialTheme.typography.titleMedium.copy(
+                    color = Color.White,
+                    fontWeight = FontWeight.Bold
+                ),
+                modifier = Modifier
+                    .align(Alignment.TopStart)
+                    .padding(12.dp)
+            )
+        }
+    }
+}
+/*
 @Composable
 fun EventCard(imageResId: Int, title: String, onClick: () -> Unit) {
     val interactionSource = remember { MutableInteractionSource() }
@@ -97,3 +133,4 @@ fun EventCard(imageResId: Int, title: String, onClick: () -> Unit) {
         }
     }
 }
+*/

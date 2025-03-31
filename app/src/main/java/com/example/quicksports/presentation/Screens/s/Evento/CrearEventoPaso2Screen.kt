@@ -126,7 +126,7 @@ fun CrearEventoPaso2Screen(
                     if (amigosInvitados.isNotEmpty()) {
                         Text("Amigos invitados:", color = Color.White, fontWeight = FontWeight.Bold)
                         amigosInvitados.forEach { amigo ->
-                            Text("• ${amigo.name})", color = Color.White)
+                            Text("• ${amigo.name}", color = Color.White)
                         }
                     } else {
                         Text("No se han seleccionado amigos.", color = Color.Gray)
@@ -274,7 +274,7 @@ fun CrearEventoPaso2Screen(
                 Text("Confirmar evento", color = Color.Black, fontFamily = FontFamily(Font(R.font.poppins_regular)))
             }
 
-            //Spacer(modifier = Modifier.height(56.dp))
+
         }
     }
 
