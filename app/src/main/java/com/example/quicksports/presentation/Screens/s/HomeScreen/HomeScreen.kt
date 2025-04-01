@@ -58,7 +58,7 @@ fun HomeScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(56.dp))
             QuickSportsTitle()
-            Spacer(modifier = Modifier.height(85.dp))
+            Spacer(modifier = Modifier.height(75.dp))
 
             CarouselPublicidadRes(
                 images = listOf(
@@ -69,7 +69,7 @@ fun HomeScreen(navController: NavController) {
             )
 
 
-            Spacer(modifier = Modifier.height(100.dp))
+            Spacer(modifier = Modifier.height(90.dp))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),

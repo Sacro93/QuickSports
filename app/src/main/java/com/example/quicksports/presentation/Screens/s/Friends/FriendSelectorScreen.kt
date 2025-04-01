@@ -20,19 +20,15 @@ import com.example.quicksports.presentation.ViewModel.CrearEventoViewModel
 import com.example.quicksports.presentation.ViewModel.FriendsViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import com.example.quicksports.R
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
@@ -58,8 +54,9 @@ fun FriendSelectorScreen(
     var searchQuery by remember { mutableStateOf("") }
     val filteredFriends = friends.filter { it.name.contains(searchQuery, ignoreCase = true) }
 
-    val isFormValid = selectedFriends.isNotEmpty()
-
+    val isFormValid by remember {
+        derivedStateOf { selectedFriends.isNotEmpty() }
+    }
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -218,7 +215,7 @@ fun FriendSelectorScreen(
                 shape = RoundedCornerShape(10.dp),
                 enabled = isFormValid
             ) {
-                Text("Confirmar selección", fontFamily = FontFamily(Font(R.font.poppins_regular)))
+                Text("Confirmar selección")
             }
         }
     }

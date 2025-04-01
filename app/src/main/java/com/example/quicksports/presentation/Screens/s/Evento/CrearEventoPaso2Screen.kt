@@ -64,7 +64,7 @@ fun CrearEventoPaso2Screen(
 
     var localDateTime by remember { mutableStateOf(fechaHora ?: LocalDateTime.now()) }
     var showConfirmDialog by remember { mutableStateOf(false) }
-    var cantidad by remember { mutableStateOf(maxParticipantes.takeIf { it > 0 } ?: 0) }
+    var cantidad by remember { mutableIntStateOf(maxParticipantes.takeIf { it > 0 } ?: 0) }
 
     val dateText = remember(localDateTime) { localDateTime.toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) }
     val timeText = remember(localDateTime) { localDateTime.toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm")) }
@@ -95,7 +95,10 @@ fun CrearEventoPaso2Screen(
                 .verticalScroll(rememberScrollState())
                 .background(
                     Brush.verticalGradient(
-                        colors = listOf(Color(0xFF4B5320), Color.Black)
+                        colors = listOf( Color(0xFF355C7D),
+                            Color(0xFF2A4D65),
+                            Color(0xFF1F3B4D),
+                            Color(0xFF152C3A))
                     )
                 )
                 .padding(innerPadding)
@@ -106,7 +109,6 @@ fun CrearEventoPaso2Screen(
                 style = MaterialTheme.typography.headlineSmall.copy(
                     color = Color.White,
                     fontWeight = FontWeight.Bold,
-                    fontFamily = FontFamily(Font(R.font.poppins_regular))
                 ),
                 modifier = Modifier.padding(bottom = 16.dp)
             )
@@ -118,10 +120,10 @@ fun CrearEventoPaso2Screen(
             ) {
                 Column(modifier = Modifier.padding(16.dp)) {
                     selectedSport?.let {
-                        Text("Deporte: ${it.name}", color = Color.White, fontFamily = FontFamily(Font(R.font.poppins_regular)))
+                        Text("Deporte: ${it.name}", color = Color.White)
                     }
                     selectedCenter?.let {
-                        Text("Centro: ${it.name}", color = Color.White, fontFamily = FontFamily(Font(R.font.poppins_regular)))
+                        Text("Centro: ${it.name}", color = Color.White)
                     }
                     if (amigosInvitados.isNotEmpty()) {
                         Text("Amigos invitados:", color = Color.White, fontWeight = FontWeight.Bold)
@@ -271,7 +273,7 @@ fun CrearEventoPaso2Screen(
                 shape = RoundedCornerShape(10.dp),
                 enabled = isFormValid
             ) {
-                Text("Confirmar evento", color = Color.Black, fontFamily = FontFamily(Font(R.font.poppins_regular)))
+                Text("Confirmar evento", color = Color.Black)
             }
 
 
@@ -284,7 +286,6 @@ fun CrearEventoPaso2Screen(
             title = {
                 Text(
                     text = "¿Estás seguro de confirmar?",
-                    fontFamily = FontFamily(Font(R.font.poppins_regular)),
                     fontWeight = FontWeight.SemiBold
                 )
             },
@@ -311,7 +312,7 @@ fun CrearEventoPaso2Screen(
             dismissButton = {
                 Row(modifier = Modifier.padding(horizontal = 8.dp)) {
                     TextButton(onClick = { showConfirmDialog = false }) {
-                        Text("Volver", fontFamily = FontFamily(Font(R.font.poppins_regular)))
+                        Text("Volver")
                     }
                     Spacer(modifier = Modifier.width(8.dp))
                     TextButton(onClick = {
@@ -319,7 +320,7 @@ fun CrearEventoPaso2Screen(
                             popUpTo(0) { inclusive = true }
                         }
                     }) {
-                        Text("Cancelar", fontFamily = FontFamily(Font(R.font.poppins_regular)))
+                        Text("Cancelar")
                     }
                 }
             },

@@ -45,10 +45,10 @@ fun CentrosScreen(
             centros.filter { it.sportPrices.containsKey(deporteId) }
         } ?: centros
     }
-
+//boton no se combina con fondo
     Scaffold(
         bottomBar = { BottomNavigationBar(navController) },
-        containerColor = Color.Transparent
+        containerColor = Color(0xFF000000)
     ) { innerPadding ->
         Column(
             modifier = Modifier

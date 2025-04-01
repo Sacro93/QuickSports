@@ -111,7 +111,10 @@ fun CrearEventoScreen(
                 .fillMaxSize()
                 .background(
                     Brush.verticalGradient(
-                        colors = listOf(Color(0xFF4B5320), Color.Black)
+                        colors = listOf( Color(0xFF355C7D),
+                            Color(0xFF2A4D65),
+                            Color(0xFF1F3B4D),
+                            Color(0xFF152C3A))
                     )
                 )
                 .padding(innerPadding)

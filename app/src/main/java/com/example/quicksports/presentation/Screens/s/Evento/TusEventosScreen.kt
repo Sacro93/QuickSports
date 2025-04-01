@@ -11,6 +11,8 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -25,7 +27,6 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.quicksports.presentation.Screens.BottomNavigationBar
 import java.time.format.DateTimeFormatter
 import com.example.quicksports.R
 
@@ -36,33 +37,42 @@ fun TusEventosScreen(viewModel: TusEventosViewModel = viewModel(), navController
     val context = LocalContext.current
     val eventos by viewModel.eventos.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
-    var eventoAEliminarIndex by remember { mutableStateOf(-1) }
+    var eventoAEliminarIndex by remember { mutableIntStateOf(-1) }
+
+    val backgroundGradient = Brush.verticalGradient(
+        colors = listOf(
+            Color(0xFF355C7D),
+            Color(0xFF2A4D65),
+            Color(0xFF1F3B4D),
+            Color(0xFF152C3A)
+        )
+    )
 
     Scaffold(
-        bottomBar = { BottomNavigationBar(navController) },
-        containerColor = Color.Transparent,
         topBar = {
             TopAppBar(
-                title = {
-                    Text(
-                        text = "Tus eventos",
-                        fontFamily = FontFamily(Font(R.font.poppins_regular)),
-                        fontWeight = FontWeight.Bold,
-                        color = Color.White
-                    )
+                title = { Text("Tus eventos", color = Color.White) },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Volver",
+                            tint = Color.White
+                        )
+                    }
                 },
-                colors = TopAppBarDefaults.topAppBarColors(containerColor = Color.Transparent)
+                colors = TopAppBarDefaults.topAppBarColors(
+                    containerColor = Color.Transparent
+                ),
+                modifier = Modifier.background(backgroundGradient)
             )
-        }
+        },
+        containerColor = Color.Transparent
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
-                .background(
-                    Brush.verticalGradient(
-                        colors = listOf(Color(0xFF4B5320), Color.Black)
-                    )
-                )
+                .background(backgroundGradient)
                 .padding(innerPadding)
                 .padding(16.dp)
         ) {
@@ -70,7 +80,6 @@ fun TusEventosScreen(viewModel: TusEventosViewModel = viewModel(), navController
                 Text(
                     "Aún no has creado ningún evento.",
                     color = Color.White,
-                    fontFamily = FontFamily(Font(R.font.poppins_regular))
                 )
             } else {
                 LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
@@ -88,9 +97,8 @@ fun TusEventosScreen(viewModel: TusEventosViewModel = viewModel(), navController
                                 ) {
                                     Text(
                                         "Deporte: ${evento.deporte.name}",
-                                        style = MaterialTheme.typography.titleMedium,
+                                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                                         color = Color.White,
-                                        fontFamily = FontFamily(Font(R.font.poppins_regular))
                                     )
                                     IconButton(onClick = {
                                         eventoAEliminarIndex = index
@@ -107,62 +115,60 @@ fun TusEventosScreen(viewModel: TusEventosViewModel = viewModel(), navController
                                 Text("Dirección: ${evento.centro.address}", color = Color.LightGray)
                                 Text("Teléfono centro: ${evento.centro.contactPhone}", color = Color.LightGray)
                                 Text(
-                                    "Fecha y hora: ${evento.fechaHora.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))}",
+                                    text = "Fecha y hora: ${evento.fechaHora.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))}",
                                     color = Color.LightGray
                                 )
-                                Text("Máx. participantes: ${evento.maxParticipantes}", color = Color.LightGray)
+                                            Text("Máx. participantes: ${evento.maxParticipantes}", color = Color.LightGray)
 
-                                Spacer(modifier = Modifier.height(8.dp))
+                                        Spacer(modifier = Modifier.height(8.dp))
 
-                                if (evento.amigosInvitados.isNotEmpty()) {
-                                    Text(
-                                        "Amigos invitados:",
-                                        style = MaterialTheme.typography.titleMedium,
-                                        color = Color.White,
-                                        fontFamily = FontFamily(Font(R.font.poppins_regular))
-                                    )
-                                    evento.amigosInvitados.forEach {
-                                        Text("- ${it.name} (${it.phone})", color = Color.White)
+                                        if (evento.amigosInvitados.isNotEmpty()) {
+                                            Text(
+                                                "Amigos invitados:",
+                                                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                                                color = Color.White,
+                                            )
+                                            evento.amigosInvitados.forEach {
+                                                Text("- ${it.name} (Contacto: +34 ${it.phone})", color = Color.White)
+                                            }
+                                        } else {
+                                            Text("Sin amigos invitados.", color = Color.Gray)
+                                        }
                                     }
-                                } else {
-                                    Text("Sin amigos invitados.", color = Color.Gray)
-                                }
                             }
                         }
                     }
                 }
             }
         }
-    }
 
-    if (showDialog && eventoAEliminarIndex != -1) {
-        AlertDialog(
-            onDismissRequest = { showDialog = false },
-            title = {
-                Text("Eliminar evento", fontFamily = FontFamily(Font(R.font.poppins_regular)))
-            },
-            text = {
-                Text("¿Estás seguro de que quieres eliminar este evento?", fontFamily = FontFamily(Font(R.font.poppins_regular)))
-            },
-            confirmButton = {
-                TextButton(onClick = {
-                    viewModel.eliminarEvento(eventoAEliminarIndex)
-                    Toast.makeText(context, "Evento eliminado", Toast.LENGTH_SHORT).show()
-                    showDialog = false
-                }) {
-                    Text("Sí", fontFamily = FontFamily(Font(R.font.poppins_regular)))
-                }
-            },
-            dismissButton = {
-                TextButton(onClick = {
-                    showDialog = false
-                }) {
-                    Text("Cancelar", fontFamily = FontFamily(Font(R.font.poppins_regular)))
-                }
-            },
-            containerColor = Color(0xFF1C1C1C),
-            titleContentColor = Color.White,
-            textContentColor = Color.White
-        )
+        if (showDialog && eventoAEliminarIndex != -1) {
+            AlertDialog(
+                onDismissRequest = { showDialog = false },
+                title = {
+                    Text("Eliminar evento")
+                },
+                text = {
+                    Text("¿Estás seguro de que quieres eliminar este evento?")
+                },
+                confirmButton = {
+                    TextButton(onClick = {
+                        viewModel.eliminarEvento(eventoAEliminarIndex)
+                        Toast.makeText(context, "Evento eliminado", Toast.LENGTH_SHORT).show()
+                        showDialog = false
+                    }) {
+                        Text("Sí", fontFamily = FontFamily(Font(R.font.poppins_regular)))
+                    }
+                },
+                dismissButton = {
+                    TextButton(onClick = {
+                        showDialog = false
+                    }) {
+                        Text("Cancelar")                    }
+                },
+                containerColor = Color(0xFF1C1C1C),
+                titleContentColor = Color.White,
+                textContentColor = Color.White
+            )
+        }
     }
-}

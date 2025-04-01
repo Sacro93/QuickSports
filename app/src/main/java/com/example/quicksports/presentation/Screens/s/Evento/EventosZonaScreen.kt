@@ -7,6 +7,8 @@ import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -24,28 +26,35 @@ import java.time.format.DateTimeFormatter
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun EventosZonaScreen(viewModel: EventosZonaViewModel = viewModel(),  navController: NavController,) {
+fun EventosZonaScreen(viewModel: EventosZonaViewModel = viewModel(), navController: NavController) {
     val context = LocalContext.current
     val eventos = viewModel.eventosZona.collectAsState().value
 
-    // Estado local para saber a qué eventos ya se envió solicitud
     val solicitudesEnviadas = remember { mutableStateMapOf<Int, Boolean>() }
 
     Scaffold(
         topBar = {
-            TopAppBar(title = { Text("Eventos de tu zona") })
+            TopAppBar(
+                title = { Text("Eventos de tu zona") },
+                navigationIcon = {
+                    IconButton(onClick = { navController.popBackStack() }) {
+                        Icon(
+                            imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                            contentDescription = "Volver"
+                        )
+                    }
+                }
+            )
         },
-        bottomBar = {
-            BottomNavigationBar(navController = navController) // Asegúrate de pasar tu NavController real
-        }
+        containerColor = MaterialTheme.colorScheme.background
     ) { innerPadding ->
         Column(
             modifier = Modifier
                 .padding(innerPadding)
-            .verticalScroll(rememberScrollState())
-
-            .padding(16.dp)
+                .verticalScroll(rememberScrollState())
+                .padding(16.dp)
                 .fillMaxSize(),
+
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             eventos.forEach { evento ->
@@ -62,17 +71,18 @@ fun EventosZonaScreen(viewModel: EventosZonaViewModel = viewModel(),  navControl
                         Text("Organizador: ${evento.creador}")
                         Text("Fecha y hora: ${evento.fechaHora.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))}")
 
-                        Spacer(modifier = Modifier.height(8.dp))
+                                Spacer(modifier = Modifier.height(8.dp))
 
-                        Button(
-                            onClick = {
-                                solicitudesEnviadas[evento.hashCode()] = true
-                                Toast.makeText(context, "Solicitud enviada", Toast.LENGTH_SHORT).show()
-                            },
+                                Button(
+                                onClick = {
+                                    solicitudesEnviadas[evento.hashCode()] = true
+                                    Toast.makeText(context, "Solicitud enviada", Toast.LENGTH_SHORT).show()
+                                },
                             enabled = !solicitudEnviada
-                        ) {
-                            Text(if (solicitudEnviada) "Solicitud enviada" else "Unirme")
-                        }
+                            ) {
+                                Text(if (solicitudEnviada) "Solicitud enviada" else "Unirme")
+                            }
+
                     }
                 }
             }
