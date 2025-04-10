@@ -29,6 +29,7 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import java.time.format.DateTimeFormatter
 import com.example.quicksports.R
+import com.example.quicksports.presentation.components.EstadoConfirmacionEvento
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
@@ -135,7 +136,15 @@ fun TusEventosScreen(viewModel: TusEventosViewModel = viewModel(), navController
                                             Text("Sin amigos invitados.", color = Color.Gray)
                                         }
                                     }
+                            Spacer(modifier = Modifier.height(8.dp))
+
+                            EstadoConfirmacionEvento(
+                                creationTime = evento.creationTime,
+                                centerPhone = evento.centro.contactPhone
+                            )
                             }
+
+
                         }
                     }
                 }

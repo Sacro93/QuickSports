@@ -30,6 +30,8 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import com.example.quicksports.data.SafeAvatarImage
+
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -145,13 +147,8 @@ fun FriendSelectorScreen(
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Image(
-                                        painter = painterResource(id = friend.avatar),
-                                        contentDescription = null,
-                                        modifier = Modifier
-                                            .size(48.dp)
-                                            .clip(CircleShape)
-                                    )
+                                    SafeAvatarImage(friend.avatar)
+
                                     Spacer(modifier = Modifier.width(12.dp))
                                     Column {
                                         Text(

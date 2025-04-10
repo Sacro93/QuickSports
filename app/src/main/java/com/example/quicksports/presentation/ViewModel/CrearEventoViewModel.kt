@@ -1,5 +1,7 @@
 package com.example.quicksports.presentation.ViewModel
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.quicksports.data.repository.CenterRepository
@@ -61,6 +63,7 @@ class CrearEventoViewModel : ViewModel() {
         _amigosInvitados.value = lista
     }
 
+    @RequiresApi(Build.VERSION_CODES.O)
     fun armarEvento(): Evento? {
         val deporte = _selectedSport.value
         val centro = _selectedCenter.value
@@ -72,12 +75,14 @@ class CrearEventoViewModel : ViewModel() {
                 centro = centro,
                 fechaHora = fecha,
                 maxParticipantes = _maxParticipantes.value,
-                amigosInvitados = _amigosInvitados.value
+                amigosInvitados = _amigosInvitados.value,
+                creationTime = LocalDateTime.now()
             )
         } else {
             null
         }
     }
+
 
     fun isCentroSeleccionado(center: Center): Boolean {
         return _selectedCenter.value?.id == center.id

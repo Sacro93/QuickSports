@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.quicksports.data.SafeAvatarImage
 import com.example.quicksports.data.models.Friend
 import com.example.quicksports.presentation.Screens.BottomNavigationBar
 
@@ -123,13 +124,9 @@ fun AmistadesScreen(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Image(
-                                painter = painterResource(id = friend.avatar),
-                                contentDescription = null,
-                                modifier = Modifier
-                                    .size(48.dp)
-                                    .clip(CircleShape)
-                            )
+                            SafeAvatarImage(friend.avatar)
+
+
                             Spacer(modifier = Modifier.width(12.dp))
                             Column {
                                 Text(

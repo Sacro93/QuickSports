@@ -62,7 +62,7 @@ fun PerfilScreen(
         var selectedAvatar by rememberSaveable {
             mutableIntStateOf(
                 context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-                    .getInt("selected_avatar", R.drawable.hombre_2)
+                    .getInt("selected_avatar", R.drawable.hombre)
             )
         }
 
@@ -234,7 +234,7 @@ fun PerfilCardSection(items: List<Pair<String, () -> Unit>>) {
 fun AvatarSelector(
     selectedAvatar: Int,
     onAvatarSelected: (Int) -> Unit,
-    avatarOptions: List<Int> = listOf(R.drawable.hombre_2, R.drawable.mujer_2)
+    avatarOptions: List<Int> = listOf(R.drawable.hombre, R.drawable.mujer_2)
 ) {
     val context = LocalContext.current
     var showDialog by remember { mutableStateOf(false) }

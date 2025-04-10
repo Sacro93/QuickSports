@@ -276,7 +276,7 @@ fun CrearEventoPaso2Screen(
             )
 
 
-            Spacer(modifier = Modifier.height(180.dp))
+            Spacer(modifier = Modifier.height(90.dp))
             Button(
                 onClick = { showConfirmDialog = true },
                 modifier = Modifier
