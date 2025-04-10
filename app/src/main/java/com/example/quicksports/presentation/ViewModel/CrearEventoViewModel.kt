@@ -42,6 +42,7 @@ class CrearEventoViewModel : ViewModel() {
 
     fun selectSport(sport: Sport) {
         _selectedSport.value = sport
+        _selectedCenter.value = null
     }
 
     fun selectCenter(center: Center) {
@@ -81,4 +82,13 @@ class CrearEventoViewModel : ViewModel() {
     fun isCentroSeleccionado(center: Center): Boolean {
         return _selectedCenter.value?.id == center.id
     }
+
+    fun reset() {
+        _selectedSport.value = null
+        _selectedCenter.value = null
+        _fechaHora.value = null
+        _maxParticipantes.value = 0
+        _amigosInvitados.value = emptyList()
+    }
+
 }

@@ -62,11 +62,9 @@ fun PerfilScreen(
         var selectedAvatar by rememberSaveable {
             mutableIntStateOf(
                 context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-                    .getInt("selected_avatar", R.drawable.hombre)
+                    .getInt("selected_avatar", R.drawable.hombre_2)
             )
         }
-
-        var showDialog by remember { mutableStateOf(false) }
 
         Scaffold(
             bottomBar = {
@@ -89,60 +87,11 @@ fun PerfilScreen(
             ) {
                 Spacer(modifier = Modifier.height(90.dp))
 
-                Box(
-                    modifier = Modifier
-                        .size(100.dp)
-                        .clip(CircleShape)
-                        .background(Color.Gray.copy(alpha = 0.3f))
-                        .clickable { showDialog = true },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Image(
-                        painter = painterResource(id = selectedAvatar),
-                        contentDescription = "Avatar Seleccionado",
-                        modifier = Modifier.fillMaxSize().clip(CircleShape)
-                    )
-                }
-
-                if (showDialog) {
-                    AlertDialog(
-                        onDismissRequest = { showDialog = false },
-                        title = { Text("Selecciona un avatar", color = Color.White) },
-                        containerColor = Color(0xFF1E1E1E),
-                        confirmButton = {},
-                        text = {
-                            Column {
-                                listOf(R.drawable.hombre, R.drawable.mujer).forEach { avatarRes ->
-                                    Row(
-                                        modifier = Modifier
-                                            .fillMaxWidth()
-                                            .clickable {
-                                                selectedAvatar = avatarRes
-                                                context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
-                                                    .edit() { putInt("selected_avatar", avatarRes) }
-                                                showDialog = false
-                                            }
-                                            .padding(12.dp),
-                                        verticalAlignment = Alignment.CenterVertically
-                                    ) {
-                                        Image(
-                                            painter = painterResource(id = avatarRes),
-                                            contentDescription = null,
-                                            modifier = Modifier
-                                                .size(40.dp)
-                                                .clip(CircleShape)
-                                        )
-                                        Spacer(modifier = Modifier.width(12.dp))
-                                        Text(
-                                            if (avatarRes == R.drawable.hombre) "Avatar Hombre" else "Avatar Mujer",
-                                            color = Color.White
-                                        )
-                                    }
-                                }
-                            }
-                        }
-                    )
-                }
+                // AVATAR SELECTOR USANDO COMPONENTE PERSONALIZADO
+                AvatarSelector(
+                    selectedAvatar = selectedAvatar,
+                    onAvatarSelected = { selectedAvatar = it }
+                )
 
                 Spacer(modifier = Modifier.height(12.dp))
 
@@ -166,11 +115,15 @@ fun PerfilScreen(
                     horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
                     PerfilInfoBox(title = "Plan Premium", subtitle = "Tu plan", modifier = Modifier.weight(1f))
-                    PerfilInfoBox(title = "Invitaciones", subtitle = "3 activas", modifier = Modifier
-                        .weight(1f)
-                        .clickable {
-                            Toast.makeText(context, "Funcionalidad próximamente", Toast.LENGTH_SHORT).show()
-                        })
+                    PerfilInfoBox(
+                        title = "Invitaciones",
+                        subtitle = "3 activas",
+                        modifier = Modifier
+                            .weight(1f)
+                            .clickable {
+                                Toast.makeText(context, "Funcionalidad próximamente", Toast.LENGTH_SHORT).show()
+                            }
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -279,19 +232,15 @@ fun PerfilCardSection(items: List<Pair<String, () -> Unit>>) {
 
 @Composable
 fun AvatarSelector(
-    modifier: Modifier = Modifier,
-    @DrawableRes defaultAvatar: Int = R.drawable.hombre, // valor por defecto
-    avatarOptions: List<Int> = listOf(R.drawable.hombre, R.drawable.mujer)
-): Int {
+    selectedAvatar: Int,
+    onAvatarSelected: (Int) -> Unit,
+    avatarOptions: List<Int> = listOf(R.drawable.hombre_2, R.drawable.mujer_2)
+) {
     val context = LocalContext.current
-    val prefs = remember { context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE) }
-    val savedAvatar = prefs.getInt("selected_avatar", defaultAvatar)
-
-    var selectedAvatar by remember { mutableIntStateOf(savedAvatar) }
     var showDialog by remember { mutableStateOf(false) }
 
     Box(
-        modifier = modifier
+        modifier = Modifier
             .size(100.dp)
             .clip(CircleShape)
             .background(Color.Gray.copy(alpha = 0.3f))
@@ -318,8 +267,9 @@ fun AvatarSelector(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
-                                    selectedAvatar = avatarRes
-                                    prefs.edit() { putInt("selected_avatar", avatarRes) }
+                                    context.getSharedPreferences("user_prefs", Context.MODE_PRIVATE)
+                                        .edit() { putInt("selected_avatar", avatarRes) }
+                                    onAvatarSelected(avatarRes)
                                     showDialog = false
                                 }
                                 .padding(12.dp),
@@ -343,6 +293,4 @@ fun AvatarSelector(
             }
         )
     }
-
-    return selectedAvatar
 }

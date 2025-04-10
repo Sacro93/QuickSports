@@ -42,6 +42,7 @@ import com.example.quicksports.presentation.ViewModel.FriendsViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import com.example.quicksports.R
+import com.example.quicksports.presentation.components.CuentaRegresivaConCancelacion
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
@@ -248,7 +249,7 @@ fun CrearEventoPaso2Screen(
             Card(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .clickable { Toast.makeText(context, "Funcionalidad a futuro", Toast.LENGTH_SHORT).show() },
+                    .clickable { Toast.makeText(context, "Proximamente", Toast.LENGTH_SHORT).show() },
                 colors = CardDefaults.cardColors(containerColor = Color(0xFF1C1C1C)),
                 shape = RoundedCornerShape(12.dp)
             ) {
@@ -261,6 +262,19 @@ fun CrearEventoPaso2Screen(
                     Text("Método de pago", color = Color.White)
                 }
             }
+            Spacer(modifier = Modifier.height(30.dp))
+
+            CuentaRegresivaConCancelacion(
+                centerPhone = selectedCenter?.contactPhone ?: "el centro",
+                onTimeout = {
+                    crearEventoViewModel.reset()
+                    Toast.makeText(context, "Tiempo expirado. Evento cancelado.", Toast.LENGTH_LONG).show()
+                    navController.navigate(Screen.Home.route) {
+                        popUpTo(0) { inclusive = true }
+                    }
+                }
+            )
+
 
             Spacer(modifier = Modifier.height(180.dp))
             Button(

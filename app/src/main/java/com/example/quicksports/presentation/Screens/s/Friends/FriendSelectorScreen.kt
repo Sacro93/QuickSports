@@ -54,9 +54,8 @@ fun FriendSelectorScreen(
     var searchQuery by remember { mutableStateOf("") }
     val filteredFriends = friends.filter { it.name.contains(searchQuery, ignoreCase = true) }
 
-    val isFormValid by remember {
-        derivedStateOf { selectedFriends.isNotEmpty() }
-    }
+    val hasSelection = selectedFriends.isNotEmpty()
+
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -119,6 +118,15 @@ fun FriendSelectorScreen(
                             cursorColor = Color.White
                         )
                     )
+
+                    if (friends.isNotEmpty()) {
+                        Text(
+                            text = "Amigos seleccionados: ${selectedFriends.size}",
+                            color = Color.White.copy(alpha = 0.7f),
+                            style = MaterialTheme.typography.bodyMedium,
+                            modifier = Modifier.align(Alignment.Start)
+                        )
+                    }
 
                     LazyColumn(
                         modifier = Modifier.weight(1f),
@@ -188,6 +196,7 @@ fun FriendSelectorScreen(
             }
         )
 
+        // Botón de confirmación
         Box(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -198,7 +207,7 @@ fun FriendSelectorScreen(
                 onClick = {
                     val amigosSeleccionados = friends.filter { selectedFriends.contains(it.phone) }
                     crearEventoViewModel.updateAmigosInvitados(amigosSeleccionados)
-                    Toast.makeText(context, "Amigos guardados", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(context, "Amigos actualizados", Toast.LENGTH_SHORT).show()
                     scope.launch {
                         delay(800)
                         navController.popBackStack()
@@ -208,12 +217,11 @@ fun FriendSelectorScreen(
                     .fillMaxWidth(0.9f)
                     .height(48.dp),
                 colors = ButtonDefaults.buttonColors(
-                    containerColor = Color.White.copy(alpha = 0.12f),
-                    contentColor = Color.White,
-                    disabledContainerColor = Color.White.copy(alpha = 0.08f)
+                    containerColor = if (hasSelection) Color(0xFF64FFDA) else Color.Gray,
+                    contentColor = if (hasSelection) Color.Black else Color.White
                 ),
                 shape = RoundedCornerShape(10.dp),
-                enabled = isFormValid
+                enabled = true
             ) {
                 Text("Confirmar selección")
             }
