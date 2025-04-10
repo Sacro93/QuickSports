@@ -1,6 +1,8 @@
 package com.example.quicksports.presentation.ViewModel
 
 import android.app.Application
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.quicksports.data.repository.EventoRepository
@@ -10,6 +12,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 
 
+@RequiresApi(Build.VERSION_CODES.O)
 class TusEventosViewModel(application: Application) : AndroidViewModel(application) {
     private val repository = EventoRepository(application.applicationContext)
 

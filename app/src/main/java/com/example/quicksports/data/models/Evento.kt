@@ -10,5 +10,7 @@ data class Evento(
     val centro: Center,
     @Contextual  val fechaHora: LocalDateTime,
     val maxParticipantes: Int,
-    val amigosInvitados: List<Friend> = emptyList()
+    val amigosInvitados: List<Friend> = emptyList(),
+    val creationTime: Long = System.currentTimeMillis()
+
 )
