@@ -1,4 +1,5 @@
 package com.example.quicksports.presentation.Screens.s.Friends
+
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -25,6 +26,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.Delete
@@ -33,33 +35,47 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import com.example.quicksports.data.SafeAvatarImage
 import com.example.quicksports.data.models.Friend
 import com.example.quicksports.presentation.Screens.BottomNavigationBar
+import com.example.quicksports.presentation.ViewModel.SportsViewModel
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AmistadesScreen(
     navController: NavController,
-    friendsViewModel: FriendsViewModel = viewModel()
+    friendsViewModel: FriendsViewModel = viewModel(),
+    sportsViewModel: SportsViewModel = viewModel()
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
     val allFriends by friendsViewModel.friends.collectAsState()
+    val sports by sportsViewModel.sports.collectAsState()
+
     var searchQuery by remember { mutableStateOf("") }
     val filteredFriends = allFriends.filter { it.name.contains(searchQuery, ignoreCase = true) }
 
     var friendToDelete by remember { mutableStateOf<Friend?>(null) }
     val addedFriends = remember { mutableStateListOf<String>() }
 
+    LaunchedEffect(Unit) {
+        sportsViewModel.loadSportsIfEmpty()
+    }
+
+    // Mostrar loader si aún no se cargaron los deportes
+    if (sports.isEmpty()) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator(color = Color.White)
+        }
+        return
+    }
+
     Scaffold(
         bottomBar = {
-            BottomNavigationBar(
-                navController,
-                containerColor = Color(0xAA0F1D20)
-            )
+            BottomNavigationBar(navController, containerColor = Color(0xAA0F1D20))
         },
         containerColor = Color.Transparent
     ) { innerPadding ->
@@ -96,6 +112,7 @@ fun AmistadesScreen(
                 onValueChange = { searchQuery = it },
                 label = { Text("Buscar por nombre o apellido") },
                 modifier = Modifier.fillMaxWidth(),
+                keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                 colors = OutlinedTextFieldDefaults.colors(
                     focusedTextColor = Color.White,
                     unfocusedTextColor = Color.White,
@@ -109,108 +126,127 @@ fun AmistadesScreen(
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            LazyColumn(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                items(filteredFriends) { friend ->
-                    val isAdded = addedFriends.contains(friend.phone)
-                    val canSendRequest = friend.name.startsWith("Valentina") || friend.name.startsWith("Tamara")
+            if (sports.isEmpty()) {
+                Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    CircularProgressIndicator(color = Color.White)
+                }
+            } else {
+                LazyColumn(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    items(filteredFriends) { friend ->
+                        val isAdded = addedFriends.contains(friend.phone)
+                        val canSendRequest =
+                            friend.name.startsWith("Valentina") || friend.name.startsWith("Tamara")
 
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .clip(RoundedCornerShape(12.dp))
-                            .background(Color.White.copy(alpha = 0.05f))
-                            .padding(12.dp),
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.SpaceBetween
-                    ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            SafeAvatarImage(friend.avatar)
+                        val deportesNombres = friend.deportesFavoritos
+                            .mapNotNull { id -> sports.find { it.id == id }?.name }
+                            .joinToString(", ")
 
-
-                            Spacer(modifier = Modifier.width(12.dp))
-                            Column {
-                                Text(
-                                    text = friend.name,
-                                    style = MaterialTheme.typography.bodyLarge.copy(
-                                        color = Color.White,
-                                        fontWeight = FontWeight.Medium
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(12.dp))
+                                .background(Color.White.copy(alpha = 0.05f))
+                                .padding(12.dp),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Row(verticalAlignment = Alignment.CenterVertically) {
+                                SafeAvatarImage(friend.avatar)
+                                Spacer(modifier = Modifier.width(12.dp))
+                                Column {
+                                    Text(
+                                        text = friend.name,
+                                        style = MaterialTheme.typography.bodyLarge.copy(
+                                            color = Color.White,
+                                            fontWeight = FontWeight.Medium
+                                        )
                                     )
-                                )
-                                Text(
-                                    text = "Tel: ${friend.phone}",
-                                    style = MaterialTheme.typography.bodySmall.copy(
-                                        color = Color.White.copy(alpha = 0.7f)
+                                    Text(
+                                        text = "Tel: ${friend.phone}",
+                                        style = MaterialTheme.typography.bodySmall.copy(
+                                            color = Color.White.copy(alpha = 0.7f)
+                                        )
                                     )
-                                )
-                            }
-                        }
-
-                        Row {
-                            if (canSendRequest) {
-                                IconButton(onClick = {
-                                    addedFriends.add(friend.phone)
-                                    Toast.makeText(context, "Solicitud enviada a ${friend.name}", Toast.LENGTH_SHORT).show()
-                                }) {
-                                    Icon(
-                                        imageVector = if (isAdded) Icons.Default.Check else Icons.Default.PersonAdd,
-                                        contentDescription = if (isAdded) "Solicitud enviada" else "Enviar solicitud de amistad",
-                                        tint = if (isAdded) Color(0xFF81C784) else Color.White
-                                    )
+                                    if (deportesNombres.isNotEmpty()) {
+                                        Text(
+                                            text = "Deportes: $deportesNombres",
+                                            style = MaterialTheme.typography.bodySmall.copy(
+                                                color = Color.White.copy(alpha = 0.6f)
+                                            )
+                                        )
+                                    }
                                 }
-                            } else {
-                                IconButton(onClick = {
-                                    friendToDelete = friend
-                                }) {
-                                    Icon(
-                                        imageVector = Icons.Default.Delete,
-                                        contentDescription = "Eliminar amigo",
-                                        tint = Color.White.copy(alpha = 0.8f)
-                                    )
+                            }
+
+                            Row {
+                                if (canSendRequest) {
+                                    IconButton(onClick = {
+                                        addedFriends.add(friend.phone)
+                                        Toast.makeText(
+                                            context,
+                                            "Solicitud enviada a ${friend.name}",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }) {
+                                        Icon(
+                                            imageVector = if (isAdded) Icons.Default.Check else Icons.Default.PersonAdd,
+                                            contentDescription = null,
+                                            tint = if (isAdded) Color(0xFF81C784) else Color.White
+                                        )
+                                    }
+                                } else {
+                                    IconButton(onClick = { friendToDelete = friend }) {
+                                        Icon(
+                                            imageVector = Icons.Default.Delete,
+                                            contentDescription = "Eliminar amigo",
+                                            tint = Color.White.copy(alpha = 0.8f)
+                                        )
+                                    }
                                 }
                             }
                         }
                     }
                 }
             }
-        }
 
-        // Alerta para confirmar eliminación
-        friendToDelete?.let { friend ->
-            AlertDialog(
-                onDismissRequest = { friendToDelete = null },
-                confirmButton = {
-                    TextButton(onClick = {
-                        scope.launch {
-                            friendsViewModel.eliminarAmigo(friend.phone)
-                            friendsViewModel.loadFriends()
-                            Toast.makeText(context, "${friend.name} eliminado", Toast.LENGTH_SHORT).show()
-                            friendToDelete = null
+
+            friendToDelete?.let { friend ->
+                AlertDialog(
+                    onDismissRequest = { friendToDelete = null },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            scope.launch {
+                                friendsViewModel.eliminarAmigo(friend.phone)
+                                friendsViewModel.loadFriends()
+                                Toast.makeText(
+                                    context,
+                                    "${friend.name} eliminado",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                                friendToDelete = null
+                            }
+                        }) {
+                            Text("Eliminar", color = Color(0xFFEF9A9A))
                         }
-                    }) {
-                        Text("Eliminar", color = Color(0xFFEF9A9A))
-                    }
-                },
-                dismissButton = {
-                    TextButton(onClick = { friendToDelete = null }) {
-                        Text("Cancelar", color = Color.White)
-                    }
-                },
-                title = {
-                    Text(
-                        "Confirmación",
-                        color = Color.White,
-                        fontWeight = FontWeight.Bold
-                    )
-                },
-                text = {
-                    Text(
-                        "¿Estás seguro de que deseas eliminar a ${friend.name}?",
-                        color = Color.White.copy(alpha = 0.8f)
-                    )
-                },
-                containerColor = Color(0xFF1B3B45),
-                shape = RoundedCornerShape(20.dp)
-            )
+                    },
+                    dismissButton = {
+                        TextButton(onClick = { friendToDelete = null }) {
+                            Text("Cancelar", color = Color.White)
+                        }
+                    },
+                    title = {
+                        Text("Confirmación", color = Color.White, fontWeight = FontWeight.Bold)
+                    },
+                    text = {
+                        Text(
+                            "¿Estás seguro de que deseas eliminar a ${friend.name}?",
+                            color = Color.White.copy(alpha = 0.8f)
+                        )
+                    },
+                    containerColor = Color(0xFF1B3B45),
+                    shape = RoundedCornerShape(20.dp)
+                )
+            }
         }
     }
 }

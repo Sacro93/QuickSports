@@ -66,7 +66,8 @@ class RegisterViewModel(private val repository: AuthRepository = AuthRepository(
                 telefono = state.telefono,
                 domicilio = state.domicilio,
                 fechaNacimiento = state.fechaNacimiento,
-                email = state.email
+                email = state.email,
+                deportesFavoritos = state.deportesFavoritos
             )
 
             val result = repository.registerUserAndSaveProfile(state.email, state.password, profile)
@@ -94,6 +95,19 @@ class RegisterViewModel(private val repository: AuthRepository = AuthRepository(
         val regex = Regex("^(?=.*[A-Z])(?=.*\\d).{8,}$")
         return password.matches(regex)
     }
+
+    fun onDeporteFavoritoToggle(id: Int) {
+        val actuales = _uiState.value.deportesFavoritos.toMutableList()
+        if (actuales.contains(id)) {
+            actuales.remove(id)
+        } else {
+            actuales.add(id)
+        }
+        _uiState.value = _uiState.value.copy(deportesFavoritos = actuales)
+    }
+
+
+
 
     private fun validateForm(state: RegisterUiState): String? {
         if (state.name.isBlank()) return "El nombre no puede estar vacío."

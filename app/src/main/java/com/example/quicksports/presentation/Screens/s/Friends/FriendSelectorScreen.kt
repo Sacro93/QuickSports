@@ -4,7 +4,6 @@ package com.example.quicksports.presentation.Screens.s.Friends
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -12,7 +11,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -22,7 +20,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -31,6 +28,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import com.example.quicksports.data.SafeAvatarImage
+import com.example.quicksports.presentation.ViewModel.SportsViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
@@ -38,13 +36,15 @@ import com.example.quicksports.data.SafeAvatarImage
 fun FriendSelectorScreen(
     navController: NavController,
     crearEventoViewModel: CrearEventoViewModel,
-    friendsViewModel: FriendsViewModel = viewModel()
+    friendsViewModel: FriendsViewModel = viewModel(),
+    sportsViewModel: SportsViewModel = viewModel()
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
     val friends by friendsViewModel.friends.collectAsState()
     val amigosInvitados by crearEventoViewModel.amigosInvitados.collectAsState()
+    val sports by sportsViewModel.sports.collectAsState()
 
     val selectedFriends = remember { mutableStateListOf<String>() }
 
@@ -136,6 +136,9 @@ fun FriendSelectorScreen(
                     ) {
                         items(filteredFriends) { friend ->
                             val isSelected = selectedFriends.contains(friend.phone)
+                            val deportesNombres = friend.deportesFavoritos
+                                .mapNotNull { id -> sports.find { it.id == id }?.name }
+                                .joinToString(", ")
 
                             Row(
                                 modifier = Modifier
@@ -164,6 +167,14 @@ fun FriendSelectorScreen(
                                                 color = Color.White.copy(alpha = 0.7f)
                                             )
                                         )
+                                        if (deportesNombres.isNotEmpty()) {
+                                            Text(
+                                                text = "Deportes: $deportesNombres",
+                                                style = MaterialTheme.typography.bodySmall.copy(
+                                                    color = Color.White.copy(alpha = 0.7f)
+                                                )
+                                            )
+                                        }
                                     }
                                 }
 

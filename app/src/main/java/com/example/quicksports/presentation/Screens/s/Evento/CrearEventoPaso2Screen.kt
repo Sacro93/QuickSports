@@ -24,9 +24,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
+import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -295,52 +295,79 @@ fun CrearEventoPaso2Screen(
     }
 
     if (showConfirmDialog) {
-        AlertDialog(
+        ModalBottomSheet(
             onDismissRequest = { showConfirmDialog = false },
-            title = {
+            containerColor = Color(0xFF1C1C1C),
+            tonalElevation = 8.dp,
+            shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp, vertical = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
                 Text(
-                    text = "¿Estás seguro de confirmar?",
-                    fontWeight = FontWeight.SemiBold
+                    text = "¿Confirmar evento?",
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
                 )
-            },
-            confirmButton = {
-                TextButton(onClick = {
-                    val evento = crearEventoViewModel.armarEvento()
-                    if (evento != null) {
-                        scope.launch {
-                            eventoRepository.guardarEvento(evento)
-                            Toast.makeText(context, "Evento guardado correctamente", Toast.LENGTH_SHORT).show()
+
+                Spacer(modifier = Modifier.height(8.dp))
+                Text(
+                    text = "Una vez confirmado, se notificará a tus amigos invitados.",
+                    style = MaterialTheme.typography.bodyMedium.copy(color = Color.Gray),
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Button(
+                        onClick = {
                             showConfirmDialog = false
                             navController.navigate(Screen.Home.route) {
                                 popUpTo(0) { inclusive = true }
                             }
-                        }
-                    } else {
-                        Toast.makeText(context, "Faltan completar datos del evento", Toast.LENGTH_SHORT).show()
-                        showConfirmDialog = false
+                        },
+                        modifier = Modifier.weight(1f),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray)
+                    ) {
+                        Text("Cancelar", color = Color.White)
                     }
-                }) {
-                    Text("Sí", fontFamily = FontFamily(Font(R.font.poppins_regular)))
+
+                    Button(
+                        onClick = {
+                            val evento = crearEventoViewModel.armarEvento()
+                            if (evento != null) {
+                                scope.launch {
+                                    eventoRepository.guardarEvento(evento)
+                                    Toast.makeText(context, "Evento guardado correctamente", Toast.LENGTH_SHORT).show()
+                                    showConfirmDialog = false
+                                    navController.navigate(Screen.Home.route) {
+                                        popUpTo(0) { inclusive = true }
+                                    }
+                                }
+                            } else {
+                                Toast.makeText(context, "Faltan completar datos del evento", Toast.LENGTH_SHORT).show()
+                                showConfirmDialog = false
+                            }
+                        },
+                        modifier = Modifier.weight(1f),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF64FFDA))
+                    ) {
+                        Text("Confirmar", color = Color.Black)
+                    }
                 }
-            },
-            dismissButton = {
-                Row(modifier = Modifier.padding(horizontal = 8.dp)) {
-                    TextButton(onClick = { showConfirmDialog = false }) {
-                        Text("Volver")
-                    }
-                    Spacer(modifier = Modifier.width(8.dp))
-                    TextButton(onClick = {
-                        navController.navigate(Screen.Home.route) {
-                            popUpTo(0) { inclusive = true }
-                        }
-                    }) {
-                        Text("Cancelar")
-                    }
-                }
-            },
-            containerColor = Color(0xFF1C1C1C),
-            titleContentColor = Color.White,
-            textContentColor = Color.White
-        )
+
+                Spacer(modifier = Modifier.height(16.dp))
+            }
+        }
     }
+
 }

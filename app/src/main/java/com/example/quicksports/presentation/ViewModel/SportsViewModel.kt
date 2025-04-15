@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import com.example.quicksports.R
 import com.example.quicksports.data.models.Sport
 import com.example.quicksports.data.repository.SportsRepository
-import com.example.quicksports.data.defaulData.DefaultSports
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -21,30 +20,28 @@ class SportsViewModel(application: Application) : AndroidViewModel(application) 
 
     init {
         viewModelScope.launch {
-            cargarSiVacioSports()
+            val cargados = repository.obtenerSports()
+            if (cargados.isEmpty()) {
+                val porDefecto = repository.obtenerDeportesPorDefecto()
+                repository.guardarSports(porDefecto)
+                _sports.value = porDefecto
+            } else {
+                _sports.value = cargados
+            }
         }
     }
-
-    private suspend fun cargarSiVacioSports() {
-        val cargados = repository.obtenerSports()
-        if (cargados.isEmpty()) {
-            val porDefecto = DefaultSports.get()
-            repository.guardarSports(porDefecto)
-            _sports.value = porDefecto
-        } else {
-            // Asignar imágenes por ID
-            val conImagenes = cargados.map { sport ->
-                sport.copy(
-                    imageRes = when (sport.id) {
-                        1 -> R.drawable.futbol
-                        2 -> R.drawable.basquet
-                        3 -> R.drawable.tenis
-                        4 -> R.drawable.padel
-                        else -> 0
-                    }
-                )
+    fun loadSportsIfEmpty() {
+        viewModelScope.launch {
+            if (_sports.value.isEmpty()) {
+                val cargados = repository.obtenerSports()
+                if (cargados.isEmpty()) {
+                    val porDefecto = repository.obtenerDeportesPorDefecto()
+                    repository.guardarSports(porDefecto)
+                    _sports.value = porDefecto
+                } else {
+                    _sports.value = cargados
+                }
             }
-            _sports.value = conImagenes
         }
     }
 

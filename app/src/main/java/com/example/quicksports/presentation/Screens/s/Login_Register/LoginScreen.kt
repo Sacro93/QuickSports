@@ -4,6 +4,7 @@ import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
@@ -29,7 +30,6 @@ import com.example.quicksports.presentation.ViewModel.LoginViewModel
 import com.example.quicksports.R
 import com.example.quicksports.Screen
 import com.example.quicksports.presentation.components.QuickSportsTitle
-
 @Composable
 fun LoginScreen(
     navController: NavController,
@@ -49,17 +49,22 @@ fun LoginScreen(
                     colors = listOf(Color(0xFF0D47A1), Color(0xFF121212), Color(0xFF000000))
                 )
             )
-            .padding(24.dp),
-        verticalArrangement = Arrangement.Center,
+            .padding(horizontal = 32.dp, vertical = 48.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         QuickSportsTitle()
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(48.dp))
 
-        Text("Iniciar sesión", style = MaterialTheme.typography.headlineSmall.copy(color = Color.White, fontWeight = FontWeight.Bold))
+        Text(
+            text = "Iniciar sesión",
+            style = MaterialTheme.typography.titleLarge.copy(
+                color = Color.White,
+                fontWeight = FontWeight.Bold,
+            )
+        )
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(32.dp))
 
         OutlinedTextField(
             value = uiState.email,
@@ -68,8 +73,10 @@ fun LoginScreen(
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
             modifier = Modifier.fillMaxWidth(),
-            colors = registerFieldColors()
+            colors = defaultFieldColors()
         )
+
+        Spacer(modifier = Modifier.height(12.dp))
 
         OutlinedTextField(
             value = uiState.password,
@@ -80,28 +87,43 @@ fun LoginScreen(
             trailingIcon = {
                 val icon = if (passwordVisible.value) Icons.Default.Visibility else Icons.Default.VisibilityOff
                 IconButton(onClick = { passwordVisible.value = !passwordVisible.value }) {
-                    Icon(icon, contentDescription = null)
+                    Icon(icon, contentDescription = null, tint = Color.White)
                 }
             },
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             modifier = Modifier.fillMaxWidth(),
-            colors = registerFieldColors()
+            colors = defaultFieldColors()
         )
 
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Spacer(modifier = Modifier.height(8.dp))
+
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 4.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Checkbox(
                 checked = uiState.keepLoggedIn,
                 onCheckedChange = viewModel::onKeepLoggedInChange,
-                colors = CheckboxDefaults.colors(checkedColor = Color.White, uncheckedColor = Color.White, checkmarkColor = Color.Black)
+                colors = CheckboxDefaults.colors(
+                    checkedColor = Color.White,
+                    uncheckedColor = Color.White,
+                    checkmarkColor = Color.Black
+                )
             )
             Text("Mantener sesión iniciada", color = Color.White)
         }
 
         if (uiState.errorMessage != null) {
-            Text(uiState.errorMessage!!, color = MaterialTheme.colorScheme.error)
+            Spacer(modifier = Modifier.height(4.dp))
+            Text(
+                uiState.errorMessage!!,
+                color = MaterialTheme.colorScheme.error,
+            )
         }
 
-        Spacer(modifier = Modifier.height(12.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         Button(
             onClick = {
@@ -119,26 +141,34 @@ fun LoginScreen(
                     }
                 )
             },
-            modifier = Modifier.fillMaxWidth(),
-            colors = ButtonDefaults.buttonColors(containerColor = Color.White.copy(alpha = 0.12f))
+            modifier = Modifier
+                .fillMaxWidth(0.9f)
+                .height(48.dp),
+            colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFCCCCCC)),
+            shape = RoundedCornerShape(10.dp)
         ) {
-            Text("Ingresar", color = Color.White)
+            Text("Ingresar", color = Color.Black)
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(32.dp))
 
-        Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(vertical = 8.dp),
+            verticalAlignment = Alignment.CenterVertically
+        ) {
             Icon(
                 painter = painterResource(id = R.drawable.gmail),
                 contentDescription = "Gmail",
-                modifier = Modifier.size(32.dp),
+                modifier = Modifier.size(28.dp),
                 tint = Color.Unspecified
             )
-            Spacer(modifier = Modifier.width(8.dp))
-            Text("Próximamente: Google Login", color = Color.White)
+            Spacer(modifier = Modifier.width(12.dp))
+            Text("Próximamente: iniciar con Google", color = Color.White)
         }
 
-        Spacer(modifier = Modifier.height(16.dp))
+        Spacer(modifier = Modifier.height(24.dp))
 
         TextButton(onClick = {
             navController.navigate("register")
@@ -147,4 +177,3 @@ fun LoginScreen(
         }
     }
 }
-
