@@ -6,5 +6,7 @@ data class Friend(
     val name: String,
     val phone: String,
     val avatar: Int,
-    val age: Int
+    val age: Int,
+    val deportesFavoritos: List<String> = emptyList()
+
 )

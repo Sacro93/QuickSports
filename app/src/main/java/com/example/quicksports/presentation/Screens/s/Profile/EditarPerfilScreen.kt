@@ -1,5 +1,6 @@
 package com.example.quicksports.presentation.Screens.s.Profile
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -18,6 +19,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.example.quicksports.presentation.ViewModel.SportsViewModel
 import com.example.quicksports.presentation.ViewModel.UserViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -36,6 +38,9 @@ fun EditarPerfilScreen(
     var telefono by remember { mutableStateOf("") }
     var domicilio by remember { mutableStateOf("") }
     var fechaNacimiento by remember { mutableStateOf("") }
+    val sportsViewModel: SportsViewModel = viewModel()
+    val sports by sportsViewModel.sports.collectAsState()
+    val selectedDeportes = remember { mutableStateListOf<Int>() }
 
     LaunchedEffect(user) {
         user?.let {
@@ -44,9 +49,10 @@ fun EditarPerfilScreen(
             telefono = it.telefono
             domicilio = it.domicilio
             fechaNacimiento = it.fechaNacimiento
+            selectedDeportes.clear()
+            selectedDeportes.addAll(it.deportesFavoritos)
         }
     }
-
     Scaffold(
         topBar = {
             TopAppBar(
@@ -152,7 +158,52 @@ fun EditarPerfilScreen(
                 editableTextField(telefono, { telefono = it }, "Teléfono")
                 editableTextField(domicilio, { domicilio = it }, "Domicilio")
                 editableTextField(fechaNacimiento, { fechaNacimiento = it }, "Fecha de nacimiento")
+                Spacer(modifier = Modifier.height(16.dp))
 
+                Text(
+                    "Deportes favoritos:",
+                    style = MaterialTheme.typography.titleMedium.copy(
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    sports.forEach { sport ->
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clickable {
+                                    if (selectedDeportes.contains(sport.id)) {
+                                        selectedDeportes.remove(sport.id)
+                                    } else {
+                                        selectedDeportes.add(sport.id)
+                                    }
+                                }
+                        ) {
+                            Checkbox(
+                                checked = selectedDeportes.contains(sport.id),
+                                onCheckedChange = {
+                                    if (it) selectedDeportes.add(sport.id)
+                                    else selectedDeportes.remove(sport.id)
+                                },
+                                colors = CheckboxDefaults.colors(
+                                    checkedColor = Color.White,
+                                    uncheckedColor = Color.White,
+                                    checkmarkColor = Color.Black
+                                )
+                            )
+                            Text(
+                                text = sport.name,
+                                color = Color.White,
+                                style = MaterialTheme.typography.bodyLarge
+                            )
+                        }
+                    }
+                }
                 Spacer(modifier = Modifier.height(24.dp))
 
                 Button(
@@ -162,7 +213,9 @@ fun EditarPerfilScreen(
                             lastName = lastName,
                             telefono = telefono,
                             domicilio = domicilio,
-                            fechaNacimiento = fechaNacimiento
+                            fechaNacimiento = fechaNacimiento,
+                                    deportesFavoritos = selectedDeportes.toList()
+
                         )
                         userViewModel.updateUserProfile(updated) { success ->
                             if (success) {

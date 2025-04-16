@@ -4,7 +4,6 @@ package com.example.quicksports.presentation.Screens.s.Friends
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
@@ -12,7 +11,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
@@ -22,7 +20,6 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
-import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -30,6 +27,9 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
+import com.example.quicksports.data.SafeAvatarImage
+import com.example.quicksports.presentation.ViewModel.SportsViewModel
+
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -134,6 +134,7 @@ fun FriendSelectorScreen(
                     ) {
                         items(filteredFriends) { friend ->
                             val isSelected = selectedFriends.contains(friend.phone)
+                            val deportesNombres = friend.deportesFavoritos.joinToString(", ")
 
                             Row(
                                 modifier = Modifier
@@ -145,13 +146,8 @@ fun FriendSelectorScreen(
                                 horizontalArrangement = Arrangement.SpaceBetween
                             ) {
                                 Row(verticalAlignment = Alignment.CenterVertically) {
-                                    Image(
-                                        painter = painterResource(id = friend.avatar),
-                                        contentDescription = null,
-                                        modifier = Modifier
-                                            .size(48.dp)
-                                            .clip(CircleShape)
-                                    )
+                                    SafeAvatarImage(friend.avatar)
+
                                     Spacer(modifier = Modifier.width(12.dp))
                                     Column {
                                         Text(
@@ -161,8 +157,20 @@ fun FriendSelectorScreen(
                                                 fontWeight = FontWeight.Medium
                                             )
                                         )
+
+                                        Spacer(modifier = Modifier.height(4.dp))
+
                                         Text(
-                                            text = "Teléfono contacto: ${friend.phone}",
+                                            text = "Tel: ${friend.phone}",
+                                            style = MaterialTheme.typography.bodySmall.copy(
+                                                color = Color.White.copy(alpha = 0.7f)
+                                            )
+                                        )
+
+                                        Spacer(modifier = Modifier.height(2.dp))
+
+                                        Text(
+                                            text = "Deportes favoritos: $deportesNombres",
                                             style = MaterialTheme.typography.bodySmall.copy(
                                                 color = Color.White.copy(alpha = 0.7f)
                                             )
@@ -188,9 +196,7 @@ fun FriendSelectorScreen(
                             }
                         }
 
-                        item {
-                            Spacer(modifier = Modifier.height(90.dp))
-                        }
+                        item { Spacer(modifier = Modifier.height(90.dp)) }
                     }
                 }
             }

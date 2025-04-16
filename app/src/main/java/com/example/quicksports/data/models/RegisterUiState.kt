@@ -10,5 +10,6 @@ data class RegisterUiState(
     val password: String = "",
     val confirmPassword: String = "",
     val errorMessage: String? = null,
-    val success: Boolean = false
+    val success: Boolean = false,
+    val deportesFavoritos: List<Int> = emptyList(),
 )

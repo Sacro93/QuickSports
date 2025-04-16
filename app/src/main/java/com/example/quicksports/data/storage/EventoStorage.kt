@@ -19,7 +19,6 @@ class EventoStorage(private val context: Context) {
 
     private val fileName = "eventos.json"
 
-    // 👇 Json configurado con el serializador de LocalDateTime personalizado
     @RequiresApi(Build.VERSION_CODES.O)
     private val json = Json {
         prettyPrint = true

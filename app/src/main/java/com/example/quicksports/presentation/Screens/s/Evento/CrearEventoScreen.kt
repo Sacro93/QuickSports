@@ -214,12 +214,14 @@ fun CrearEventoScreen(
                     .fillMaxWidth(),
                 verticalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                items(filteredCenters) { center ->
+                items(filteredCenters, key = { it.id }) { center ->
+                    val isSelected = selectedCenter?.id == center.id
+
                     Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(10.dp))
-                            .background(if (crearEventoViewModel.isCentroSeleccionado(center)) Color(0xFF4B5320) else Color(0xFF1C1C1C))
+                            .background(if (isSelected) Color(0xFF4B5320) else Color(0xFF1C1C1C))
                             .clickable { crearEventoViewModel.selectCenter(center) }
                             .padding(16.dp)
                     ) {
@@ -237,8 +239,7 @@ fun CrearEventoScreen(
                                 fontFamily = FontFamily(Font(R.font.poppins_regular))
                             )
                             Text(
-                                text = "Tel: ${center.contactPhone}"
-                                ,
+                                text = "Tel: ${center.contactPhone}",
                                 color = Color.LightGray,
                                 style = MaterialTheme.typography.bodySmall,
                                 fontFamily = FontFamily(Font(R.font.poppins_regular))
@@ -246,8 +247,7 @@ fun CrearEventoScreen(
                             selectedSport?.id?.let { sportId ->
                                 center.sportPrices[sportId]?.let { price ->
                                     Text(
-                                        text = "Precio: €$price"
-                                        ,
+                                        text = "Precio: €$price",
                                         color = Color(0xFF64FFDA),
                                         style = MaterialTheme.typography.bodyMedium,
                                         fontFamily = FontFamily(Font(R.font.poppins_regular))
@@ -259,7 +259,7 @@ fun CrearEventoScreen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(16.dp))
 
             Button(
                 onClick = {
