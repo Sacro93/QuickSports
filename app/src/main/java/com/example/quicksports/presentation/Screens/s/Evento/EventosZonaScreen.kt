@@ -54,11 +54,11 @@ fun EventosZonaScreen(viewModel: EventosZonaViewModel = viewModel(), navControll
                 .verticalScroll(rememberScrollState())
                 .padding(16.dp)
                 .fillMaxSize(),
-
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             eventos.forEach { evento ->
-                val solicitudEnviada = solicitudesEnviadas[evento.hashCode()] == true
+                val eventoId = evento.hashCode()
+                val solicitudEnviada = solicitudesEnviadas[eventoId] == true
 
                 Card(
                     modifier = Modifier.fillMaxWidth(),
@@ -69,20 +69,28 @@ fun EventosZonaScreen(viewModel: EventosZonaViewModel = viewModel(), navControll
                         Text("Centro: ${evento.centro}")
                         Text("Dirección: ${evento.direccion}")
                         Text("Organizador: ${evento.creador}")
-                        Text("Fecha y hora: ${evento.fechaHora.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))}")
+                        Text(
+                            "Fecha y hora: ${
+                                evento.fechaHora.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))
+                            }"
+                        )
 
-                                Spacer(modifier = Modifier.height(8.dp))
+                        Spacer(modifier = Modifier.height(8.dp))
 
-                                Button(
-                                onClick = {
-                                    solicitudesEnviadas[evento.hashCode()] = true
-                                    Toast.makeText(context, "Solicitud enviada", Toast.LENGTH_SHORT).show()
-                                },
-                            enabled = !solicitudEnviada
-                            ) {
-                                Text(if (solicitudEnviada) "Solicitud enviada" else "Unirme")
+                        Button(
+                            onClick = {
+                                solicitudesEnviadas[eventoId] = !solicitudEnviada
+                                Toast.makeText(
+                                    context,
+                                    if (!solicitudEnviada) "Solicitud enviada" else "Solicitud cancelada",
+                                    Toast.LENGTH_SHORT
+                                ).show()
                             }
-
+                        ) {
+                            Text(
+                                if (solicitudEnviada) "Cancelar solicitud" else "Unirme"
+                            )
+                        }
                     }
                 }
             }

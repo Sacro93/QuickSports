@@ -36,15 +36,13 @@ import com.example.quicksports.presentation.ViewModel.SportsViewModel
 fun FriendSelectorScreen(
     navController: NavController,
     crearEventoViewModel: CrearEventoViewModel,
-    friendsViewModel: FriendsViewModel = viewModel(),
-    sportsViewModel: SportsViewModel = viewModel()
+    friendsViewModel: FriendsViewModel = viewModel()
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
     val friends by friendsViewModel.friends.collectAsState()
     val amigosInvitados by crearEventoViewModel.amigosInvitados.collectAsState()
-    val sports by sportsViewModel.sports.collectAsState()
 
     val selectedFriends = remember { mutableStateListOf<String>() }
 
@@ -136,9 +134,7 @@ fun FriendSelectorScreen(
                     ) {
                         items(filteredFriends) { friend ->
                             val isSelected = selectedFriends.contains(friend.phone)
-                            val deportesNombres = friend.deportesFavoritos
-                                .mapNotNull { id -> sports.find { it.id == id }?.name }
-                                .joinToString(", ")
+                            val deportesNombres = friend.deportesFavoritos.joinToString(", ")
 
                             Row(
                                 modifier = Modifier
@@ -161,20 +157,24 @@ fun FriendSelectorScreen(
                                                 fontWeight = FontWeight.Medium
                                             )
                                         )
+
+                                        Spacer(modifier = Modifier.height(4.dp))
+
                                         Text(
-                                            text = "Teléfono contacto: ${friend.phone}",
+                                            text = "Tel: ${friend.phone}",
                                             style = MaterialTheme.typography.bodySmall.copy(
                                                 color = Color.White.copy(alpha = 0.7f)
                                             )
                                         )
-                                        if (deportesNombres.isNotEmpty()) {
-                                            Text(
-                                                text = "Deportes: $deportesNombres",
-                                                style = MaterialTheme.typography.bodySmall.copy(
-                                                    color = Color.White.copy(alpha = 0.7f)
-                                                )
+
+                                        Spacer(modifier = Modifier.height(2.dp))
+
+                                        Text(
+                                            text = "Deportes favoritos: $deportesNombres",
+                                            style = MaterialTheme.typography.bodySmall.copy(
+                                                color = Color.White.copy(alpha = 0.7f)
                                             )
-                                        }
+                                        )
                                     }
                                 }
 
@@ -196,9 +196,7 @@ fun FriendSelectorScreen(
                             }
                         }
 
-                        item {
-                            Spacer(modifier = Modifier.height(90.dp))
-                        }
+                        item { Spacer(modifier = Modifier.height(90.dp)) }
                     }
                 }
             }

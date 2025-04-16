@@ -48,5 +48,12 @@ class FriendsViewModel(application: Application) : AndroidViewModel(application)
             _friends.value = nuevos
         }
     }
+    fun reemplazarAmigos(nuevos: List<Friend>) {
+        viewModelScope.launch {
+            repository.guardarAmigos(nuevos)
+            _friends.value = nuevos
+        }
+    }
+
 
 }

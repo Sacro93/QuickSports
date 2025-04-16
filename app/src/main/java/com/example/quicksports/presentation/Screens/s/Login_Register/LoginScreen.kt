@@ -49,12 +49,13 @@ fun LoginScreen(
                     colors = listOf(Color(0xFF0D47A1), Color(0xFF121212), Color(0xFF000000))
                 )
             )
-            .padding(horizontal = 32.dp, vertical = 48.dp),
-        horizontalAlignment = Alignment.CenterHorizontally
+            .padding(horizontal = 32.dp),
+        horizontalAlignment = Alignment.CenterHorizontally,
+        verticalArrangement = Arrangement.Center
     ) {
         QuickSportsTitle()
 
-        Spacer(modifier = Modifier.height(48.dp))
+        Spacer(modifier = Modifier.height(32.dp))
 
         Text(
             text = "Iniciar sesión",
@@ -156,6 +157,7 @@ fun LoginScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(vertical = 8.dp),
+            horizontalArrangement = Arrangement.Center,
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
@@ -165,7 +167,7 @@ fun LoginScreen(
                 tint = Color.Unspecified
             )
             Spacer(modifier = Modifier.width(12.dp))
-            Text("Próximamente: iniciar con Google", color = Color.White)
+            Text("Iniciar con Google", color = Color.White)
         }
 
         Spacer(modifier = Modifier.height(24.dp))
@@ -177,3 +179,4 @@ fun LoginScreen(
         }
     }
 }
+

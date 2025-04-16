@@ -41,9 +41,7 @@ import com.example.quicksports.data.repository.EventoRepository
 import com.example.quicksports.presentation.ViewModel.FriendsViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import com.example.quicksports.R
 import com.example.quicksports.presentation.components.CuentaRegresivaConCancelacion
-
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
@@ -96,22 +94,24 @@ fun CrearEventoPaso2Screen(
                 .verticalScroll(rememberScrollState())
                 .background(
                     Brush.verticalGradient(
-                        colors = listOf( Color(0xFF355C7D),
+                        colors = listOf(
+                            Color(0xFF355C7D),
                             Color(0xFF2A4D65),
                             Color(0xFF1F3B4D),
-                            Color(0xFF152C3A))
+                            Color(0xFF152C3A)
+                        )
                     )
                 )
                 .padding(innerPadding)
-                .padding(horizontal = 16.dp, vertical = 8.dp),
+                .padding(horizontal = 20.dp, vertical = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             Text(
                 text = "Confirmación de evento",
                 style = MaterialTheme.typography.headlineSmall.copy(
                     color = Color.White,
-                    fontWeight = FontWeight.Bold,
-                ),
-                modifier = Modifier.padding(bottom = 16.dp)
+                    fontWeight = FontWeight.Bold
+                )
             )
 
             Card(
@@ -119,7 +119,7 @@ fun CrearEventoPaso2Screen(
                 colors = CardDefaults.cardColors(containerColor = Color(0xFF1C1C1C)),
                 shape = RoundedCornerShape(12.dp)
             ) {
-                Column(modifier = Modifier.padding(16.dp)) {
+                Column(modifier = Modifier.padding(16.dp), verticalArrangement = Arrangement.spacedBy(4.dp)) {
                     selectedSport?.let {
                         Text("Deporte: ${it.name}", color = Color.White)
                     }
@@ -137,16 +137,12 @@ fun CrearEventoPaso2Screen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-            Text("Selecciona fecha y hora", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
-            Spacer(modifier = Modifier.height(8.dp))
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text("Selecciona fecha y hora", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
 
-            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
-                Card(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(end = 4.dp)
-                        .clickable {
+                Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Card(
+                        modifier = Modifier.weight(1f).clickable {
                             DatePickerDialog(
                                 context,
                                 { _, year, month, day ->
@@ -160,15 +156,13 @@ fun CrearEventoPaso2Screen(
                                 localDateTime.dayOfMonth
                             ).show()
                         },
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFF2A2A2A))
-                ) {
-                    Text("📅 $dateText", modifier = Modifier.padding(16.dp), color = Color.White)
-                }
-                Card(
-                    modifier = Modifier
-                        .weight(1f)
-                        .padding(start = 4.dp)
-                        .clickable {
+                        colors = CardDefaults.cardColors(containerColor = Color(0xFF2A2A2A))
+                    ) {
+                        Text("📅 $dateText", modifier = Modifier.padding(16.dp), color = Color.White)
+                    }
+
+                    Card(
+                        modifier = Modifier.weight(1f).clickable {
                             TimePickerDialog(
                                 context,
                                 { _, hour, minute ->
@@ -182,56 +176,52 @@ fun CrearEventoPaso2Screen(
                                 true
                             ).show()
                         },
-                    colors = CardDefaults.cardColors(containerColor = Color(0xFF2A2A2A))
-                ) {
-                    Text("⏰ $timeText", modifier = Modifier.padding(16.dp), color = Color.White)
+                        colors = CardDefaults.cardColors(containerColor = Color(0xFF2A2A2A))
+                    ) {
+                        Text("⏰ $timeText", modifier = Modifier.padding(16.dp), color = Color.White)
+                    }
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
-            Text("Participantes", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
-            Spacer(modifier = Modifier.height(6.dp))
-            Card(
-                modifier = Modifier.width(160.dp),
-                colors = CardDefaults.cardColors(containerColor = Color(0xFF1C1C1C)),
-                shape = RoundedCornerShape(12.dp)
-            ) {
-                Row(
-                    modifier = Modifier
-                        .padding(12.dp)
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceEvenly,
-                    verticalAlignment = Alignment.CenterVertically
+            Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                Text("Participantes", color = Color.White, fontWeight = FontWeight.Bold, fontSize = 18.sp)
+                Card(
+                    modifier = Modifier.width(160.dp),
+                    colors = CardDefaults.cardColors(containerColor = Color(0xFF1C1C1C)),
+                    shape = RoundedCornerShape(12.dp)
                 ) {
-                    IconButton(onClick = {
-                        if (cantidad > 0) {
-                            cantidad--
+                    Row(
+                        modifier = Modifier.padding(12.dp).fillMaxWidth(),
+                        horizontalArrangement = Arrangement.SpaceEvenly,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        IconButton(onClick = {
+                            if (cantidad > 0) {
+                                cantidad--
+                                crearEventoViewModel.updateMaxParticipantes(cantidad)
+                            }
+                        }) {
+                            Icon(Icons.Default.Remove, contentDescription = null, tint = Color.White)
+                        }
+                        Text("$cantidad", color = Color.White, modifier = Modifier.padding(horizontal = 8.dp))
+                        IconButton(onClick = {
+                            cantidad++
                             crearEventoViewModel.updateMaxParticipantes(cantidad)
+                        }) {
+                            Icon(Icons.Default.Add, contentDescription = null, tint = Color.White)
                         }
-                    }) {
-                        Icon(Icons.Default.Remove, contentDescription = null, tint = Color.White)
-                    }
-                    Text("$cantidad", color = Color.White, modifier = Modifier.padding(horizontal = 8.dp))
-                    IconButton(onClick = {
-                        cantidad++
-                        crearEventoViewModel.updateMaxParticipantes(cantidad)
-                    }) {
-                        Icon(Icons.Default.Add, contentDescription = null, tint = Color.White)
                     }
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
             Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable {
-                        scope.launch {
-                            friendsViewModel.loadFriends()
-                            delay(100)
-                            navController.navigate(Screen.FriendSelector.route)
-                        }
-                    },
+                modifier = Modifier.fillMaxWidth().clickable {
+                    scope.launch {
+                        friendsViewModel.loadFriends()
+                        delay(100)
+                        navController.navigate(Screen.FriendSelector.route)
+                    }
+                },
                 colors = CardDefaults.cardColors(containerColor = Color(0xFF1C1C1C)),
                 shape = RoundedCornerShape(12.dp)
             ) {
@@ -245,11 +235,10 @@ fun CrearEventoPaso2Screen(
                 }
             }
 
-            Spacer(modifier = Modifier.height(16.dp))
             Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .clickable { Toast.makeText(context, "Proximamente", Toast.LENGTH_SHORT).show() },
+                modifier = Modifier.fillMaxWidth().clickable {
+                    Toast.makeText(context, "Próximamente", Toast.LENGTH_SHORT).show()
+                },
                 colors = CardDefaults.cardColors(containerColor = Color(0xFF1C1C1C)),
                 shape = RoundedCornerShape(12.dp)
             ) {
@@ -262,7 +251,6 @@ fun CrearEventoPaso2Screen(
                     Text("Método de pago", color = Color.White)
                 }
             }
-            Spacer(modifier = Modifier.height(30.dp))
 
             CuentaRegresivaConCancelacion(
                 centerPhone = selectedCenter?.contactPhone ?: "el centro",
@@ -275,22 +263,17 @@ fun CrearEventoPaso2Screen(
                 }
             )
 
+            Spacer(modifier = Modifier.height(20.dp))
 
-            Spacer(modifier = Modifier.height(90.dp))
             Button(
                 onClick = { showConfirmDialog = true },
-                modifier = Modifier
-                    .fillMaxWidth(0.9f)
-                    .height(48.dp)
-                    .align(Alignment.CenterHorizontally),
+                modifier = Modifier.fillMaxWidth(0.9f).height(48.dp).align(Alignment.CenterHorizontally),
                 colors = ButtonDefaults.buttonColors(containerColor = if (isFormValid) Color(0xFFCCCCCC) else Color.Gray),
                 shape = RoundedCornerShape(10.dp),
                 enabled = isFormValid
             ) {
                 Text("Confirmar evento", color = Color.Black)
             }
-
-
         }
     }
 
@@ -302,9 +285,7 @@ fun CrearEventoPaso2Screen(
             shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
         ) {
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 24.dp, vertical = 16.dp),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 24.dp, vertical = 16.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
                 Text(
@@ -316,13 +297,14 @@ fun CrearEventoPaso2Screen(
                 )
 
                 Spacer(modifier = Modifier.height(8.dp))
+
                 Text(
                     text = "Una vez confirmado, se notificará a tus amigos invitados.",
                     style = MaterialTheme.typography.bodyMedium.copy(color = Color.Gray),
                     textAlign = TextAlign.Center
                 )
 
-                Spacer(modifier = Modifier.height(24.dp))
+                Spacer(modifier = Modifier.height(20.dp))
 
                 Row(
                     horizontalArrangement = Arrangement.spacedBy(12.dp),
@@ -369,5 +351,4 @@ fun CrearEventoPaso2Screen(
             }
         }
     }
-
 }
