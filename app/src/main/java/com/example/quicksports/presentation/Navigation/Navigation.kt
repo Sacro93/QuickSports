@@ -23,6 +23,7 @@ import com.example.quicksports.presentation.Screens.s.Friends.FriendSelectorScre
 import com.example.quicksports.presentation.Screens.s.Login_Register.LoginScreen
 import com.example.quicksports.presentation.Screens.s.Login_Register.RegisterScreen
 import com.example.quicksports.presentation.Screens.s.Login_Register.StartScreen
+import com.example.quicksports.presentation.Screens.s.Notificaciones.NotificationsScreen
 import com.example.quicksports.presentation.Screens.s.Profile.EditarPerfilScreen
 import com.example.quicksports.presentation.Screens.s.Profile.PerfilScreen
 import com.example.quicksports.presentation.ViewModel.Center.CenterViewModelFactory
@@ -84,6 +85,9 @@ fun Navigation() {
             HomeScreen(navController)
         }
 
+        composable(Screen.NotificationsScreen.route) {
+            NotificationsScreen(navController = navController)
+        }
         composable(Screen.CrearEvento.route) {
             val parentEntry = remember(it) {
                 navController.getBackStackEntry(Screen.CrearEvento.route)
