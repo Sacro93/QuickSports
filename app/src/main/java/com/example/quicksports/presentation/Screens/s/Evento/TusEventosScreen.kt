@@ -1,7 +1,8 @@
 package com.example.quicksports.presentation.Screens.s.Evento
 
 
-import com.example.quicksports.presentation.ViewModel.TusEventosViewModel
+import android.app.Application
+import com.example.quicksports.presentation.ViewModel.Eventos.TusEventosViewModel
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -12,7 +13,6 @@ import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -29,12 +29,18 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import java.time.format.DateTimeFormatter
 import com.example.quicksports.R
+import com.example.quicksports.presentation.ViewModel.Eventos.TusEventosViewModelFactory
 import com.example.quicksports.presentation.components.EstadoConfirmacionEvento
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TusEventosScreen(viewModel: TusEventosViewModel = viewModel(), navController: NavController) {
+fun TusEventosScreen(
+    navController: NavController,
+    viewModel: TusEventosViewModel = viewModel(
+        factory = TusEventosViewModelFactory(LocalContext.current.applicationContext as Application)
+    )
+){
     val context = LocalContext.current
     val eventos by viewModel.eventos.collectAsState()
     var showDialog by remember { mutableStateOf(false) }

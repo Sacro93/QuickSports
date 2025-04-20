@@ -22,10 +22,10 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.quicksports.Screen
+import com.example.quicksports.presentation.Navigation.Screen
 import com.example.quicksports.R
 import com.example.quicksports.data.defaulData.DefaultFriends
-import com.example.quicksports.presentation.ViewModel.FriendsViewModel
+import com.example.quicksports.presentation.ViewModel.Friends.FriendsViewModel
 import com.example.quicksports.presentation.components.QuickSportsTitle
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch

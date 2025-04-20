@@ -1,10 +1,9 @@
-package com.example.quicksports.presentation.ViewModel
+package com.example.quicksports.presentation.ViewModel.Eventos
 
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.quicksports.data.repository.CenterRepository
 import com.example.quicksports.data.models.Center
 import com.example.quicksports.data.models.Evento
 import com.example.quicksports.data.models.Friend
@@ -12,11 +11,9 @@ import com.example.quicksports.data.models.Sport
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import java.time.LocalDateTime
-
 
 class CrearEventoViewModel : ViewModel() {
 
@@ -39,7 +36,7 @@ class CrearEventoViewModel : ViewModel() {
     fun getFilteredCenters(centros: List<Center>): StateFlow<List<Center>> {
         return selectedSport.map { sport ->
             sport?.let { s -> centros.filter { it.sportPrices.containsKey(s.id) } } ?: emptyList()
-        }.stateIn(viewModelScope, SharingStarted.Eagerly, emptyList())
+        }.stateIn(viewModelScope, SharingStarted.Companion.Eagerly, emptyList())
     }
 
     fun selectSport(sport: Sport) {

@@ -1,5 +1,6 @@
-package com.example.quicksports
+package com.example.quicksports.presentation.Navigation
 
+import android.app.Application
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
@@ -10,6 +11,7 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.example.quicksports.data.PreferenceManager
+import com.example.quicksports.data.repository.AuthRepository
 import com.example.quicksports.presentation.Screens.CrearEventoScreen
 import com.example.quicksports.presentation.Screens.HomeScreen
 import com.example.quicksports.presentation.Screens.s.Centros.CentrosScreen
@@ -23,7 +25,18 @@ import com.example.quicksports.presentation.Screens.s.Login_Register.RegisterScr
 import com.example.quicksports.presentation.Screens.s.Login_Register.StartScreen
 import com.example.quicksports.presentation.Screens.s.Profile.EditarPerfilScreen
 import com.example.quicksports.presentation.Screens.s.Profile.PerfilScreen
-import com.example.quicksports.presentation.ViewModel.CrearEventoViewModel
+import com.example.quicksports.presentation.ViewModel.Center.CenterViewModelFactory
+import com.example.quicksports.presentation.ViewModel.Eventos.CrearEventoViewModel
+import com.example.quicksports.presentation.ViewModel.Eventos.CrearEventoViewModelFactory
+import com.example.quicksports.presentation.ViewModel.Eventos.EventosZonaViewModelFactory
+import com.example.quicksports.presentation.ViewModel.Eventos.TusEventosViewModelFactory
+import com.example.quicksports.presentation.ViewModel.Friends.FriendsViewModelFactory
+import com.example.quicksports.presentation.ViewModel.Login.LoginViewModel
+import com.example.quicksports.presentation.ViewModel.Login.LoginViewModelFactory
+import com.example.quicksports.presentation.ViewModel.Register.RegisterViewModel
+import com.example.quicksports.presentation.ViewModel.Register.RegisterViewModelFactory
+import com.example.quicksports.presentation.ViewModel.Sports.SportsViewModelFactory
+import com.example.quicksports.presentation.ViewModel.User.UserViewModelFactory
 import com.google.firebase.auth.FirebaseAuth
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -31,6 +44,7 @@ import com.google.firebase.auth.FirebaseAuth
 fun Navigation() {
     val navController = rememberNavController()
     val context = LocalContext.current
+
     val startDestination = remember {
         if (FirebaseAuth.getInstance().currentUser != null &&
             PreferenceManager.shouldKeepLoggedIn(context)
@@ -40,71 +54,102 @@ fun Navigation() {
             Screen.Start.route
         }
     }
+
     NavHost(navController = navController, startDestination = startDestination) {
         composable(Screen.Start.route) {
             StartScreen(navController)
         }
+
         composable(Screen.Register.route) {
-            RegisterScreen(navController)
+            val registerViewModel: RegisterViewModel = viewModel(
+                factory = RegisterViewModelFactory(AuthRepository())
+            )
+            RegisterScreen(
+                navController = navController,
+                registerViewModel = registerViewModel
+            )
         }
 
-        // Login
         composable(Screen.Login.route) {
-            LoginScreen(navController)
+            val loginViewModel: LoginViewModel = viewModel(
+                factory = LoginViewModelFactory(AuthRepository())
+            )
+            LoginScreen(
+                navController = navController,
+                viewModel = loginViewModel
+            )
         }
+
         composable(Screen.Home.route) {
             HomeScreen(navController)
         }
 
-
-        // CrearEvento - PASO 1
         composable(Screen.CrearEvento.route) {
             val parentEntry = remember(it) {
                 navController.getBackStackEntry(Screen.CrearEvento.route)
             }
-            val crearEventoViewModel: CrearEventoViewModel = viewModel(parentEntry)
+            val crearEventoViewModel: CrearEventoViewModel = viewModel(
+                parentEntry,
+                factory = CrearEventoViewModelFactory()
+            )
             CrearEventoScreen(navController, crearEventoViewModel)
         }
 
-        // CrearEvento - PASO 2
         composable(Screen.CrearEventoPaso2.route) {
             val parentEntry = remember(it) {
                 navController.getBackStackEntry(Screen.CrearEvento.route)
             }
-            val crearEventoViewModel: CrearEventoViewModel = viewModel(parentEntry)
+            val crearEventoViewModel: CrearEventoViewModel = viewModel(
+                parentEntry,
+                factory = CrearEventoViewModelFactory()
+            )
             CrearEventoPaso2Screen(navController, crearEventoViewModel)
         }
 
-        // Selector de amigos
         composable(Screen.FriendSelector.route) {
             val parentEntry = remember(it) {
                 navController.getBackStackEntry(Screen.CrearEvento.route)
             }
-            val crearEventoViewModel: CrearEventoViewModel = viewModel(parentEntry)
+            val crearEventoViewModel: CrearEventoViewModel = viewModel(
+                parentEntry,
+                factory = CrearEventoViewModelFactory()
+            )
             FriendSelectorScreen(navController, crearEventoViewModel)
         }
 
         composable(Screen.TusEventos.route) {
-            TusEventosScreen(navController= navController)
+            TusEventosScreen(
+                navController = navController,
+                viewModel = viewModel(factory = TusEventosViewModelFactory(LocalContext.current.applicationContext as Application))
+            )
         }
 
         composable(Screen.EventosZona.route) {
-            EventosZonaScreen(navController= navController)
+            EventosZonaScreen(
+                navController = navController,
+                viewModel = viewModel(factory = EventosZonaViewModelFactory())
+            )
         }
 
-        // Amistades
         composable(Screen.Amistades.route) {
-            AmistadesScreen(navController)
+            AmistadesScreen(
+                navController,
+                friendsViewModel = viewModel(factory = FriendsViewModelFactory(LocalContext.current.applicationContext as Application))
+            )
         }
 
-        // Centros deportivos
         composable(Screen.Centros.route) {
-            CentrosScreen(navController)
+            CentrosScreen(
+                navController,
+                centerViewModel = viewModel(factory = CenterViewModelFactory(LocalContext.current.applicationContext as Application)),
+                sportsViewModel = viewModel(factory = SportsViewModelFactory(LocalContext.current.applicationContext as Application))
+            )
         }
 
         composable(Screen.Perfil.route) {
             PerfilScreen(
                 navController = navController,
+                userViewModel = viewModel(factory = UserViewModelFactory(AuthRepository())),
                 onEditProfileClick = { navController.navigate(Screen.EditarPerfil.route) },
                 onLogout = {
                     navController.navigate(Screen.Login.route) {
@@ -116,10 +161,9 @@ fun Navigation() {
 
         composable(Screen.EditarPerfil.route) {
             EditarPerfilScreen(
-                userViewModel = viewModel(),
+                userViewModel = viewModel(factory = UserViewModelFactory(AuthRepository())),
                 navController = navController
             )
         }
-
     }
 }

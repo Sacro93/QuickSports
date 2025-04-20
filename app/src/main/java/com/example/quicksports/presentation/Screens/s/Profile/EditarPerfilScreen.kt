@@ -7,7 +7,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
@@ -19,12 +18,17 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.quicksports.presentation.ViewModel.SportsViewModel
-import com.example.quicksports.presentation.ViewModel.UserViewModel
+import com.example.quicksports.data.repository.AuthRepository
+import com.example.quicksports.presentation.ViewModel.Sports.SportsViewModel
+import com.example.quicksports.presentation.ViewModel.User.UserViewModel
+import com.example.quicksports.presentation.ViewModel.User.UserViewModelFactory
+
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun EditarPerfilScreen(
-    userViewModel: UserViewModel = viewModel(),
+    userViewModel: UserViewModel = viewModel(
+        factory = UserViewModelFactory(AuthRepository())
+    ),
     navController: NavController
 ) {
     LaunchedEffect(Unit) {

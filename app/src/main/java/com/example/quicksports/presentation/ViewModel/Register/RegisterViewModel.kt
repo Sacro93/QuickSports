@@ -1,5 +1,4 @@
-package com.example.quicksports.presentation.ViewModel
-
+package com.example.quicksports.presentation.ViewModel.Register
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -120,5 +119,3 @@ class RegisterViewModel(private val repository: AuthRepository = AuthRepository(
         return null
     }
 }
-
-

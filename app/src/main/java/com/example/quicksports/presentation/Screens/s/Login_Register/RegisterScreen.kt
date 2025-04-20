@@ -1,4 +1,6 @@
 package com.example.quicksports.presentation.Screens.s.Login_Register
+
+import android.app.Application
 import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -27,22 +29,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.quicksports.presentation.ViewModel.RegisterViewModel
-import com.example.quicksports.presentation.ViewModel.SportsViewModel
+import com.example.quicksports.data.repository.AuthRepository
+import com.example.quicksports.presentation.ViewModel.Register.RegisterViewModel
+import com.example.quicksports.presentation.ViewModel.Register.RegisterViewModelFactory
+import com.example.quicksports.presentation.ViewModel.Sports.SportsViewModel
+import com.example.quicksports.presentation.ViewModel.Sports.SportsViewModelFactory
 import com.example.quicksports.presentation.components.QuickSportsTitle
 
 @Composable
 fun RegisterScreen(
     navController: NavController,
-    viewModel: RegisterViewModel = viewModel()
+    registerViewModel: RegisterViewModel
 ) {
-    val uiState by viewModel.uiState.collectAsState()
     val context = LocalContext.current
+    val sportsViewModel: SportsViewModel = viewModel(
+        factory = SportsViewModelFactory(context.applicationContext as Application)
+    )
+
+    val uiState by registerViewModel.uiState.collectAsState()
+    val deportes by sportsViewModel.sports.collectAsState()
     val focusManager = LocalFocusManager.current
     val passwordVisible = remember { mutableStateOf(false) }
-    val sportsViewModel: SportsViewModel = viewModel()
-    val deportes by sportsViewModel.sports.collectAsState()
-
     Box(
         modifier = Modifier
             .fillMaxSize()
@@ -57,7 +64,7 @@ fun RegisterScreen(
                 .fillMaxSize()
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 24.dp)
-                .padding(top = 48.dp, bottom = 64.dp), // <- Ajustamos aquí
+                .padding(top = 48.dp, bottom = 64.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
@@ -70,71 +77,67 @@ fun RegisterScreen(
                 modifier = Modifier.align(Alignment.Start)
             )
 
+            // Campos de texto
             OutlinedTextField(
                 value = uiState.name,
-                onValueChange = viewModel::onNameChange,
+                onValueChange = registerViewModel::onNameChange,
                 label = { Text("Nombre") },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
                 colors = defaultFieldColors()
             )
-
             OutlinedTextField(
                 value = uiState.lastName,
-                onValueChange = viewModel::onLastNameChange,
+                onValueChange = registerViewModel::onLastNameChange,
                 label = { Text("Apellido") },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
                 colors = defaultFieldColors()
             )
-
             OutlinedTextField(
                 value = uiState.telefono,
-                onValueChange = viewModel::onTelefonoChanged,
+                onValueChange = registerViewModel::onTelefonoChanged,
                 label = { Text("Teléfono") },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
                 modifier = Modifier.fillMaxWidth(),
                 colors = defaultFieldColors()
             )
-
             OutlinedTextField(
                 value = uiState.domicilio,
-                onValueChange = viewModel::onDomicilioChanged,
+                onValueChange = registerViewModel::onDomicilioChanged,
                 label = { Text("Domicilio") },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
                 colors = defaultFieldColors()
             )
-
             OutlinedTextField(
                 value = uiState.fechaNacimiento,
-                onValueChange = viewModel::onFechaNacimientoChanged,
+                onValueChange = registerViewModel::onFechaNacimientoChanged,
                 label = { Text("Fecha de nacimiento (dd/mm/aaaa)") },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
                 modifier = Modifier.fillMaxWidth(),
                 colors = defaultFieldColors()
             )
-
             OutlinedTextField(
                 value = uiState.email,
-                onValueChange = viewModel::onEmailChange,
+                onValueChange = registerViewModel::onEmailChange,
                 label = { Text("Correo electrónico") },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
                 modifier = Modifier.fillMaxWidth(),
                 colors = defaultFieldColors()
             )
-
             OutlinedTextField(
                 value = uiState.password,
-                onValueChange = viewModel::onPasswordChanged,
+                onValueChange = registerViewModel::onPasswordChanged,
                 label = { Text("Contraseña") },
                 singleLine = true,
                 visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
                 trailingIcon = {
-                    val icon = if (passwordVisible.value) Icons.Default.Visibility else Icons.Default.VisibilityOff
+                    val icon =
+                        if (passwordVisible.value) Icons.Default.Visibility else Icons.Default.VisibilityOff
                     IconButton(onClick = { passwordVisible.value = !passwordVisible.value }) {
                         Icon(icon, contentDescription = null)
                     }
@@ -143,10 +146,9 @@ fun RegisterScreen(
                 modifier = Modifier.fillMaxWidth(),
                 colors = defaultFieldColors()
             )
-
             OutlinedTextField(
                 value = uiState.confirmPassword,
-                onValueChange = viewModel::onRepeatPasswordChanged,
+                onValueChange = registerViewModel::onRepeatPasswordChanged,
                 label = { Text("Repetir contraseña") },
                 singleLine = true,
                 visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
@@ -168,11 +170,11 @@ fun RegisterScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable { viewModel.onDeporteFavoritoToggle(sport.id) }
+                            .clickable { registerViewModel.onDeporteFavoritoToggle(sport.id) }
                     ) {
                         Checkbox(
                             checked = isSelected,
-                            onCheckedChange = { viewModel.onDeporteFavoritoToggle(sport.id) },
+                            onCheckedChange = { registerViewModel.onDeporteFavoritoToggle(sport.id) },
                             colors = CheckboxDefaults.colors(
                                 checkedColor = Color.White,
                                 uncheckedColor = Color.White,
@@ -191,9 +193,13 @@ fun RegisterScreen(
             Button(
                 onClick = {
                     focusManager.clearFocus()
-                    viewModel.onRegisterClick(
+                    registerViewModel.onRegisterClick(
                         onSuccess = {
-                            Toast.makeText(context, "Revisa tu correo para confirmar el registro", Toast.LENGTH_LONG).show()
+                            Toast.makeText(
+                                context,
+                                "Revisa tu correo para confirmar el registro",
+                                Toast.LENGTH_LONG
+                            ).show()
                             navController.popBackStack()
                         },
                         onError = {

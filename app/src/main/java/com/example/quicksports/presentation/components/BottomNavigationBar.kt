@@ -15,7 +15,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.quicksports.R
-import com.example.quicksports.Screen
+import com.example.quicksports.presentation.Navigation.Screen
 @Composable
 fun BottomNavigationBar(
     navController: NavController,

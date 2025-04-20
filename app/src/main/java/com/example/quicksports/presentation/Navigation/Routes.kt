@@ -1,4 +1,4 @@
-package com.example.quicksports
+package com.example.quicksports.presentation.Navigation
 
 
 sealed class Screen(val route: String) {

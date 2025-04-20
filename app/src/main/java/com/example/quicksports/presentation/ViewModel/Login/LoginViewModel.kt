@@ -1,4 +1,4 @@
-package com.example.quicksports.presentation.ViewModel
+package com.example.quicksports.presentation.ViewModel.Login
 
 import android.content.Context
 import androidx.lifecycle.ViewModel

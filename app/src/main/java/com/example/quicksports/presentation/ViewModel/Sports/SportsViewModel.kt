@@ -1,10 +1,8 @@
-package com.example.quicksports.presentation.ViewModel
-
+package com.example.quicksports.presentation.ViewModel.Sports
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.quicksports.R
 import com.example.quicksports.data.models.Sport
 import com.example.quicksports.data.repository.SportsRepository
 import kotlinx.coroutines.flow.MutableStateFlow

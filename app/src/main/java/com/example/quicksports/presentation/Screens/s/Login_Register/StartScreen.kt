@@ -12,7 +12,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.example.quicksports.Screen
+import com.example.quicksports.presentation.Navigation.Screen
 import com.example.quicksports.presentation.components.QuickSportsTitle
 
 @Composable

@@ -18,7 +18,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.quicksports.presentation.ViewModel.UserViewModel
+import com.example.quicksports.presentation.ViewModel.User.UserViewModel
 import com.example.quicksports.R
 import android.widget.Toast
 import androidx.annotation.DrawableRes
@@ -31,12 +31,16 @@ import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import com.example.quicksports.presentation.Screens.BottomNavigationBar
 import androidx.core.content.edit
+import com.example.quicksports.data.repository.AuthRepository
+import com.example.quicksports.presentation.ViewModel.User.UserViewModelFactory
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun PerfilScreen(
     navController: NavController,
-    userViewModel: UserViewModel = viewModel(),
+    userViewModel: UserViewModel = viewModel(
+        factory = UserViewModelFactory(AuthRepository())
+    ),
     onEditProfileClick: () -> Unit,
     onLogout: () -> Unit
 ) {

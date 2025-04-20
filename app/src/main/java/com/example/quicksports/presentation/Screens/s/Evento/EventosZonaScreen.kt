@@ -19,14 +19,17 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.quicksports.presentation.Screens.BottomNavigationBar
-import com.example.quicksports.presentation.ViewModel.EventosZonaViewModel
+import com.example.quicksports.presentation.ViewModel.Eventos.EventosZonaViewModel
+import com.example.quicksports.presentation.ViewModel.Eventos.EventosZonaViewModelFactory
 import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun EventosZonaScreen(viewModel: EventosZonaViewModel = viewModel(), navController: NavController) {
+fun EventosZonaScreen(
+    navController: NavController,
+    viewModel: EventosZonaViewModel = viewModel(factory = EventosZonaViewModelFactory())
+) {
     val context = LocalContext.current
     val eventos = viewModel.eventosZona.collectAsState().value
 

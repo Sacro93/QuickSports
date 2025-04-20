@@ -1,5 +1,6 @@
 package com.example.quicksports.presentation.Screens
 
+import android.app.Application
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.compose.animation.core.animateFloatAsState
@@ -33,23 +34,31 @@ import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.Font
 import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
-import com.example.quicksports.Screen
-import com.example.quicksports.presentation.ViewModel.CenterViewModel
-import com.example.quicksports.presentation.ViewModel.CrearEventoViewModel
-import com.example.quicksports.presentation.ViewModel.SportsViewModel
+import com.example.quicksports.presentation.Navigation.Screen
+import com.example.quicksports.presentation.ViewModel.Center.CenterViewModel
+import com.example.quicksports.presentation.ViewModel.Center.CenterViewModelFactory
+import com.example.quicksports.presentation.ViewModel.Eventos.CrearEventoViewModel
+import com.example.quicksports.presentation.ViewModel.Eventos.CrearEventoViewModelFactory
+import com.example.quicksports.presentation.ViewModel.Sports.SportsViewModel
+import com.example.quicksports.presentation.ViewModel.Sports.SportsViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CrearEventoScreen(
     navController: NavController,
-    crearEventoViewModel: CrearEventoViewModel,
-    centerViewModel: CenterViewModel = viewModel(),
-    sportsViewModel: SportsViewModel = viewModel()
-) {
+    crearEventoViewModel: CrearEventoViewModel = viewModel(factory = CrearEventoViewModelFactory()),
+    centerViewModel: CenterViewModel = viewModel(
+        factory = CenterViewModelFactory(LocalContext.current.applicationContext as Application)
+    ),
+    sportsViewModel: SportsViewModel = viewModel(
+        factory = SportsViewModelFactory(LocalContext.current.applicationContext as Application)
+    )
+)  {
     val selectedSport by crearEventoViewModel.selectedSport.collectAsState()
     val selectedCenter by crearEventoViewModel.selectedCenter.collectAsState()
     val sports by sportsViewModel.sports.collectAsState()

@@ -1,4 +1,5 @@
 package com.example.quicksports.presentation.Screens.s.Centros
+import android.app.Application
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -15,7 +16,6 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
@@ -25,16 +25,22 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.quicksports.presentation.Screens.BottomNavigationBar
-import com.example.quicksports.presentation.ViewModel.CenterViewModel
-import com.example.quicksports.presentation.ViewModel.SportsViewModel
+import com.example.quicksports.presentation.ViewModel.Center.CenterViewModel
+import com.example.quicksports.presentation.ViewModel.Center.CenterViewModelFactory
+import com.example.quicksports.presentation.ViewModel.Sports.SportsViewModel
+import com.example.quicksports.presentation.ViewModel.Sports.SportsViewModelFactory
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CentrosScreen(
     navController: NavController,
-    centerViewModel: CenterViewModel = viewModel(),
-    sportsViewModel: SportsViewModel = viewModel()
-) {
+    centerViewModel: CenterViewModel = viewModel(
+        factory = CenterViewModelFactory(LocalContext.current.applicationContext as Application)
+    ),
+    sportsViewModel: SportsViewModel = viewModel(
+        factory = SportsViewModelFactory(LocalContext.current.applicationContext as Application)
+    )
+){
     val centros by centerViewModel.centros.collectAsState()
     val deportes by sportsViewModel.sports.collectAsState()
     var deporteSeleccionado by remember { mutableStateOf<Int?>(null) }

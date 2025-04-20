@@ -26,19 +26,26 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.quicksports.presentation.ViewModel.LoginViewModel
+import com.example.quicksports.presentation.ViewModel.Login.LoginViewModel
 import com.example.quicksports.R
-import com.example.quicksports.Screen
+import com.example.quicksports.presentation.Navigation.Screen
+import com.example.quicksports.data.repository.AuthRepository
+import com.example.quicksports.presentation.ViewModel.Login.LoginViewModelFactory
 import com.example.quicksports.presentation.components.QuickSportsTitle
 @Composable
 fun LoginScreen(
     navController: NavController,
-    viewModel: LoginViewModel = viewModel()
+    viewModel: LoginViewModel
+
 ) {
-    val uiState by viewModel.uiState.collectAsState()
+
     val context = LocalContext.current
     val focusManager = LocalFocusManager.current
     val passwordVisible = remember { mutableStateOf(false) }
+
+    val loginViewModel = viewModel
+
+    val uiState by loginViewModel.uiState.collectAsState()
 
     Column(
         modifier = Modifier
@@ -69,7 +76,7 @@ fun LoginScreen(
 
         OutlinedTextField(
             value = uiState.email,
-            onValueChange = viewModel::onEmailChange,
+            onValueChange = loginViewModel::onEmailChange,
             label = { Text("Correo electrónico") },
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
@@ -81,7 +88,7 @@ fun LoginScreen(
 
         OutlinedTextField(
             value = uiState.password,
-            onValueChange = viewModel::onPasswordChange,
+            onValueChange = loginViewModel::onPasswordChange,
             label = { Text("Contraseña") },
             singleLine = true,
             visualTransformation = if (passwordVisible.value) VisualTransformation.None else PasswordVisualTransformation(),
@@ -106,7 +113,7 @@ fun LoginScreen(
         ) {
             Checkbox(
                 checked = uiState.keepLoggedIn,
-                onCheckedChange = viewModel::onKeepLoggedInChange,
+                onCheckedChange = loginViewModel::onKeepLoggedInChange,
                 colors = CheckboxDefaults.colors(
                     checkedColor = Color.White,
                     uncheckedColor = Color.White,
@@ -129,7 +136,7 @@ fun LoginScreen(
         Button(
             onClick = {
                 focusManager.clearFocus()
-                viewModel.onLoginClick(
+                loginViewModel.onLoginClick(
                     context = context,
                     onSuccess = {
                         Toast.makeText(context, "Inicio de sesión exitoso", Toast.LENGTH_SHORT).show()

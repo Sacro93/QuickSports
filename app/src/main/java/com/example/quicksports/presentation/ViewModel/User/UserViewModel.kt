@@ -1,4 +1,4 @@
-package com.example.quicksports.presentation.ViewModel
+package com.example.quicksports.presentation.ViewModel.User
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope

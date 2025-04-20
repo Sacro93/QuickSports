@@ -1,16 +1,15 @@
-package com.example.quicksports.presentation.ViewModel
-
+package com.example.quicksports.presentation.ViewModel.Eventos
 
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
-import com.example.quicksports.data.repository.EventosZonaRepository
 import com.example.quicksports.data.models.EventoZona
+import com.example.quicksports.data.repository.EventosZonaRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
 @RequiresApi(Build.VERSION_CODES.O)
-class EventosZonaViewModel : ViewModel() {
+class EventosZonaViewModel(repository1: EventosZonaRepository) : ViewModel() {
     private val repository = EventosZonaRepository()
 
     private val _eventosZona = MutableStateFlow<List<EventoZona>>(emptyList())

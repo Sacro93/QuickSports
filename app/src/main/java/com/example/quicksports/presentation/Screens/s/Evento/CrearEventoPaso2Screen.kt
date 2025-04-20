@@ -1,5 +1,6 @@
 package com.example.quicksports.presentation.Screens.s.Evento
 
+import android.app.Application
 import android.app.DatePickerDialog
 import android.app.TimePickerDialog
 import android.os.Build
@@ -31,24 +32,32 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.quicksports.presentation.ViewModel.CrearEventoViewModel
+import com.example.quicksports.presentation.ViewModel.Eventos.CrearEventoViewModel
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
-import com.example.quicksports.Screen
+import com.example.quicksports.presentation.Navigation.Screen
 import com.example.quicksports.data.repository.EventoRepository
-import com.example.quicksports.presentation.ViewModel.FriendsViewModel
+import com.example.quicksports.presentation.ViewModel.Eventos.CrearEventoViewModelFactory
+import com.example.quicksports.presentation.ViewModel.Friends.FriendsViewModel
+import com.example.quicksports.presentation.ViewModel.Friends.FriendsViewModelFactory
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import com.example.quicksports.presentation.components.CuentaRegresivaConCancelacion
+
+
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun CrearEventoPaso2Screen(
     navController: NavController,
-    crearEventoViewModel: CrearEventoViewModel,
-    friendsViewModel: FriendsViewModel = viewModel()
+     crearEventoViewModel: CrearEventoViewModel = viewModel(
+        factory = CrearEventoViewModelFactory()
+    ),
+    friendsViewModel: FriendsViewModel = viewModel(
+        factory = FriendsViewModelFactory(LocalContext.current.applicationContext as Application)
+    )
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()

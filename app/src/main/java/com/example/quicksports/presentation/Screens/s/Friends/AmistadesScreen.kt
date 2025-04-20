@@ -1,5 +1,6 @@
 package com.example.quicksports.presentation.Screens.s.Friends
 
+import android.app.Application
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -12,7 +13,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.quicksports.presentation.ViewModel.FriendsViewModel
+import com.example.quicksports.presentation.ViewModel.Friends.FriendsViewModel
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
@@ -33,13 +34,15 @@ import com.example.quicksports.data.SafeAvatarImage
 import com.example.quicksports.data.models.Friend
 import com.example.quicksports.presentation.Screens.BottomNavigationBar
 import com.example.quicksports.presentation.Screens.ResetFriendsButton
-import com.example.quicksports.presentation.ViewModel.SportsViewModel
+import com.example.quicksports.presentation.ViewModel.Friends.FriendsViewModelFactory
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 fun AmistadesScreen(
     navController: NavController,
-    friendsViewModel: FriendsViewModel = viewModel()
+    friendsViewModel: FriendsViewModel = viewModel(
+        factory = FriendsViewModelFactory(LocalContext.current.applicationContext as Application)
+    )
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
@@ -221,6 +224,6 @@ fun AmistadesScreen(
             )
         }
     }
- //  ResetFriendsButton(friendsViewModel = friendsViewModel)
+   ResetFriendsButton(friendsViewModel = friendsViewModel)
 
 }

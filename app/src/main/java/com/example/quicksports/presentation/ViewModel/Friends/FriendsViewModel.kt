@@ -1,12 +1,12 @@
-package com.example.quicksports.presentation.ViewModel
+package com.example.quicksports.presentation.ViewModel.Friends
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.example.quicksports.data.defaulData.DefaultFriends
+import com.example.quicksports.data.models.Friend
 import com.example.quicksports.data.repository.FriendsRepository
 import kotlinx.coroutines.flow.MutableStateFlow
-import com.example.quicksports.data.models.Friend
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 

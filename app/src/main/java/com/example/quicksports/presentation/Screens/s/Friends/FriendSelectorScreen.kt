@@ -1,6 +1,7 @@
 package com.example.quicksports.presentation.Screens.s.Friends
 
 
+import android.app.Application
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -14,8 +15,8 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.quicksports.presentation.ViewModel.CrearEventoViewModel
-import com.example.quicksports.presentation.ViewModel.FriendsViewModel
+import com.example.quicksports.presentation.ViewModel.Eventos.CrearEventoViewModel
+import com.example.quicksports.presentation.ViewModel.Friends.FriendsViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 import androidx.compose.foundation.lazy.LazyColumn
@@ -28,7 +29,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import com.example.quicksports.data.SafeAvatarImage
-import com.example.quicksports.presentation.ViewModel.SportsViewModel
+import com.example.quicksports.presentation.ViewModel.Friends.FriendsViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
@@ -36,7 +37,9 @@ import com.example.quicksports.presentation.ViewModel.SportsViewModel
 fun FriendSelectorScreen(
     navController: NavController,
     crearEventoViewModel: CrearEventoViewModel,
-    friendsViewModel: FriendsViewModel = viewModel()
+    friendsViewModel: FriendsViewModel = viewModel(
+        factory = FriendsViewModelFactory(LocalContext.current.applicationContext as Application)
+    )
 ) {
     val context = LocalContext.current
     val scope = rememberCoroutineScope()

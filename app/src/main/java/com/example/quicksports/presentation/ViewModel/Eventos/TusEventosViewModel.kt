@@ -1,16 +1,15 @@
-package com.example.quicksports.presentation.ViewModel
+package com.example.quicksports.presentation.ViewModel.Eventos
 
 import android.app.Application
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.quicksports.data.repository.EventoRepository
 import com.example.quicksports.data.models.Evento
+import com.example.quicksports.data.repository.EventoRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-
 
 @RequiresApi(Build.VERSION_CODES.O)
 class TusEventosViewModel(application: Application) : AndroidViewModel(application) {
@@ -32,4 +31,3 @@ class TusEventosViewModel(application: Application) : AndroidViewModel(applicati
         }
     }
 }
-
