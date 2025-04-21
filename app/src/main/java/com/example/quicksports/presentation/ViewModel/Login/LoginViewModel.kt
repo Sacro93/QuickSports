@@ -3,7 +3,7 @@ package com.example.quicksports.presentation.ViewModel.Login
 import android.content.Context
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.example.quicksports.data.PreferenceManager
+import com.example.quicksports.data.preferences.PreferenceManager
 import com.example.quicksports.data.models.LoginUiState
 import com.example.quicksports.data.repository.AuthRepository
 import kotlinx.coroutines.flow.MutableStateFlow

@@ -4,7 +4,6 @@ package com.example.quicksports.presentation.Screens
 import android.widget.Toast
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.tween
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
@@ -14,27 +13,22 @@ import androidx.compose.material.icons.filled.Notifications
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.example.quicksports.presentation.Navigation.Screen
 import com.example.quicksports.R
 import com.example.quicksports.data.defaulData.DefaultFriends
-import com.example.quicksports.presentation.CarouselPublicidadRes
+import com.example.quicksports.presentation.components.CarouselPublicidadRes
 import com.example.quicksports.presentation.ViewModel.Friends.FriendsViewModel
 import com.example.quicksports.presentation.components.QuickSportsTitle
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 
@@ -64,7 +58,6 @@ fun HomeScreen(navController: NavController) {
                 )
                 .padding(innerPadding)
         ) {
-            // Ícono de notificaciones con badge animado (arriba a la derecha)
             Box(
                 modifier = Modifier
                     .align(Alignment.TopEnd)
@@ -153,6 +146,7 @@ fun HomeScreen(navController: NavController) {
                     modifier = Modifier.fillMaxWidth()
                 )
             }
+
         }
     }
 }

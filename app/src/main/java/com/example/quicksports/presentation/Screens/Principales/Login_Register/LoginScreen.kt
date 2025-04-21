@@ -1,4 +1,4 @@
-package com.example.quicksports.presentation.Screens.s.Login_Register
+package com.example.quicksports.presentation.Screens.Principales.Login_Register
 
 import android.widget.Toast
 import androidx.compose.foundation.background
@@ -24,13 +24,10 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.quicksports.presentation.ViewModel.Login.LoginViewModel
 import com.example.quicksports.R
 import com.example.quicksports.presentation.Navigation.Screen
-import com.example.quicksports.data.repository.AuthRepository
-import com.example.quicksports.presentation.ViewModel.Login.LoginViewModelFactory
 import com.example.quicksports.presentation.components.QuickSportsTitle
 @Composable
 fun LoginScreen(

@@ -1,4 +1,4 @@
-package com.example.quicksports.data
+package com.example.quicksports.data.preferences
 
 import android.content.Context
 import androidx.compose.foundation.Image

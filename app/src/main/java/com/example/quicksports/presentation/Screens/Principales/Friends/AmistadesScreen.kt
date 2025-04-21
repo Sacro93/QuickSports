@@ -1,4 +1,4 @@
-package com.example.quicksports.presentation.Screens.s.Friends
+package com.example.quicksports.presentation.Screens.Principales.Friends
 
 import android.app.Application
 import android.os.Build
@@ -30,7 +30,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
-import com.example.quicksports.data.SafeAvatarImage
+import com.example.quicksports.data.preferences.SafeAvatarImage
 import com.example.quicksports.data.models.Friend
 import com.example.quicksports.presentation.Screens.BottomNavigationBar
 import com.example.quicksports.presentation.Screens.ResetFriendsButton

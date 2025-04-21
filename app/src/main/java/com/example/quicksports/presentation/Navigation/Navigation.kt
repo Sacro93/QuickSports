@@ -10,22 +10,23 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
-import com.example.quicksports.data.PreferenceManager
+import com.example.quicksports.data.preferences.PreferenceManager
 import com.example.quicksports.data.repository.AuthRepository
 import com.example.quicksports.presentation.Screens.CrearEventoScreen
 import com.example.quicksports.presentation.Screens.HomeScreen
-import com.example.quicksports.presentation.Screens.s.Centros.CentrosScreen
-import com.example.quicksports.presentation.Screens.s.Evento.CrearEventoPaso2Screen
-import com.example.quicksports.presentation.Screens.s.Evento.EventosZonaScreen
-import com.example.quicksports.presentation.Screens.s.Evento.TusEventosScreen
-import com.example.quicksports.presentation.Screens.s.Friends.AmistadesScreen
-import com.example.quicksports.presentation.Screens.s.Friends.FriendSelectorScreen
-import com.example.quicksports.presentation.Screens.s.Login_Register.LoginScreen
-import com.example.quicksports.presentation.Screens.s.Login_Register.RegisterScreen
-import com.example.quicksports.presentation.Screens.s.Login_Register.StartScreen
-import com.example.quicksports.presentation.Screens.s.Notificaciones.NotificationsScreen
-import com.example.quicksports.presentation.Screens.s.Profile.EditarPerfilScreen
-import com.example.quicksports.presentation.Screens.s.Profile.PerfilScreen
+import com.example.quicksports.presentation.Screens.Principales.Centros.CentrosScreen
+import com.example.quicksports.presentation.Screens.Principales.Evento.CrearEventoPaso2Screen
+import com.example.quicksports.presentation.Screens.Principales.Evento.EventosZonaScreen
+import com.example.quicksports.presentation.Screens.Principales.Evento.TusEventosScreen
+import com.example.quicksports.presentation.Screens.Principales.Faqs.FaqScreen
+import com.example.quicksports.presentation.Screens.Principales.Friends.AmistadesScreen
+import com.example.quicksports.presentation.Screens.Principales.Friends.FriendSelectorScreen
+import com.example.quicksports.presentation.Screens.Principales.Login_Register.LoginScreen
+import com.example.quicksports.presentation.Screens.Principales.Login_Register.RegisterScreen
+import com.example.quicksports.presentation.Screens.Principales.Login_Register.StartScreen
+import com.example.quicksports.presentation.Screens.Principales.Notificaciones.NotificationsScreen
+import com.example.quicksports.presentation.Screens.Principales.Profile.EditarPerfilScreen
+import com.example.quicksports.presentation.Screens.Principales.Profile.PerfilScreen
 import com.example.quicksports.presentation.ViewModel.Center.CenterViewModelFactory
 import com.example.quicksports.presentation.ViewModel.Eventos.CrearEventoViewModel
 import com.example.quicksports.presentation.ViewModel.Eventos.CrearEventoViewModelFactory
@@ -84,6 +85,10 @@ fun Navigation() {
         composable(Screen.Home.route) {
             HomeScreen(navController)
         }
+        composable(Screen.FAQ.route) {
+            FaqScreen(navController)
+        }
+
 
         composable(Screen.NotificationsScreen.route) {
             NotificationsScreen(navController = navController)

@@ -1,4 +1,4 @@
-package com.example.quicksports.presentation
+package com.example.quicksports.presentation.components
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background

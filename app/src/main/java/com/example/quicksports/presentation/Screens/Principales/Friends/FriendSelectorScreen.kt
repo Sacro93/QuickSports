@@ -1,4 +1,4 @@
-package com.example.quicksports.presentation.Screens.s.Friends
+package com.example.quicksports.presentation.Screens.Principales.Friends
 
 
 import android.app.Application
@@ -28,7 +28,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
-import com.example.quicksports.data.SafeAvatarImage
+import com.example.quicksports.data.preferences.SafeAvatarImage
 import com.example.quicksports.presentation.ViewModel.Friends.FriendsViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)

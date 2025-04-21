@@ -1,4 +1,4 @@
-package com.example.quicksports.presentation.Screens.s.Notificaciones
+package com.example.quicksports.presentation.Screens.Principales.Notificaciones
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -60,7 +60,12 @@ fun NotificationsScreen(navController: NavController) {
                 .fillMaxSize()
                 .background(
                     Brush.verticalGradient(
-                        listOf(Color(0xFF7F00FF), Color(0xFF3F51B5))
+                        listOf(
+                            Color(0xFF7F00FF),
+                            Color(0xFF3F51B5),
+                            Color(0xFF3F51B5),
+                            Color(0xFF162F3C),
+                            Color(0xFF0F1D20))
                     )
                 )
                 .padding(innerPadding)

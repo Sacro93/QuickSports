@@ -1,4 +1,4 @@
-package com.example.quicksports.presentation.Screens.s.Evento
+package com.example.quicksports.presentation.Screens.Principales.Evento
 
 
 import android.os.Build

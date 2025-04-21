@@ -1,4 +1,4 @@
-package com.example.quicksports.presentation.Screens.s.Centros
+package com.example.quicksports.presentation.Screens.Principales.Centros
 import android.app.Application
 import android.os.Build
 import android.widget.Toast

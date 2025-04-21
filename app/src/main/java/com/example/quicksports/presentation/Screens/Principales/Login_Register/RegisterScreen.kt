@@ -1,4 +1,4 @@
-package com.example.quicksports.presentation.Screens.s.Login_Register
+package com.example.quicksports.presentation.Screens.Principales.Login_Register
 
 import android.app.Application
 import android.widget.Toast
@@ -10,7 +10,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material.icons.filled.Visibility
 import androidx.compose.material.icons.filled.VisibilityOff
 import androidx.compose.material3.*
@@ -26,15 +25,11 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.quicksports.data.repository.AuthRepository
 import com.example.quicksports.presentation.ViewModel.Register.RegisterViewModel
-import com.example.quicksports.presentation.ViewModel.Register.RegisterViewModelFactory
 import com.example.quicksports.presentation.ViewModel.Sports.SportsViewModel
 import com.example.quicksports.presentation.ViewModel.Sports.SportsViewModelFactory
-import com.example.quicksports.presentation.components.QuickSportsTitle
 
 @Composable
 fun RegisterScreen(

@@ -1,10 +1,20 @@
+import java.util.Properties
+import java.io.File
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     kotlin("plugin.serialization") version "1.9.0"
     id("com.google.gms.google-services")
+
 }
+
+val localProperties = File(rootDir, "local.properties").inputStream().use {
+    Properties().apply { load(it) }
+}
+val openAiKey = localProperties["OPENAI_API_KEY"] as String
+
 
 android {
     namespace = "com.example.quicksports"
@@ -16,8 +26,9 @@ android {
         targetSdk = 35
         versionCode = 1
         versionName = "1.0"
-
+        buildConfigField("String", "OPENAI_API_KEY", "\"$openAiKey\"")
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
     }
 
     buildTypes {
@@ -28,6 +39,7 @@ android {
                 "proguard-rules.pro"
             )
         }
+
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -38,7 +50,10 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true
+
     }
+
 }
 
 dependencies {
@@ -59,6 +74,8 @@ dependencies {
     debugImplementation(libs.androidx.ui.tooling)
     debugImplementation(libs.androidx.ui.test.manifest)
 
+    //Llamadas HTTP IA
+        implementation(libs.okhttp)
 
     //compose
     implementation(libs.navigation.compose)

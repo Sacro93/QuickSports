@@ -1,4 +1,4 @@
-package com.example.quicksports.presentation.Screens.s.Login_Register
+package com.example.quicksports.presentation.Screens.Principales.Login_Register
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background

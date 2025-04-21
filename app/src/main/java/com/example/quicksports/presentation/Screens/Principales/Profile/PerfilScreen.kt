@@ -1,4 +1,4 @@
-package com.example.quicksports.presentation.Screens.s.Profile
+package com.example.quicksports.presentation.Screens.Principales.Profile
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -21,7 +21,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.quicksports.presentation.ViewModel.User.UserViewModel
 import com.example.quicksports.R
 import android.widget.Toast
-import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.rememberScrollState
@@ -32,6 +31,7 @@ import androidx.navigation.NavController
 import com.example.quicksports.presentation.Screens.BottomNavigationBar
 import androidx.core.content.edit
 import com.example.quicksports.data.repository.AuthRepository
+import com.example.quicksports.presentation.Navigation.Screen
 import com.example.quicksports.presentation.ViewModel.User.UserViewModelFactory
 
 @RequiresApi(Build.VERSION_CODES.O)
@@ -135,7 +135,7 @@ fun PerfilScreen(
                 PerfilCardSection(
                     items = listOf(
                         "Editar Perfil" to onEditProfileClick,
-                        "Ayuda" to { Toast.makeText(context, "Funcionalidad próximamente", Toast.LENGTH_SHORT).show() },
+                        "FAQs" to { navController.navigate(Screen.FAQ.route) },
                         "Método de pago" to { Toast.makeText(context, "Funcionalidad próximamente", Toast.LENGTH_SHORT).show() },
                         "Documentos y extractos" to {},
                         "Bandeja de entrada" to { Toast.makeText(context, "Sin mensajes aún", Toast.LENGTH_SHORT).show() }
