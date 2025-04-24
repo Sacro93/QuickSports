@@ -3,9 +3,8 @@ package com.example.quicksports.presentation.Screens.Principales.Profile
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Edit
@@ -23,6 +22,10 @@ import com.example.quicksports.data.repository.AuthRepository
 import com.example.quicksports.presentation.ViewModel.Sports.SportsViewModel
 import com.example.quicksports.presentation.ViewModel.User.UserViewModel
 import com.example.quicksports.presentation.ViewModel.User.UserViewModelFactory
+import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -37,7 +40,6 @@ fun EditProfileScreen(
     }
 
     val user = userViewModel.user.collectAsState().value
-
     var name by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
     var phone by remember { mutableStateOf("") }
@@ -58,10 +60,21 @@ fun EditProfileScreen(
             selectedSport.addAll(it.favoriteSports)
         }
     }
+
     Scaffold(
         topBar = {
             TopAppBar(
-                title = {},
+                title = {
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text(
+                            text = "Editar perfil",
+                            color = Color.White,
+                            style = MaterialTheme.typography.titleMedium
+                        )
+                    }
+                },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(
@@ -76,7 +89,6 @@ fun EditProfileScreen(
                 )
             )
         },
-
         containerColor = Color.Transparent
     ) { paddingValues ->
         Column(
@@ -89,24 +101,16 @@ fun EditProfileScreen(
                     )
                 )
                 .padding(paddingValues)
-                .padding(horizontal = 24.dp, vertical = 32.dp),
+                .padding(horizontal = 24.dp, vertical = 16.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(
-                "Editar perfil",
-                style = MaterialTheme.typography.headlineSmall.copy(
-                    color = Color.White,
-                    fontWeight = FontWeight.Bold
-                ),
-                modifier = Modifier.padding(bottom = 24.dp)
-            )
 
             if (user == null) {
                 Box(
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    CircularProgressIndicator()
+                    CircularProgressIndicator(color = Color.White)
                 }
             } else {
                 OutlinedTextField(
@@ -128,42 +132,15 @@ fun EditProfileScreen(
                     )
                 )
 
-                Spacer(modifier = Modifier.height(12.dp))
+                Spacer(modifier = Modifier.height(7.dp))
 
-                @Composable
-                fun editableTextField(value: String, onValueChange: (String) -> Unit, label: String) {
-                    OutlinedTextField(
-                        value = value,
-                        onValueChange = onValueChange,
-                        label = { Text(label, color = Color.White) },
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        trailingIcon = {
-                            Icon(
-                                imageVector = Icons.Default.Edit,
-                                contentDescription = "Editar",
-                                tint = Color.White.copy(alpha = 0.7f)
-                            )
-                        },
-                        colors = OutlinedTextFieldDefaults.colors(
-                            focusedTextColor = Color.White,
-                            unfocusedTextColor = Color.White,
-                            focusedContainerColor = Color.White.copy(alpha = 0.05f),
-                            unfocusedContainerColor = Color.White.copy(alpha = 0.03f),
-                            focusedLabelColor = Color.White,
-                            unfocusedLabelColor = Color.White.copy(alpha = 0.7f),
-                            cursorColor = Color.White
-                        )
-                    )
-                    Spacer(modifier = Modifier.height(12.dp))
-                }
+                editableField(name, { name = it }, "Nombre")
+                editableField(lastName, { lastName = it }, "Apellido")
+                editableField(phone, { phone = it }, "Teléfono")
+                editableField(address, { address = it }, "Domicilio")
+                editableField(dateBirth, { dateBirth = it }, "Fecha de nacimiento")
 
-                editableTextField(name, { name = it }, "Nombre")
-                editableTextField(lastName, { lastName = it }, "Apellido")
-                editableTextField(phone, { phone = it }, "Teléfono")
-                editableTextField(address, { address = it }, "Domicilio")
-                editableTextField(dateBirth, { dateBirth = it }, "Fecha de nacimiento")
-                Spacer(modifier = Modifier.height(16.dp))
+                Spacer(modifier = Modifier.height(10.dp))
 
                 Text(
                     "Deportes favoritos:",
@@ -173,43 +150,46 @@ fun EditProfileScreen(
                     )
                 )
 
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(4.dp))
 
-                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-                    sports.forEach { sport ->
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .clickable {
-                                    if (selectedSport.contains(sport.id)) {
-                                        selectedSport.remove(sport.id)
-                                    } else {
-                                        selectedSport.add(sport.id)
-                                    }
-                                }
-                        ) {
-                            Checkbox(
-                                checked = selectedSport.contains(sport.id),
-                                onCheckedChange = {
-                                    if (it) selectedSport.add(sport.id)
-                                    else selectedSport.remove(sport.id)
-                                },
-                                colors = CheckboxDefaults.colors(
-                                    checkedColor = Color.White,
-                                    uncheckedColor = Color.White,
-                                    checkmarkColor = Color.Black
+                Card(
+                    modifier = Modifier.fillMaxWidth(),
+                    colors = CardDefaults.cardColors(containerColor = Color.White.copy(alpha = 0.05f)),
+                    shape = RoundedCornerShape(12.dp),
+                    elevation = CardDefaults.cardElevation(4.dp)
+                ) {
+                    Column(
+                        modifier = Modifier.padding(5.dp),
+                        verticalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        sports.forEach { sport ->
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                modifier = Modifier.fillMaxWidth()
+                            ) {
+                                Checkbox(
+                                    checked = selectedSport.contains(sport.id),
+                                    onCheckedChange = {
+                                        if (it) selectedSport.add(sport.id)
+                                        else selectedSport.remove(sport.id)
+                                    },
+                                    colors = CheckboxDefaults.colors(
+                                        checkedColor = Color.White,
+                                        uncheckedColor = Color.White,
+                                        checkmarkColor = Color.Black
+                                    )
                                 )
-                            )
-                            Text(
-                                text = sport.name,
-                                color = Color.White,
-                                style = MaterialTheme.typography.bodyLarge
-                            )
+                                Text(
+                                    text = sport.name,
+                                    color = Color.White,
+                                    style = MaterialTheme.typography.bodyLarge
+                                )
+                            }
                         }
                     }
                 }
-                Spacer(modifier = Modifier.height(24.dp))
+
+                Spacer(modifier = Modifier.height(20.dp))
 
                 Button(
                     onClick = {
@@ -219,8 +199,7 @@ fun EditProfileScreen(
                             phone = phone,
                             address = address,
                             dateBirth = dateBirth,
-                                    favoriteSports = selectedSport.toList()
-
+                            favoriteSports = selectedSport.toList()
                         )
                         userViewModel.updateUserProfile(updated) { success ->
                             if (success) {
@@ -230,13 +209,41 @@ fun EditProfileScreen(
                     },
                     modifier = Modifier
                         .fillMaxWidth()
-                        .height(52.dp),
+                        .height(50.dp),
                     colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFCCCCCC)),
-                    shape = RoundedCornerShape(8.dp)
+                    shape = RoundedCornerShape(12.dp)
                 ) {
                     Text("Guardar cambios", color = Color.Black)
                 }
             }
         }
     }
+}
+
+
+@Composable
+fun editableField(value: String, onChange: (String) -> Unit, label: String) {
+    OutlinedTextField(
+        value = value,
+        onValueChange = onChange,
+        label = { Text(label, color = Color.White) },
+        modifier = Modifier.fillMaxWidth(),
+        trailingIcon = {
+            Icon(
+                imageVector = Icons.Default.Edit,
+                contentDescription = null,
+                tint = Color.White.copy(alpha = 0.7f)
+            )
+        },
+        colors = OutlinedTextFieldDefaults.colors(
+            focusedTextColor = Color.White,
+            unfocusedTextColor = Color.White,
+            focusedContainerColor = Color.White.copy(alpha = 0.05f),
+            unfocusedContainerColor = Color.White.copy(alpha = 0.03f),
+            focusedLabelColor = Color.White,
+            unfocusedLabelColor = Color.White.copy(alpha = 0.7f),
+            cursorColor = Color.White
+        )
+    )
+    Spacer(modifier = Modifier.height(16.dp))
 }
