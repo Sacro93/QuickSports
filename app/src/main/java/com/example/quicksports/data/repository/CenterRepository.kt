@@ -8,11 +8,11 @@ class CenterRepository(context: Context) {
 
     private val storage = CenterStorage(context)
 
-    suspend fun obtenerCentros(): List<Center> {
+    suspend fun getCenters(): List<Center> {
         return storage.loadCenters()
     }
 
-    suspend fun guardarCentros(centros: List<Center>) {
-        storage.saveCenters(centros)
+    suspend fun saveCenter(centers: List<Center>) {
+        storage.saveCenters(centers)
     }
 }

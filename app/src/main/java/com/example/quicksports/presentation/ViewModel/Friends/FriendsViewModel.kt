@@ -19,39 +19,39 @@ class FriendsViewModel(application: Application) : AndroidViewModel(application)
 
     init {
         viewModelScope.launch {
-            cargarSiVacioFriends()
+            loadYesEmptyFriends()
         }
     }
 
-    private suspend fun cargarSiVacioFriends() {
-        val cargados = repository.obtenerAmigos()
-        if (cargados.isEmpty()) {
-            val porDefecto = DefaultFriends.get()
-            repository.guardarAmigos(porDefecto)
-            _friends.value = porDefecto
+    private suspend fun loadYesEmptyFriends() {
+        val loaded = repository.getFriends()
+        if (loaded.isEmpty()) {
+            val default = DefaultFriends.get()
+            repository.saveFriends(default)
+            _friends.value = default
         } else {
-            _friends.value = cargados
+            _friends.value = loaded
         }
     }
 
     fun loadFriends() {
         viewModelScope.launch {
-            cargarSiVacioFriends()
+            loadYesEmptyFriends()
         }
     }
 
-    fun eliminarAmigo(phone: String) {
+    fun deleteFriend(phone: String) {
         viewModelScope.launch {
-            val actual = repository.obtenerAmigos()
-            val nuevos = actual.filter { it.phone != phone }
-            repository.guardarAmigos(nuevos)
-            _friends.value = nuevos
+            val actual = repository.getFriends()
+            val news = actual.filter { it.phone != phone }
+            repository.saveFriends(news)
+            _friends.value = news
         }
     }
-    fun reemplazarAmigos(nuevos: List<Friend>) {
+    fun replaceFriends(news: List<Friend>) {
         viewModelScope.launch {
-            repository.guardarAmigos(nuevos)
-            _friends.value = nuevos
+            repository.saveFriends(news)
+            _friends.value = news
         }
     }
 

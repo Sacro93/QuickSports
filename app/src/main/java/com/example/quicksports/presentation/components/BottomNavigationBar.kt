@@ -29,9 +29,9 @@ fun BottomNavigationBar(
     ) {
         val items = listOf(
             Triple("Inicio", Icons.Default.Home, Screen.Home.route),
-            Triple("Amistades", Icons.Default.Person, Screen.Amistades.route),
-            Triple("Centros", Icons.Default.Place, Screen.Centros.route),
-            Triple("Perfil", Icons.Default.AccountCircle, Screen.Perfil.route)
+            Triple("Amistades", Icons.Default.Person, Screen.Friends.route),
+            Triple("Centros", Icons.Default.Place, Screen.Centers.route),
+            Triple("Perfil", Icons.Default.AccountCircle, Screen.Profile.route)
         )
 
         items.forEach { (label, icon, route) ->

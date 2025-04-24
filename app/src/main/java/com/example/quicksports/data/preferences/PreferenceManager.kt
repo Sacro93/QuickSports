@@ -39,7 +39,6 @@ fun SafeAvatarImage(resourceId: Int?, fallback: Int = R.drawable.mujer_2) {
         val resId = resourceId ?: fallback
         val fallbackRes = fallback
 
-        // Verificamos si el recurso existe en tiempo de ejecución
         val typedValue = context.resources.getIdentifier(
             context.resources.getResourceEntryName(resId),
             "drawable",

@@ -75,10 +75,10 @@ fun FaqScreen(
                         .clickable { expandedStates[index] = !expanded }
                         .padding(16.dp)
                 ) {
-                    Text(faq.pregunta, color = Color.White, fontWeight = FontWeight.Bold)
+                    Text(faq.question, color = Color.White, fontWeight = FontWeight.Bold)
                     if (expanded) {
                         Spacer(modifier = Modifier.height(8.dp))
-                        Text(faq.respuesta, color = Color.White.copy(alpha = 0.9f))
+                        Text(faq.answer, color = Color.White.copy(alpha = 0.9f))
                     }
                 }
             }

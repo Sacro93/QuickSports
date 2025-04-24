@@ -32,14 +32,14 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.quicksports.presentation.ViewModel.Eventos.CrearEventoViewModel
+import com.example.quicksports.presentation.ViewModel.Eventos.CreateEventViewModel
 import java.time.LocalDate
 import java.time.LocalDateTime
 import java.time.LocalTime
 import java.time.format.DateTimeFormatter
 import com.example.quicksports.presentation.Navigation.Screen
-import com.example.quicksports.data.repository.EventoRepository
-import com.example.quicksports.presentation.ViewModel.Eventos.CrearEventoViewModelFactory
+import com.example.quicksports.data.repository.EventRepository
+import com.example.quicksports.presentation.ViewModel.Eventos.EventsAreaViewModelFactory
 import com.example.quicksports.presentation.ViewModel.Friends.FriendsViewModel
 import com.example.quicksports.presentation.ViewModel.Friends.FriendsViewModelFactory
 import kotlinx.coroutines.delay
@@ -50,10 +50,10 @@ import com.example.quicksports.presentation.components.CuentaRegresivaConCancela
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun CrearEventoPaso2Screen(
+fun CreateEventScreen2(
     navController: NavController,
-     crearEventoViewModel: CrearEventoViewModel = viewModel(
-        factory = CrearEventoViewModelFactory()
+     createEventViewModel: CreateEventViewModel = viewModel(
+        factory = EventsAreaViewModelFactory()
     ),
     friendsViewModel: FriendsViewModel = viewModel(
         factory = FriendsViewModelFactory(LocalContext.current.applicationContext as Application)
@@ -62,22 +62,22 @@ fun CrearEventoPaso2Screen(
     val context = LocalContext.current
     val scope = rememberCoroutineScope()
 
-    val eventoRepository = remember { EventoRepository(context) }
+    val eventRepository = remember { EventRepository(context) }
 
-    val selectedSport by crearEventoViewModel.selectedSport.collectAsState()
-    val selectedCenter by crearEventoViewModel.selectedCenter.collectAsState()
-    val fechaHora by crearEventoViewModel.fechaHora.collectAsState()
-    val maxParticipantes by crearEventoViewModel.maxParticipantes.collectAsState()
-    val amigosInvitados by crearEventoViewModel.amigosInvitados.collectAsState()
+    val selectedSport by createEventViewModel.selectedSport.collectAsState()
+    val selectedCenter by createEventViewModel.selectedCenter.collectAsState()
+    val dateTime by createEventViewModel.dateTime.collectAsState()
+    val maxParticipants by createEventViewModel.maxParticipants.collectAsState()
+    val invitedFriends by createEventViewModel.invitedFriends.collectAsState()
 
-    var localDateTime by remember { mutableStateOf(fechaHora ?: LocalDateTime.now()) }
+    var localDateTime by remember { mutableStateOf(dateTime ?: LocalDateTime.now()) }
     var showConfirmDialog by remember { mutableStateOf(false) }
-    var cantidad by remember { mutableIntStateOf(maxParticipantes.takeIf { it > 0 } ?: 0) }
+    var quantity by remember { mutableIntStateOf(maxParticipants.takeIf { it > 0 } ?: 0) }
 
     val dateText = remember(localDateTime) { localDateTime.toLocalDate().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")) }
     val timeText = remember(localDateTime) { localDateTime.toLocalTime().format(DateTimeFormatter.ofPattern("HH:mm")) }
 
-    val isFormValid = selectedSport != null && selectedCenter != null && fechaHora != null
+    val isFormValid = selectedSport != null && selectedCenter != null && dateTime != null
 
     Scaffold(
         topBar = {
@@ -135,9 +135,9 @@ fun CrearEventoPaso2Screen(
                     selectedCenter?.let {
                         Text("Centro: ${it.name}", color = Color.White)
                     }
-                    if (amigosInvitados.isNotEmpty()) {
+                    if (invitedFriends.isNotEmpty()) {
                         Text("Amigos invitados:", color = Color.White, fontWeight = FontWeight.Bold)
-                        amigosInvitados.forEach { amigo ->
+                        invitedFriends.forEach { amigo ->
                             Text("• ${amigo.name}", color = Color.White)
                         }
                     } else {
@@ -158,7 +158,7 @@ fun CrearEventoPaso2Screen(
                                     val newDate = LocalDate.of(year, month + 1, day)
                                     val currentTime = localDateTime.toLocalTime()
                                     localDateTime = LocalDateTime.of(newDate, currentTime)
-                                    crearEventoViewModel.updateFechaHora(localDateTime)
+                                    createEventViewModel.updateDate(localDateTime)
                                 },
                                 localDateTime.year,
                                 localDateTime.monthValue - 1,
@@ -178,7 +178,7 @@ fun CrearEventoPaso2Screen(
                                     val currentDate = localDateTime.toLocalDate()
                                     val newTime = LocalTime.of(hour, minute)
                                     localDateTime = LocalDateTime.of(currentDate, newTime)
-                                    crearEventoViewModel.updateFechaHora(localDateTime)
+                                    createEventViewModel.updateDate(localDateTime)
                                 },
                                 localDateTime.hour,
                                 localDateTime.minute,
@@ -205,17 +205,17 @@ fun CrearEventoPaso2Screen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         IconButton(onClick = {
-                            if (cantidad > 0) {
-                                cantidad--
-                                crearEventoViewModel.updateMaxParticipantes(cantidad)
+                            if (quantity > 0) {
+                                quantity--
+                                createEventViewModel.updateMaxParticipants(quantity)
                             }
                         }) {
                             Icon(Icons.Default.Remove, contentDescription = null, tint = Color.White)
                         }
-                        Text("$cantidad", color = Color.White, modifier = Modifier.padding(horizontal = 8.dp))
+                        Text("$quantity", color = Color.White, modifier = Modifier.padding(horizontal = 8.dp))
                         IconButton(onClick = {
-                            cantidad++
-                            crearEventoViewModel.updateMaxParticipantes(cantidad)
+                            quantity++
+                            createEventViewModel.updateMaxParticipants(quantity)
                         }) {
                             Icon(Icons.Default.Add, contentDescription = null, tint = Color.White)
                         }
@@ -264,7 +264,7 @@ fun CrearEventoPaso2Screen(
             CuentaRegresivaConCancelacion(
                 centerPhone = selectedCenter?.contactPhone ?: "el centro",
                 onTimeout = {
-                    crearEventoViewModel.reset()
+                    createEventViewModel.reset()
                     Toast.makeText(context, "Tiempo expirado. Evento cancelado.", Toast.LENGTH_LONG).show()
                     navController.navigate(Screen.Home.route) {
                         popUpTo(0) { inclusive = true }
@@ -334,10 +334,10 @@ fun CrearEventoPaso2Screen(
 
                     Button(
                         onClick = {
-                            val evento = crearEventoViewModel.armarEvento()
-                            if (evento != null) {
+                            val event = createEventViewModel.settingUpAnEvent()
+                            if (event != null) {
                                 scope.launch {
-                                    eventoRepository.guardarEvento(evento)
+                                    eventRepository.saveEvent(event)
                                     Toast.makeText(context, "Evento guardado correctamente", Toast.LENGTH_SHORT).show()
                                     showConfirmDialog = false
                                     navController.navigate(Screen.Home.route) {

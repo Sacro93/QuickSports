@@ -22,17 +22,17 @@ class RegisterViewModel(private val repository: AuthRepository = AuthRepository(
         _uiState.value = _uiState.value.copy(lastName = value)
     }
 
-    fun onTelefonoChanged(value: String) {
-        _uiState.value = _uiState.value.copy(telefono = value)
+    fun onPhoneChanged(value: String) {
+        _uiState.value = _uiState.value.copy(phone = value)
     }
 
-    fun onDomicilioChanged(value: String) {
-        _uiState.value = _uiState.value.copy(domicilio = value)
+    fun onAddresChanged(value: String) {
+        _uiState.value = _uiState.value.copy(address = value)
     }
 
-    fun onFechaNacimientoChanged(value: String) {
+    fun onDateBirthChanged(value: String) {
         _uiState.value = _uiState.value.copy(
-            fechaNacimiento = formatearFecha(value)
+            dateBirth = formatearFecha(value)
         )
     }
 
@@ -62,11 +62,11 @@ class RegisterViewModel(private val repository: AuthRepository = AuthRepository(
                 uid = "",
                 name = state.name,
                 lastName = state.lastName,
-                telefono = state.telefono,
-                domicilio = state.domicilio,
-                fechaNacimiento = state.fechaNacimiento,
+                phone = state.phone,
+                address = state.address,
+                dateBirth = state.dateBirth,
                 email = state.email,
-                deportesFavoritos = state.deportesFavoritos
+                favoriteSports = state.favoriteSports
             )
 
             val result = repository.registerUserAndSaveProfile(state.email, state.password, profile)
@@ -96,13 +96,13 @@ class RegisterViewModel(private val repository: AuthRepository = AuthRepository(
     }
 
     fun onDeporteFavoritoToggle(id: Int) {
-        val actuales = _uiState.value.deportesFavoritos.toMutableList()
-        if (actuales.contains(id)) {
-            actuales.remove(id)
+        val current = _uiState.value.favoriteSports.toMutableList()
+        if (current.contains(id)) {
+            current.remove(id)
         } else {
-            actuales.add(id)
+            current.add(id)
         }
-        _uiState.value = _uiState.value.copy(deportesFavoritos = actuales)
+        _uiState.value = _uiState.value.copy(favoriteSports = current)
     }
 
 
@@ -111,9 +111,9 @@ class RegisterViewModel(private val repository: AuthRepository = AuthRepository(
     private fun validateForm(state: RegisterUiState): String? {
         if (state.name.isBlank()) return "El nombre no puede estar vacío."
         if (state.lastName.isBlank()) return "El apellido no puede estar vacío."
-        if (!state.telefono.matches(Regex("^\\d{9,15}$"))) return "Teléfono inválido."
+        if (!state.phone.matches(Regex("^\\d{9,15}$"))) return "Teléfono inválido."
         if (!state.email.contains("@")) return "Correo electrónico inválido."
-        if (!state.fechaNacimiento.matches(Regex("\\d{2}/\\d{2}/\\d{4}"))) return "Fecha inválida. Usa dd/mm/aaaa."
+        if (!state.dateBirth.matches(Regex("\\d{2}/\\d{2}/\\d{4}"))) return "Fecha inválida. Usa dd/mm/aaaa."
         if (!isValidPassword(state.password)) return "La contraseña debe tener al menos 8 caracteres, una mayúscula y un número."
         if (state.password != state.confirmPassword) return "Las contraseñas no coinciden."
         return null

@@ -32,7 +32,7 @@ import com.example.quicksports.presentation.ViewModel.Sports.SportsViewModelFact
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun CentrosScreen(
+fun CentersScreen(
     navController: NavController,
     centerViewModel: CenterViewModel = viewModel(
         factory = CenterViewModelFactory(LocalContext.current.applicationContext as Application)
@@ -40,18 +40,19 @@ fun CentrosScreen(
     sportsViewModel: SportsViewModel = viewModel(
         factory = SportsViewModelFactory(LocalContext.current.applicationContext as Application)
     )
-){
-    val centros by centerViewModel.centros.collectAsState()
-    val deportes by sportsViewModel.sports.collectAsState()
-    var deporteSeleccionado by remember { mutableStateOf<Int?>(null) }
+) {
+    val centers by centerViewModel.centers.collectAsState()
+    val sports by sportsViewModel.sports.collectAsState()
+    var sportSelected by remember { mutableStateOf<Int?>(null) }
     val context = LocalContext.current
 
-    val centrosFiltrados = remember(deporteSeleccionado, centros) {
-        deporteSeleccionado?.let { deporteId ->
-            centros.filter { it.sportPrices.containsKey(deporteId) }
-        } ?: centros
+    val filteredCenters = remember(sportSelected, centers) {
+        sportSelected?.let { sportId ->
+            centers.filter { it.sportPrices.containsKey(sportId) }
+        } ?: centers
     }
-//boton no se combina con fondo
+
+
     Scaffold(
         bottomBar = { BottomNavigationBar(navController) },
         containerColor = Color(0xFF000000)
@@ -87,8 +88,8 @@ fun CentrosScreen(
             LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 item {
                     FilterChip(
-                        selected = deporteSeleccionado == null,
-                        onClick = { deporteSeleccionado = null },
+                        selected = sportSelected == null,
+                        onClick = { sportSelected = null },
                         label = { Text("Todos") },
                         colors = FilterChipDefaults.filterChipColors(
                             selectedContainerColor = Color.White.copy(alpha = 0.15f),
@@ -96,11 +97,11 @@ fun CentrosScreen(
                         )
                     )
                 }
-                items(deportes) { deporte ->
+                items(sports) { sport ->
                     FilterChip(
-                        selected = deporteSeleccionado == deporte.id,
-                        onClick = { deporteSeleccionado = deporte.id },
-                        label = { Text(deporte.name) },
+                        selected = sportSelected == sport.id,
+                        onClick = { sportSelected = sport.id },
+                        label = { Text(sport.name) },
                         colors = FilterChipDefaults.filterChipColors(
                             selectedContainerColor = Color.White.copy(alpha = 0.15f),
                             labelColor = Color.White
@@ -112,7 +113,7 @@ fun CentrosScreen(
             Spacer(modifier = Modifier.height(20.dp))
 
             LazyColumn(verticalArrangement = Arrangement.spacedBy(14.dp)) {
-                items(centrosFiltrados) { centro ->
+                items(filteredCenters) { centro ->
                     Card(
                         shape = RoundedCornerShape(24.dp),
                         colors = CardDefaults.cardColors(containerColor = Color(0xFF2C3E50)),
@@ -148,23 +149,29 @@ fun CentrosScreen(
                                     )
                                 }
                             }
+
                             Text(
                                 centro.address,
                                 color = Color.White.copy(alpha = 0.85f),
                                 fontSize = 14.sp
                             )
+
                             Text(
                                 "Tel: ${centro.contactPhone}",
                                 color = Color.White.copy(alpha = 0.7f),
                                 fontSize = 13.sp
                             )
+
                             Spacer(modifier = Modifier.height(8.dp))
+
                             centro.sportPrices.forEach { (sportId, precio) ->
-                                val deporte = deportes.find { it.id == sportId }?.name ?: "Deporte"
+                                val sportName = sports.find { it.id == sportId }?.name ?: "Deporte"
                                 Text(
-                                    "$deporte: €$precio",
-                                    color = Color.White.copy(alpha = 0.9f),
-                                    fontSize = 14.sp
+                                    text = "$sportName – €$precio / hora por cancha",
+                                    style = MaterialTheme.typography.bodyMedium.copy(
+                                        color = Color.White.copy(alpha = 0.9f),
+                                        fontSize = 14.sp
+                                    )
                                 )
                             }
                         }
@@ -174,4 +181,3 @@ fun CentrosScreen(
         }
     }
 }
-

@@ -6,5 +6,5 @@ import kotlinx.serialization.Transient
 data class Sport(
     val id: Int,
     val name: String,
-    @Transient val imageRes: Int = 0 // Ignorado en la serialización, valor por defecto 0
+    @Transient val imageRes: Int = 0
 )

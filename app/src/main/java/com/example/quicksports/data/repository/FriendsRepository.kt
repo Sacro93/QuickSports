@@ -9,11 +9,11 @@ import com.example.quicksports.data.storage.FriendStorage
 class FriendsRepository(context: Context) {
     private val storage = FriendStorage(context)
 
-    suspend fun obtenerAmigos(): List<Friend> {
+    suspend fun getFriends(): List<Friend> {
         return storage.loadFriends()
     }
 
-    suspend fun guardarAmigos(amigos: List<Friend>) {
-        storage.saveFriends(amigos)
+    suspend fun saveFriends(friend: List<Friend>) {
+        storage.saveFriends(friend)
     }
 }

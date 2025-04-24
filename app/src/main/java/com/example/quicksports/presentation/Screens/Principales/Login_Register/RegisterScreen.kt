@@ -42,7 +42,7 @@ fun RegisterScreen(
     )
 
     val uiState by registerViewModel.uiState.collectAsState()
-    val deportes by sportsViewModel.sports.collectAsState()
+    val sports by sportsViewModel.sports.collectAsState()
     val focusManager = LocalFocusManager.current
     val passwordVisible = remember { mutableStateOf(false) }
     Box(
@@ -72,7 +72,6 @@ fun RegisterScreen(
                 modifier = Modifier.align(Alignment.Start)
             )
 
-            // Campos de texto
             OutlinedTextField(
                 value = uiState.name,
                 onValueChange = registerViewModel::onNameChange,
@@ -90,8 +89,8 @@ fun RegisterScreen(
                 colors = defaultFieldColors()
             )
             OutlinedTextField(
-                value = uiState.telefono,
-                onValueChange = registerViewModel::onTelefonoChanged,
+                value = uiState.phone,
+                onValueChange = registerViewModel::onPhoneChanged,
                 label = { Text("Teléfono") },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Phone),
@@ -99,16 +98,16 @@ fun RegisterScreen(
                 colors = defaultFieldColors()
             )
             OutlinedTextField(
-                value = uiState.domicilio,
-                onValueChange = registerViewModel::onDomicilioChanged,
+                value = uiState.address,
+                onValueChange = registerViewModel::onAddresChanged,
                 label = { Text("Domicilio") },
                 singleLine = true,
                 modifier = Modifier.fillMaxWidth(),
                 colors = defaultFieldColors()
             )
             OutlinedTextField(
-                value = uiState.fechaNacimiento,
-                onValueChange = registerViewModel::onFechaNacimientoChanged,
+                value = uiState.dateBirth,
+                onValueChange = registerViewModel::onDateBirthChanged,
                 label = { Text("Fecha de nacimiento (dd/mm/aaaa)") },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Number),
@@ -159,8 +158,8 @@ fun RegisterScreen(
             )
 
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                deportes.forEach { sport ->
-                    val isSelected = uiState.deportesFavoritos.contains(sport.id)
+                sports.forEach { sport ->
+                    val isSelected = uiState.favoriteSports.contains(sport.id)
                     Row(
                         verticalAlignment = Alignment.CenterVertically,
                         modifier = Modifier

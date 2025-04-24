@@ -4,9 +4,9 @@ package com.example.quicksports.data.models
         val uid: String = "",
         val name: String = "",
         val lastName: String = "",
-        val telefono: String = "",
-        val domicilio: String = "",
-        val fechaNacimiento: String = "",
+        val phone: String = "",
+        val address: String = "",
+        val dateBirth: String = "",
         val email: String = "",
-        val deportesFavoritos: List<Int> = emptyList()
+        val favoriteSports: List<Int> = emptyList()
     )

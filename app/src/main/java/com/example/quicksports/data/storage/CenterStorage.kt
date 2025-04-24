@@ -1,6 +1,7 @@
 package com.example.quicksports.data.storage
 
 import android.content.Context
+import com.example.quicksports.data.defaulData.DefaultCenters
 import com.example.quicksports.data.models.Center
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
@@ -21,9 +22,23 @@ class CenterStorage(private val context: Context) {
     suspend fun loadCenters(): List<Center> {
         return withContext(Dispatchers.IO) {
             val file = File(context.filesDir, fileName)
-            if (!file.exists()) return@withContext emptyList()
+
+            if (!file.exists()) {
+                val default = DefaultCenters.get()
+                saveCenters(default)
+                return@withContext default
+            }
+
             val json = file.readText()
-            Json.decodeFromString(json)
+
+            return@withContext try {
+                Json.decodeFromString(json)
+            } catch (e: Exception) {
+                val default = DefaultCenters.get()
+                saveCenters(default)
+                default
+            }
         }
     }
+
 }

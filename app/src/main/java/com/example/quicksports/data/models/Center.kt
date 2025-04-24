@@ -7,6 +7,6 @@ data class Center(
     val name: String,
     val address: String,
     val contactPhone: String,
-    val sportPrices: Map<Int, Double>,
-    val isFavorite: Boolean = false // << Nuevo campo
+    val sportPrices: Map<Int,Int>,
+    val isFavorite: Boolean = false
 )

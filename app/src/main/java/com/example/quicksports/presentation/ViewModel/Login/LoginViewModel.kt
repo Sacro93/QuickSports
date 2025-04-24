@@ -46,4 +46,22 @@ class LoginViewModel(private val repository: AuthRepository = AuthRepository()) 
         }
     }
 
+    fun onPasswordResetRequest(
+        context: Context,
+        onSuccess: () -> Unit,
+        onError: (String) -> Unit
+    ) {
+        val email = _uiState.value.email
+
+        viewModelScope.launch {
+            val result = repository.sendPasswordResetEmail(email)
+            if (result.isSuccess) {
+                onSuccess()
+            } else {
+                onError(result.exceptionOrNull()?.message ?: "Error al enviar correo de recuperación.")
+            }
+        }
+    }
+
+
 }

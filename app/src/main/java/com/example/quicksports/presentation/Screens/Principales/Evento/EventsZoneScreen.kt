@@ -19,19 +19,19 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.quicksports.presentation.ViewModel.Eventos.EventosZonaViewModel
-import com.example.quicksports.presentation.ViewModel.Eventos.EventosZonaViewModelFactory
+import com.example.quicksports.presentation.ViewModel.Eventos.EventsZoneViewModel
+import com.example.quicksports.presentation.ViewModel.Eventos.EventAreaViewModelFactory
 import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun EventosZonaScreen(
+fun EventsZonaScreen(
     navController: NavController,
-    viewModel: EventosZonaViewModel = viewModel(factory = EventosZonaViewModelFactory())
+    viewModel: EventsZoneViewModel = viewModel(factory = EventAreaViewModelFactory())
 ) {
     val context = LocalContext.current
-    val eventos = viewModel.eventosZona.collectAsState().value
+    val eventos = viewModel.eventsZone.collectAsState().value
 
     val solicitudesEnviadas = remember { mutableStateMapOf<Int, Boolean>() }
 

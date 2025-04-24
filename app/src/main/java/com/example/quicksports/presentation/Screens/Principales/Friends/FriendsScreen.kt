@@ -30,15 +30,15 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.quicksports.data.defaulData.DefaultFriends
 import com.example.quicksports.data.preferences.SafeAvatarImage
 import com.example.quicksports.data.models.Friend
 import com.example.quicksports.presentation.Screens.BottomNavigationBar
-import com.example.quicksports.presentation.Screens.ResetFriendsButton
 import com.example.quicksports.presentation.ViewModel.Friends.FriendsViewModelFactory
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun AmistadesScreen(
+fun FriendsScreen(
     navController: NavController,
     friendsViewModel: FriendsViewModel = viewModel(
         factory = FriendsViewModelFactory(LocalContext.current.applicationContext as Application)
@@ -91,7 +91,7 @@ fun AmistadesScreen(
             OutlinedTextField(
                 value = searchQuery,
                 onValueChange = { searchQuery = it },
-                label = { Text("Buscar por nombre o apellido") },
+                label = { Text("Buscar por nombre y apellido o email") },
                 modifier = Modifier.fillMaxWidth(),
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Text),
                 colors = OutlinedTextFieldDefaults.colors(
@@ -112,7 +112,7 @@ fun AmistadesScreen(
                     val isAdded = addedFriends.contains(friend.phone)
                     val canSendRequest = friend.name.startsWith("Valentina") || friend.name.startsWith("Tamara")
 
-                    val deportesText = friend.deportesFavoritos.joinToString(", ")
+                    val deportesText = friend.favoriteSports.joinToString(", ")
 
                     Row(
                         modifier = Modifier
@@ -135,7 +135,7 @@ fun AmistadesScreen(
                                     )
                                 )
 
-                                Spacer(modifier = Modifier.height(4.dp)) // 👈 Añade espacio entre nombre y teléfono
+                                Spacer(modifier = Modifier.height(4.dp))
 
                                 Text(
                                     text = "Tel: ${friend.phone}",
@@ -144,7 +144,7 @@ fun AmistadesScreen(
                                     )
                                 )
 
-                                Spacer(modifier = Modifier.height(2.dp)) // 👈 Opcional, pequeño espacio extra
+                                Spacer(modifier = Modifier.height(2.dp))
 
                                 Text(
                                     text = "Deportes favoritos: $deportesText",
@@ -192,7 +192,7 @@ fun AmistadesScreen(
                 confirmButton = {
                     TextButton(onClick = {
                         scope.launch {
-                            friendsViewModel.eliminarAmigo(friend.phone)
+                            friendsViewModel.deleteFriend(friend.phone)
                             friendsViewModel.loadFriends()
                             Toast.makeText(
                                 context,
@@ -224,6 +224,31 @@ fun AmistadesScreen(
             )
         }
     }
-   ResetFriendsButton(friendsViewModel = friendsViewModel)
+  // ResetFriendsButton(friendsViewModel = friendsViewModel)
 
+}
+@Composable
+fun ResetFriendsButton(friendsViewModel: FriendsViewModel) {
+    val context = LocalContext.current
+    val scope = rememberCoroutineScope()
+
+    Button(
+        onClick = {
+            scope.launch {
+                val defaultFriends = DefaultFriends.get()
+                friendsViewModel.replaceFriends(defaultFriends)
+                Toast.makeText(context, "Amigos restaurados correctamente", Toast.LENGTH_SHORT).show()
+            }
+        },
+        colors = ButtonDefaults.buttonColors(
+            containerColor = Color(0xFFD32F2F),
+            contentColor = Color.White
+        ),
+        shape = RoundedCornerShape(10.dp),
+        modifier = Modifier
+            .fillMaxWidth()
+            .padding(vertical = 8.dp)
+    ) {
+        Text("Restablecer amigos por defecto")
+    }
 }

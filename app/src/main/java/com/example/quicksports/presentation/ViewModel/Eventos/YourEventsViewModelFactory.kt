@@ -1,18 +1,19 @@
 package com.example.quicksports.presentation.ViewModel.Eventos
 
+import android.app.Application
 import android.os.Build
 import androidx.annotation.RequiresApi
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.example.quicksports.data.repository.EventosZonaRepository
 
-class EventosZonaViewModelFactory(
-    private val repository: EventosZonaRepository = EventosZonaRepository()
+class YourEventsViewModelFactory(
+    private val application: Application
 ) : ViewModelProvider.Factory {
+    @RequiresApi(Build.VERSION_CODES.O)
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        if (modelClass.isAssignableFrom(EventosZonaViewModel::class.java)) {
+        if (modelClass.isAssignableFrom(YourEventsViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return EventosZonaViewModel(repository) as T
+            return YourEventsViewModel(application) as T
         }
         throw IllegalArgumentException("Unknown ViewModel class")
     }

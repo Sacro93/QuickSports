@@ -7,7 +7,7 @@ import java.time.LocalDateTime
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class EventoZona(
+data class EventZone(
     val deporte: String,
     val centro: String,
     val direccion: String,

@@ -19,7 +19,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun NotificationsScreen(navController: NavController) {
+fun NotificationScreen(navController: NavController) {
     val notifications = listOf(
         "🎉 Jorge aceptó tu solicitud de amistad",
         "🎾 Pedro te ha invitado a un evento de pádel",

@@ -16,7 +16,6 @@ import androidx.compose.material3.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.unit.dp
 import kotlinx.coroutines.delay
 import java.time.Duration
@@ -26,7 +25,7 @@ import java.time.format.DateTimeFormatter
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
 
-fun EstadoConfirmacionEvento(
+fun EventConfirmationStatus(
     creationTime: LocalDateTime,
     centerPhone: String
 ) {

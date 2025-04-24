@@ -18,26 +18,26 @@ class SportsViewModel(application: Application) : AndroidViewModel(application) 
 
     init {
         viewModelScope.launch {
-            val cargados = repository.obtenerSports()
-            if (cargados.isEmpty()) {
-                val porDefecto = repository.obtenerDeportesPorDefecto()
-                repository.guardarSports(porDefecto)
-                _sports.value = porDefecto
+            val loaded = repository.getSports()
+            if (loaded.isEmpty()) {
+                val default = repository.getDefaultSports()
+                repository.saveSports(default)
+                _sports.value = default
             } else {
-                _sports.value = cargados
+                _sports.value = loaded
             }
         }
     }
     fun loadSportsIfEmpty() {
         viewModelScope.launch {
             if (_sports.value.isEmpty()) {
-                val cargados = repository.obtenerSports()
-                if (cargados.isEmpty()) {
-                    val porDefecto = repository.obtenerDeportesPorDefecto()
-                    repository.guardarSports(porDefecto)
-                    _sports.value = porDefecto
+                val loaded = repository.getSports()
+                if (loaded.isEmpty()) {
+                    val default = repository.getDefaultSports()
+                    repository.saveSports(default)
+                    _sports.value = default
                 } else {
-                    _sports.value = cargados
+                    _sports.value = loaded
                 }
             }
         }

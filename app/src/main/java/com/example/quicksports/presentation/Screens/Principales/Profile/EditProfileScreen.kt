@@ -1,4 +1,5 @@
 package com.example.quicksports.presentation.Screens.Principales.Profile
+
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -25,7 +26,7 @@ import com.example.quicksports.presentation.ViewModel.User.UserViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun EditarPerfilScreen(
+fun EditProfileScreen(
     userViewModel: UserViewModel = viewModel(
         factory = UserViewModelFactory(AuthRepository())
     ),
@@ -39,22 +40,22 @@ fun EditarPerfilScreen(
 
     var name by remember { mutableStateOf("") }
     var lastName by remember { mutableStateOf("") }
-    var telefono by remember { mutableStateOf("") }
-    var domicilio by remember { mutableStateOf("") }
-    var fechaNacimiento by remember { mutableStateOf("") }
+    var phone by remember { mutableStateOf("") }
+    var address by remember { mutableStateOf("") }
+    var dateBirth by remember { mutableStateOf("") }
     val sportsViewModel: SportsViewModel = viewModel()
     val sports by sportsViewModel.sports.collectAsState()
-    val selectedDeportes = remember { mutableStateListOf<Int>() }
+    val selectedSport = remember { mutableStateListOf<Int>() }
 
     LaunchedEffect(user) {
         user?.let {
             name = it.name
             lastName = it.lastName
-            telefono = it.telefono
-            domicilio = it.domicilio
-            fechaNacimiento = it.fechaNacimiento
-            selectedDeportes.clear()
-            selectedDeportes.addAll(it.deportesFavoritos)
+            phone = it.phone
+            address = it.address
+            dateBirth = it.dateBirth
+            selectedSport.clear()
+            selectedSport.addAll(it.favoriteSports)
         }
     }
     Scaffold(
@@ -159,9 +160,9 @@ fun EditarPerfilScreen(
 
                 editableTextField(name, { name = it }, "Nombre")
                 editableTextField(lastName, { lastName = it }, "Apellido")
-                editableTextField(telefono, { telefono = it }, "Teléfono")
-                editableTextField(domicilio, { domicilio = it }, "Domicilio")
-                editableTextField(fechaNacimiento, { fechaNacimiento = it }, "Fecha de nacimiento")
+                editableTextField(phone, { phone = it }, "Teléfono")
+                editableTextField(address, { address = it }, "Domicilio")
+                editableTextField(dateBirth, { dateBirth = it }, "Fecha de nacimiento")
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
@@ -181,18 +182,18 @@ fun EditarPerfilScreen(
                             modifier = Modifier
                                 .fillMaxWidth()
                                 .clickable {
-                                    if (selectedDeportes.contains(sport.id)) {
-                                        selectedDeportes.remove(sport.id)
+                                    if (selectedSport.contains(sport.id)) {
+                                        selectedSport.remove(sport.id)
                                     } else {
-                                        selectedDeportes.add(sport.id)
+                                        selectedSport.add(sport.id)
                                     }
                                 }
                         ) {
                             Checkbox(
-                                checked = selectedDeportes.contains(sport.id),
+                                checked = selectedSport.contains(sport.id),
                                 onCheckedChange = {
-                                    if (it) selectedDeportes.add(sport.id)
-                                    else selectedDeportes.remove(sport.id)
+                                    if (it) selectedSport.add(sport.id)
+                                    else selectedSport.remove(sport.id)
                                 },
                                 colors = CheckboxDefaults.colors(
                                     checkedColor = Color.White,
@@ -215,10 +216,10 @@ fun EditarPerfilScreen(
                         val updated = user.copy(
                             name = name,
                             lastName = lastName,
-                            telefono = telefono,
-                            domicilio = domicilio,
-                            fechaNacimiento = fechaNacimiento,
-                                    deportesFavoritos = selectedDeportes.toList()
+                            phone = phone,
+                            address = address,
+                            dateBirth = dateBirth,
+                                    favoriteSports = selectedSport.toList()
 
                         )
                         userViewModel.updateUserProfile(updated) { success ->

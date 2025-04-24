@@ -15,7 +15,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
-import com.example.quicksports.presentation.ViewModel.Eventos.CrearEventoViewModel
+import com.example.quicksports.presentation.ViewModel.Eventos.CreateEventViewModel
 import com.example.quicksports.presentation.ViewModel.Friends.FriendsViewModel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
@@ -36,7 +36,7 @@ import com.example.quicksports.presentation.ViewModel.Friends.FriendsViewModelFa
 @Composable
 fun FriendSelectorScreen(
     navController: NavController,
-    crearEventoViewModel: CrearEventoViewModel,
+    createEventViewModel: CreateEventViewModel,
     friendsViewModel: FriendsViewModel = viewModel(
         factory = FriendsViewModelFactory(LocalContext.current.applicationContext as Application)
     )
@@ -45,7 +45,7 @@ fun FriendSelectorScreen(
     val scope = rememberCoroutineScope()
 
     val friends by friendsViewModel.friends.collectAsState()
-    val amigosInvitados by crearEventoViewModel.amigosInvitados.collectAsState()
+    val amigosInvitados by createEventViewModel.invitedFriends.collectAsState()
 
     val selectedFriends = remember { mutableStateListOf<String>() }
 
@@ -137,7 +137,7 @@ fun FriendSelectorScreen(
                     ) {
                         items(filteredFriends) { friend ->
                             val isSelected = selectedFriends.contains(friend.phone)
-                            val deportesNombres = friend.deportesFavoritos.joinToString(", ")
+                            val sportsNames = friend.favoriteSports.joinToString(", ")
 
                             Row(
                                 modifier = Modifier
@@ -173,7 +173,7 @@ fun FriendSelectorScreen(
                                         Spacer(modifier = Modifier.height(2.dp))
 
                                         Text(
-                                            text = "Deportes favoritos: $deportesNombres",
+                                            text = "Deportes favoritos: $sportsNames",
                                             style = MaterialTheme.typography.bodySmall.copy(
                                                 color = Color.White.copy(alpha = 0.7f)
                                             )
@@ -205,7 +205,6 @@ fun FriendSelectorScreen(
             }
         )
 
-        // Botón de confirmación
         Box(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
@@ -214,8 +213,8 @@ fun FriendSelectorScreen(
         ) {
             Button(
                 onClick = {
-                    val amigosSeleccionados = friends.filter { selectedFriends.contains(it.phone) }
-                    crearEventoViewModel.updateAmigosInvitados(amigosSeleccionados)
+                    val friendsSelected = friends.filter { selectedFriends.contains(it.phone) }
+                    createEventViewModel.updateInvitedFriends(friendsSelected)
                     Toast.makeText(context, "Amigos actualizados", Toast.LENGTH_SHORT).show()
                     scope.launch {
                         delay(800)

@@ -125,14 +125,14 @@ fun HomeScreen(navController: NavController) {
                     EventCard(
                         imageResId = R.drawable.eventos_zona,
                         title = "Eventos de tu zona",
-                        onClick = { navController.navigate(Screen.EventosZona.route) },
+                        onClick = { navController.navigate(Screen.EventZone.route) },
                         modifier = Modifier.weight(1f).padding(end = 8.dp)
                     )
 
                     EventCard(
                         imageResId = R.drawable.tus_eventos,
                         title = "Tus eventos",
-                        onClick = { navController.navigate(Screen.TusEventos.route) },
+                        onClick = { navController.navigate(Screen.YourEvents.route) },
                         modifier = Modifier.weight(1f).padding(start = 8.dp)
                     )
                 }
@@ -142,7 +142,7 @@ fun HomeScreen(navController: NavController) {
                 EventCard(
                     imageResId = R.drawable.grupo,
                     title = "Crear evento",
-                    onClick = { navController.navigate(Screen.CrearEvento.route) },
+                    onClick = { navController.navigate(Screen.CreateEvent.route) },
                     modifier = Modifier.fillMaxWidth()
                 )
             }
@@ -155,28 +155,4 @@ fun HomeScreen(navController: NavController) {
 
 
 
-@Composable
-fun ResetFriendsButton(friendsViewModel: FriendsViewModel) {
-    val context = LocalContext.current
-    val scope = rememberCoroutineScope()
 
-    Button(
-        onClick = {
-            scope.launch {
-                val defaultFriends = DefaultFriends.get()
-                friendsViewModel.reemplazarAmigos(defaultFriends)
-                Toast.makeText(context, "Amigos restaurados correctamente", Toast.LENGTH_SHORT).show()
-            }
-        },
-        colors = ButtonDefaults.buttonColors(
-            containerColor = Color(0xFFD32F2F),
-            contentColor = Color.White
-        ),
-        shape = RoundedCornerShape(10.dp),
-        modifier = Modifier
-            .fillMaxWidth()
-            .padding(vertical = 8.dp)
-    ) {
-        Text("Restablecer amigos por defecto")
-    }
-}

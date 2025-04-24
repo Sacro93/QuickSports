@@ -41,17 +41,17 @@ import androidx.compose.ui.text.font.FontWeight
 import com.example.quicksports.presentation.Navigation.Screen
 import com.example.quicksports.presentation.ViewModel.Center.CenterViewModel
 import com.example.quicksports.presentation.ViewModel.Center.CenterViewModelFactory
-import com.example.quicksports.presentation.ViewModel.Eventos.CrearEventoViewModel
-import com.example.quicksports.presentation.ViewModel.Eventos.CrearEventoViewModelFactory
+import com.example.quicksports.presentation.ViewModel.Eventos.CreateEventViewModel
+import com.example.quicksports.presentation.ViewModel.Eventos.EventsAreaViewModelFactory
 import com.example.quicksports.presentation.ViewModel.Sports.SportsViewModel
 import com.example.quicksports.presentation.ViewModel.Sports.SportsViewModelFactory
 
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun CrearEventoScreen(
+fun CreateEventScreen(
     navController: NavController,
-    crearEventoViewModel: CrearEventoViewModel = viewModel(factory = CrearEventoViewModelFactory()),
+    createEventViewModel: CreateEventViewModel = viewModel(factory = EventsAreaViewModelFactory()),
     centerViewModel: CenterViewModel = viewModel(
         factory = CenterViewModelFactory(LocalContext.current.applicationContext as Application)
     ),
@@ -59,10 +59,10 @@ fun CrearEventoScreen(
         factory = SportsViewModelFactory(LocalContext.current.applicationContext as Application)
     )
 )  {
-    val selectedSport by crearEventoViewModel.selectedSport.collectAsState()
-    val selectedCenter by crearEventoViewModel.selectedCenter.collectAsState()
+    val selectedSport by createEventViewModel.selectedSport.collectAsState()
+    val selectedCenter by createEventViewModel.selectedCenter.collectAsState()
     val sports by sportsViewModel.sports.collectAsState()
-    val centers by centerViewModel.centros.collectAsState()
+    val centers by centerViewModel.centers.collectAsState()
 
     val filteredCenters = selectedSport?.let { sport ->
         centers.filter { it.sportPrices.containsKey(sport.id) }
@@ -153,7 +153,7 @@ fun CrearEventoScreen(
                                 .width(180.dp)
                                 .height(100.dp)
                                 .clip(RoundedCornerShape(12.dp))
-                                .clickable { crearEventoViewModel.selectSport(sport) },
+                                .clickable { createEventViewModel.selectSport(sport) },
                             contentAlignment = Alignment.Center
                         ) {
                             Image(
@@ -231,7 +231,7 @@ fun CrearEventoScreen(
                             .fillMaxWidth()
                             .clip(RoundedCornerShape(10.dp))
                             .background(if (isSelected) Color(0xFF4B5320) else Color(0xFF1C1C1C))
-                            .clickable { crearEventoViewModel.selectCenter(center) }
+                            .clickable { createEventViewModel.selectCenter(center) }
                             .padding(16.dp)
                     ) {
                         Column {
@@ -258,8 +258,8 @@ fun CrearEventoScreen(
                                     Text(
                                         text = "Precio: €$price",
                                         color = Color(0xFF64FFDA),
-                                        style = MaterialTheme.typography.bodyMedium,
-                                        fontFamily = FontFamily(Font(R.font.poppins_regular))
+                                        style = MaterialTheme.typography.bodyMedium
+
                                     )
                                 }
                             }
@@ -272,7 +272,7 @@ fun CrearEventoScreen(
 
             Button(
                 onClick = {
-                    navController.navigate(Screen.CrearEventoPaso2.route)
+                    navController.navigate(Screen.CreateEvent2.route)
                 },
                 modifier = Modifier
                     .fillMaxWidth(0.9f)

@@ -1,4 +1,5 @@
 package com.example.quicksports.presentation.Screens.Principales.Profile
+import android.app.Application
 import android.content.Context
 import android.os.Build
 import androidx.annotation.RequiresApi
@@ -30,16 +31,23 @@ import androidx.compose.ui.res.painterResource
 import androidx.navigation.NavController
 import com.example.quicksports.presentation.Screens.BottomNavigationBar
 import androidx.core.content.edit
+import com.example.quicksports.data.defaulData.DefaultFriends
 import com.example.quicksports.data.repository.AuthRepository
 import com.example.quicksports.presentation.Navigation.Screen
+import com.example.quicksports.presentation.ViewModel.Friends.FriendsViewModel
+import com.example.quicksports.presentation.ViewModel.Friends.FriendsViewModelFactory
 import com.example.quicksports.presentation.ViewModel.User.UserViewModelFactory
+import kotlinx.coroutines.launch
 
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun PerfilScreen(
+fun ProfileScreen(
     navController: NavController,
     userViewModel: UserViewModel = viewModel(
         factory = UserViewModelFactory(AuthRepository())
+    ),
+    friendsViewModel: FriendsViewModel = viewModel(
+        factory = FriendsViewModelFactory(LocalContext.current.applicationContext as Application)
     ),
     onEditProfileClick: () -> Unit,
     onLogout: () -> Unit
@@ -91,7 +99,6 @@ fun PerfilScreen(
             ) {
                 Spacer(modifier = Modifier.height(90.dp))
 
-                // AVATAR SELECTOR USANDO COMPONENTE PERSONALIZADO
                 AvatarSelector(
                     selectedAvatar = selectedAvatar,
                     onAvatarSelected = { selectedAvatar = it }
@@ -132,15 +139,26 @@ fun PerfilScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
+                val scope = rememberCoroutineScope()
+
                 PerfilCardSection(
                     items = listOf(
                         "Editar Perfil" to onEditProfileClick,
                         "FAQs" to { navController.navigate(Screen.FAQ.route) },
-                        "Método de pago" to { Toast.makeText(context, "Funcionalidad próximamente", Toast.LENGTH_SHORT).show() },
+                        "Método de pago" to {
+                            Toast.makeText(context, "Funcionalidad próximamente", Toast.LENGTH_SHORT).show()
+                        },
                         "Documentos y extractos" to {},
-                        "Bandeja de entrada" to { Toast.makeText(context, "Sin mensajes aún", Toast.LENGTH_SHORT).show() }
+                        "Bandeja de entrada" to {
+                            scope.launch {
+                                val defaultFriends = DefaultFriends.get()
+                                friendsViewModel.replaceFriends(defaultFriends)
+                                Toast.makeText(context, "Sin mensajes aún.", Toast.LENGTH_LONG).show()
+                            }
+                        }
                     )
                 )
+
 
                 Spacer(modifier = Modifier.height(16.dp))
 
@@ -204,6 +222,7 @@ fun PerfilInfoBox(
             )
         }
     }
+    // ResetFriendsButton(friendsViewModel = friendsViewModel)
 }
 
 
@@ -297,4 +316,8 @@ fun AvatarSelector(
             }
         )
     }
+
+
 }
+
+

@@ -2,7 +2,7 @@ package com.example.quicksports.presentation.Screens.Principales.Evento
 
 
 import android.app.Application
-import com.example.quicksports.presentation.ViewModel.Eventos.TusEventosViewModel
+import com.example.quicksports.presentation.ViewModel.Eventos.YourEventsViewModel
 import android.os.Build
 import android.widget.Toast
 import androidx.annotation.RequiresApi
@@ -21,30 +21,28 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.font.Font
-import androidx.compose.ui.text.font.FontFamily
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import java.time.format.DateTimeFormatter
-import com.example.quicksports.R
-import com.example.quicksports.presentation.ViewModel.Eventos.TusEventosViewModelFactory
-import com.example.quicksports.presentation.components.EstadoConfirmacionEvento
+import com.example.quicksports.presentation.ViewModel.Eventos.YourEventsViewModelFactory
+import com.example.quicksports.presentation.components.EventConfirmationStatus
 
 @RequiresApi(Build.VERSION_CODES.O)
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TusEventosScreen(
+fun YourEventsScreen(
     navController: NavController,
-    viewModel: TusEventosViewModel = viewModel(
-        factory = TusEventosViewModelFactory(LocalContext.current.applicationContext as Application)
+    viewModel: YourEventsViewModel = viewModel(
+        factory = YourEventsViewModelFactory(LocalContext.current.applicationContext as Application)
     )
 ){
     val context = LocalContext.current
-    val eventos by viewModel.eventos.collectAsState()
+    val event by viewModel.events.collectAsState()
     var showDialog by remember { mutableStateOf(false) }
-    var eventoAEliminarIndex by remember { mutableIntStateOf(-1) }
+    var eventToDelete by remember { mutableIntStateOf(-1) }
 
     val backgroundGradient = Brush.verticalGradient(
         colors = listOf(
@@ -83,14 +81,14 @@ fun TusEventosScreen(
                 .padding(innerPadding)
                 .padding(16.dp)
         ) {
-            if (eventos.isEmpty()) {
+            if (event.isEmpty()) {
                 Text(
                     "Aún no has creado ningún evento.",
                     color = Color.White,
                 )
             } else {
                 LazyColumn(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                    itemsIndexed(eventos) { index, evento ->
+                    itemsIndexed(event) { index, event ->
                         Card(
                             modifier = Modifier.fillMaxWidth(),
                             colors = CardDefaults.cardColors(containerColor = Color(0xFF1C1C1C)),
@@ -103,12 +101,12 @@ fun TusEventosScreen(
                                     horizontalArrangement = Arrangement.SpaceBetween
                                 ) {
                                     Text(
-                                        "Deporte: ${evento.deporte.name}",
+                                        "Deporte: ${event.sport.name}",
                                         style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                                         color = Color.White,
                                     )
                                     IconButton(onClick = {
-                                        eventoAEliminarIndex = index
+                                        eventToDelete = index
                                         showDialog = true
                                     }) {
                                         Icon(
@@ -118,24 +116,24 @@ fun TusEventosScreen(
                                         )
                                     }
                                 }
-                                Text("Centro: ${evento.centro.name}", color = Color.LightGray)
-                                Text("Dirección: ${evento.centro.address}", color = Color.LightGray)
-                                Text("Teléfono centro: ${evento.centro.contactPhone}", color = Color.LightGray)
+                                Text("Centro: ${event.center.name}", color = Color.LightGray)
+                                Text("Dirección: ${event.center.address}", color = Color.LightGray)
+                                Text("Teléfono centro: ${event.center.contactPhone}", color = Color.LightGray)
                                 Text(
-                                    text = "Fecha y hora: ${evento.fechaHora.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))}",
+                                    text = "Fecha y hora: ${event.dateTime.format(DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm"))}",
                                     color = Color.LightGray
                                 )
-                                            Text("Máx. participantes: ${evento.maxParticipantes}", color = Color.LightGray)
+                                Text("Máx. participantes: ${event.maxParticipants}", color = Color.LightGray)
 
                                         Spacer(modifier = Modifier.height(8.dp))
 
-                                        if (evento.amigosInvitados.isNotEmpty()) {
+                                        if (event.friendInvited.isNotEmpty()) {
                                             Text(
                                                 "Amigos invitados:",
                                                 style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
                                                 color = Color.White,
                                             )
-                                            evento.amigosInvitados.forEach {
+                                            event.friendInvited.forEach {
                                                 Text("- ${it.name} (Contacto: +34 ${it.phone})", color = Color.White)
                                             }
                                         } else {
@@ -144,9 +142,9 @@ fun TusEventosScreen(
                                     }
                             Spacer(modifier = Modifier.height(8.dp))
 
-                            EstadoConfirmacionEvento(
-                                creationTime = evento.creationTime,
-                                centerPhone = evento.centro.contactPhone
+                            EventConfirmationStatus(
+                                creationTime = event.creationTime,
+                                centerPhone = event.center.contactPhone
                             )
                             }
 
@@ -157,33 +155,67 @@ fun TusEventosScreen(
             }
         }
 
-        if (showDialog && eventoAEliminarIndex != -1) {
-            AlertDialog(
-                onDismissRequest = { showDialog = false },
-                title = {
-                    Text("Eliminar evento")
-                },
-                text = {
-                    Text("¿Estás seguro de que quieres eliminar este evento?")
-                },
-                confirmButton = {
-                    TextButton(onClick = {
-                        viewModel.eliminarEvento(eventoAEliminarIndex)
-                        Toast.makeText(context, "Evento eliminado", Toast.LENGTH_SHORT).show()
-                        showDialog = false
-                    }) {
-                        Text("Sí", fontFamily = FontFamily(Font(R.font.poppins_regular)))
+    if (showDialog && eventToDelete != -1) {
+        ModalBottomSheet(
+            onDismissRequest = { showDialog = false },
+            containerColor = Color(0xFF1C1C1C),
+            tonalElevation = 8.dp,
+            shape = RoundedCornerShape(topStart = 16.dp, topEnd = 16.dp)
+        ) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 24.dp, vertical = 16.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Text(
+                    text = "¿Eliminar evento?",
+                    style = MaterialTheme.typography.titleLarge.copy(
+                        color = Color.White,
+                        fontWeight = FontWeight.Bold
+                    )
+                )
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                Text(
+                    text = "Esta acción eliminará el evento de forma permanente.",
+                    style = MaterialTheme.typography.bodyMedium.copy(color = Color.Gray),
+                    textAlign = TextAlign.Center
+                )
+
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(12.dp),
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Button(
+                        onClick = {
+                            showDialog = false
+                        },
+                        modifier = Modifier.weight(1f),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color.DarkGray)
+                    ) {
+                        Text("Cancelar", color = Color.White)
                     }
-                },
-                dismissButton = {
-                    TextButton(onClick = {
-                        showDialog = false
-                    }) {
-                        Text("Cancelar")                    }
-                },
-                containerColor = Color(0xFF1C1C1C),
-                titleContentColor = Color.White,
-                textContentColor = Color.White
-            )
+
+                    Button(
+                        onClick = {
+                            viewModel.deleteEvent(eventToDelete)
+                            Toast.makeText(context, "Evento eliminado", Toast.LENGTH_SHORT).show()
+                            showDialog = false
+                        },
+                        modifier = Modifier.weight(1f),
+                        colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF64FFDA))
+                    ) {
+                        Text("Eliminar", color = Color.Black)
+                    }
+                }
+
+                Spacer(modifier = Modifier.height(16.dp))
+            }
         }
     }
+
+}

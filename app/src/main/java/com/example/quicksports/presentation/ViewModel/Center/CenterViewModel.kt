@@ -14,33 +14,42 @@ class CenterViewModel(application: Application) : AndroidViewModel(application) 
 
     private val repository = CenterRepository(application.applicationContext)
 
-    private val _centros = MutableStateFlow<List<Center>>(emptyList())
-    val centros: StateFlow<List<Center>> = _centros
+    private val _centers = MutableStateFlow<List<Center>>(emptyList())
+    val centers: StateFlow<List<Center>> = _centers
 
     init {
         viewModelScope.launch {
-            cargarSiVacioCenter()
+            loadYesEmptyCenter()
         }
     }
 
-    private suspend fun cargarSiVacioCenter() {
-        val cargados = repository.obtenerCentros()
-        if (cargados.isEmpty()) {
-            val porDefecto = DefaultCenters.get()
-            repository.guardarCentros(porDefecto)
-            _centros.value = porDefecto
+    private suspend fun loadYesEmptyCenter() {
+        val loaded = repository.getCenters()
+        if (loaded.isEmpty()) {
+            val byDefault = DefaultCenters.get()
+            repository.saveCenter(byDefault)
+            _centers.value = byDefault
         } else {
-            _centros.value = cargados
+            _centers.value = loaded
         }
     }
-    fun toggleFavorite(centro: Center) {
+    fun toggleFavorite(centers: Center) {
         viewModelScope.launch {
-            val nuevos = _centros.value.map {
-                if (it.id == centro.id) it.copy(isFavorite = !it.isFavorite) else it
+            val new = _centers.value.map {
+                if (it.id == centers.id) it.copy(isFavorite = !it.isFavorite) else it
             }
-            repository.guardarCentros(nuevos)
-            _centros.value = nuevos
+            repository.saveCenter(new)
+            _centers.value = new
         }
     }
+
+    fun resetCenters() {
+        viewModelScope.launch {
+            val default = DefaultCenters.get()
+            repository.saveCenter(default)
+            _centers.value = default
+        }
+    }
+
 
 }
