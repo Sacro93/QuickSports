@@ -63,9 +63,7 @@ fun CentersScreen(
                 .background(
                     Brush.verticalGradient(
                         colors = listOf(
-                            Color(0xFF1976D2),
-                            Color(0xFF0D47A1),
-                            Color(0xFF000000)
+                            Color(0xFF0D47A1), Color(0xFF121212), Color(0xFF000000)
                         )
                     )
                 )

@@ -111,7 +111,6 @@ fun FriendsScreen(
                 items(filteredFriends) { friend ->
                     val isAdded = addedFriends.contains(friend.phone)
                     val canSendRequest = friend.name.startsWith("Valentina") || friend.name.startsWith("Tamara")
-
                     val deportesText = friend.favoriteSports.joinToString(", ")
 
                     Row(
@@ -147,7 +146,7 @@ fun FriendsScreen(
                                 Spacer(modifier = Modifier.height(2.dp))
 
                                 Text(
-                                    text = "Deportes favoritos: $deportesText",
+                                    text = "Deportes ⭐ : $deportesText",
                                     style = MaterialTheme.typography.bodySmall.copy(
                                         color = Color.White.copy(alpha = 0.7f)
                                     )
@@ -155,16 +154,22 @@ fun FriendsScreen(
                             }
                         }
 
-                        Row {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxHeight(), // ocupa toda la altura del Row
+                            contentAlignment = Alignment.Center
+                        ) {
                             if (canSendRequest) {
-                                IconButton(onClick = {
-                                    addedFriends.add(friend.phone)
-                                    Toast.makeText(
-                                        context,
-                                        "Solicitud enviada a ${friend.name}",
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }) {
+                                IconButton(
+                                    onClick = {
+                                        addedFriends.add(friend.phone)
+                                        Toast.makeText(
+                                            context,
+                                            "Solicitud enviada a ${friend.name}",
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    }
+                                ) {
                                     Icon(
                                         imageVector = if (isAdded) Icons.Default.Check else Icons.Default.PersonAdd,
                                         contentDescription = null,
@@ -172,7 +177,9 @@ fun FriendsScreen(
                                     )
                                 }
                             } else {
-                                IconButton(onClick = { friendToDelete = friend }) {
+                                IconButton(
+                                    onClick = { friendToDelete = friend }
+                                ) {
                                     Icon(
                                         imageVector = Icons.Default.Delete,
                                         contentDescription = "Eliminar amigo",
@@ -181,6 +188,7 @@ fun FriendsScreen(
                                 }
                             }
                         }
+
                     }
                 }
             }
@@ -224,9 +232,8 @@ fun FriendsScreen(
             )
         }
     }
-  // ResetFriendsButton(friendsViewModel = friendsViewModel)
-
 }
+
 @Composable
 fun ResetFriendsButton(friendsViewModel: FriendsViewModel) {
     val context = LocalContext.current
@@ -237,7 +244,12 @@ fun ResetFriendsButton(friendsViewModel: FriendsViewModel) {
             scope.launch {
                 val defaultFriends = DefaultFriends.get()
                 friendsViewModel.replaceFriends(defaultFriends)
-                Toast.makeText(context, "Amigos restaurados correctamente", Toast.LENGTH_SHORT).show()
+                Toast.makeText(
+                    context,
+                    "Amigos restaurados correctamente",
+                    Toast.LENGTH_SHORT
+                )
+                    .show()
             }
         },
         colors = ButtonDefaults.buttonColors(
@@ -252,3 +264,5 @@ fun ResetFriendsButton(friendsViewModel: FriendsViewModel) {
         Text("Restablecer amigos por defecto")
     }
 }
+
+// ResetFriendsButton(friendsViewModel = friendsViewModel)
