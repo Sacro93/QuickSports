@@ -6,7 +6,7 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.annotation.RequiresApi
 import com.example.quicksports.presentation.Navigation.Navigation
-import com.example.quicksports.presentation.components.TransparentSystemBars
+import com.example.quicksports.presentation.View.components.TransparentSystemBars
 import com.example.quicksports.ui.theme.QuickSportsTheme
 
 class MainActivity : ComponentActivity() {

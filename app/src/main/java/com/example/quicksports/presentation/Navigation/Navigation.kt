@@ -14,22 +14,23 @@ import com.example.quicksports.data.preferences.PreferenceManager
 import com.example.quicksports.data.repository.AuthRepository
 import com.example.quicksports.presentation.Screens.CreateEventScreen
 import com.example.quicksports.presentation.Screens.HomeScreen
-import com.example.quicksports.presentation.Screens.Principales.Centros.CentersScreen
-import com.example.quicksports.presentation.Screens.Principales.Evento.CreateEventScreen2
-import com.example.quicksports.presentation.Screens.Principales.Evento.EventsZonaScreen
-import com.example.quicksports.presentation.Screens.Principales.Evento.YourEventsScreen
-import com.example.quicksports.presentation.Screens.Principales.Faqs.FaqScreen
-import com.example.quicksports.presentation.Screens.Principales.Friends.FriendSelectorScreen
-import com.example.quicksports.presentation.Screens.Principales.Friends.FriendsScreen
-import com.example.quicksports.presentation.Screens.Principales.Login_Register.LoginScreen
-import com.example.quicksports.presentation.Screens.Principales.Login_Register.RegisterScreen
-import com.example.quicksports.presentation.Screens.Principales.Login_Register.StartScreen
-import com.example.quicksports.presentation.Screens.Principales.Notificaciones.NotificationScreen
-import com.example.quicksports.presentation.Screens.Principales.Profile.EditProfileScreen
-import com.example.quicksports.presentation.Screens.Principales.Profile.ProfileScreen
+import com.example.quicksports.presentation.View.Screens.Centros.CentersScreen
+import com.example.quicksports.presentation.View.Screens.Evento.CreateEventScreen2
+import com.example.quicksports.presentation.View.Screens.Evento.EventsZonaScreen
+import com.example.quicksports.presentation.View.Screens.Evento.YourEventsScreen
+import com.example.quicksports.presentation.View.Screens.Faqs.FaqScreen
+import com.example.quicksports.presentation.View.Screens.Friends.FriendSelectorScreen
+import com.example.quicksports.presentation.View.Screens.Friends.FriendsScreen
+import com.example.quicksports.presentation.View.Screens.Login_Register.LoginScreen
+import com.example.quicksports.presentation.View.Screens.Login_Register.RegisterScreen
+import com.example.quicksports.presentation.View.Screens.Login_Register.StartScreen
+import com.example.quicksports.presentation.View.Screens.Notificaciones.NotificationScreen
+import com.example.quicksports.presentation.View.Screens.Profile.EditProfileScreen
+import com.example.quicksports.presentation.View.Screens.Profile.ProfileScreen
+
 import com.example.quicksports.presentation.ViewModel.Center.CenterViewModelFactory
 import com.example.quicksports.presentation.ViewModel.Eventos.CreateEventViewModel
-import com.example.quicksports.presentation.ViewModel.Eventos.EventsAreaViewModelFactory
+import com.example.quicksports.presentation.ViewModel.Eventos.CreateEventViewModelFactory
 import com.example.quicksports.presentation.ViewModel.Eventos.EventAreaViewModelFactory
 import com.example.quicksports.presentation.ViewModel.Eventos.YourEventsViewModelFactory
 import com.example.quicksports.presentation.ViewModel.Friends.FriendsViewModelFactory
@@ -83,7 +84,7 @@ fun Navigation() {
 
         composable(Screen.CreateEvent.route) {
             val createEventViewModel: CreateEventViewModel = viewModel(
-                factory = EventsAreaViewModelFactory()
+                factory = CreateEventViewModelFactory()
             )
             CreateEventScreen(navController, createEventViewModel)
         }
@@ -94,7 +95,7 @@ fun Navigation() {
             }
             val createEventViewModel: CreateEventViewModel = viewModel(
                 parentEntry,
-                factory = EventsAreaViewModelFactory()
+                factory = CreateEventViewModelFactory()
             )
             CreateEventScreen2(navController, createEventViewModel)
         }
@@ -106,7 +107,7 @@ fun Navigation() {
             }
             val createEventViewModel: CreateEventViewModel = viewModel(
                 parentEntry,
-                factory = EventsAreaViewModelFactory()
+                factory = CreateEventViewModelFactory()
             )
             FriendSelectorScreen(navController, createEventViewModel)
         }
