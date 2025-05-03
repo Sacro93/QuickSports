@@ -40,7 +40,11 @@ The project follows the **MVVM** pattern, with a clear separation of concerns:
 - `UI`: Composables and navigation between screens.
 
 ---
-![MVVM](Screens/mvvm.jpg)
+
+<p align="center">
+  <img src="Screens/mvvm.jpg" width="500"/>
+
+</p>
 ---
 
 ## 🧠 State Management & Persistence
@@ -61,27 +65,22 @@ The app combines local persistence using JSON files with cloud storage via Fireb
 
 ---
 
-
-
 ## 🚀 Installation
 
 1. Clone the repository:
 
 ```bash
 git clone https://github.com/yourusername/QuickSports.git
-
 ```
 ---
 <p align="center">
   <img src="Screens/main.png" width="300"/>
 <img src="Screens/login.png" width="300"/>
 <img src="Screens/profile.png" width="300"/>
-<img src="creens/friendships.png" width="300"/>
+<img src="Screens/friendships.png" width="300"/>
 </p>
 
-
 ---
-
 
 # QuickSports  🏀⚽🎾🏓
 
