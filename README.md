@@ -45,6 +45,7 @@ The project follows the **MVVM** pattern, with a clear separation of concerns:
   <img src="Screens/mvvm.jpg" width="500"/>
 
 </p>
+
 ---
 
 ## 🧠 State Management & Persistence
