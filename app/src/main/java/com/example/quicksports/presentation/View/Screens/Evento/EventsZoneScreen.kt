@@ -20,7 +20,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.example.quicksports.presentation.ViewModel.Eventos.EventsZoneViewModel
-import com.example.quicksports.presentation.ViewModel.Eventos.EventAreaViewModelFactory
+import com.example.quicksports.presentation.ViewModel.Eventos.EventZoneViewModelFactory
 import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -28,7 +28,7 @@ import java.time.format.DateTimeFormatter
 @Composable
 fun EventsZonaScreen(
     navController: NavController,
-    viewModel: EventsZoneViewModel = viewModel(factory = EventAreaViewModelFactory())
+    viewModel: EventsZoneViewModel = viewModel(factory = EventZoneViewModelFactory())
 ) {
     val context = LocalContext.current
     val eventos = viewModel.eventsZone.collectAsState().value

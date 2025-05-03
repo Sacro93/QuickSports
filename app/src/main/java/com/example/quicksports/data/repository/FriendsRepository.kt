@@ -12,7 +12,7 @@ class FriendsRepository(context: Context) {
     suspend fun getFriends(): List<Friend> {
         return storage.loadFriends()
     }
-
+//Este es el método que expone la funcionalidad al resto de la app
     suspend fun saveFriends(friend: List<Friend>) {
         storage.saveFriends(friend)
     }

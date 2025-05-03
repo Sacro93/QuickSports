@@ -12,6 +12,7 @@ class FriendStorage(private val context: Context) {
 
     private val fileName = "friends.json"
 
+    //Este es el método que realmente escribe el archivo friends.json en la memoria del dispositivo.
     suspend fun saveFriends(friends: List<Friend>) {
         withContext(Dispatchers.IO) {
             val json = Json.encodeToString(friends)

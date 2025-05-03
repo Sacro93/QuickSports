@@ -50,7 +50,7 @@ import com.example.quicksports.presentation.View.components.CuentaRegresivaConCa
 @OptIn(ExperimentalMaterial3Api::class)
 @RequiresApi(Build.VERSION_CODES.O)
 @Composable
-fun CreateEventScreen2(
+    fun CreateEventScreen2(
     navController: NavController,
      createEventViewModel: CreateEventViewModel = viewModel(
         factory = CreateEventViewModelFactory()

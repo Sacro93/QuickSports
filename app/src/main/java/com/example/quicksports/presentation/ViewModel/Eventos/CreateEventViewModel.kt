@@ -56,8 +56,8 @@ class CreateEventViewModel : ViewModel() {
         _maxParticipants.value = quantity
     }
 
-    fun updateInvitedFriends(lista: List<Friend>) {
-        _invitedFriends.value = lista
+    fun updateInvitedFriends(list: List<Friend>) {
+        _invitedFriends.value = list
     }
 
     @RequiresApi(Build.VERSION_CODES.O)

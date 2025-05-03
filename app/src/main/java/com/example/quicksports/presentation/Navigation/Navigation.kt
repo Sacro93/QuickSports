@@ -31,7 +31,7 @@ import com.example.quicksports.presentation.View.Screens.Profile.ProfileScreen
 import com.example.quicksports.presentation.ViewModel.Center.CenterViewModelFactory
 import com.example.quicksports.presentation.ViewModel.Eventos.CreateEventViewModel
 import com.example.quicksports.presentation.ViewModel.Eventos.CreateEventViewModelFactory
-import com.example.quicksports.presentation.ViewModel.Eventos.EventAreaViewModelFactory
+import com.example.quicksports.presentation.ViewModel.Eventos.EventZoneViewModelFactory
 import com.example.quicksports.presentation.ViewModel.Eventos.YourEventsViewModelFactory
 import com.example.quicksports.presentation.ViewModel.Friends.FriendsViewModelFactory
 import com.example.quicksports.presentation.ViewModel.Login.LoginViewModel
@@ -122,7 +122,7 @@ fun Navigation() {
         composable(Screen.EventZone.route) {
             EventsZonaScreen(
                 navController = navController,
-                viewModel = viewModel(factory = EventAreaViewModelFactory())
+                viewModel = viewModel(factory = EventZoneViewModelFactory())
             )
         }
 
