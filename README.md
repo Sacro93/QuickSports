@@ -74,24 +74,16 @@ git clone https://github.com/yourusername/QuickSports.git
 ---
 <p align="center">
   <img src="Screens/main.png" width="300"/>
+<img src="Screens/login.png" width="300"/>
+<img src="Screens/profile.png" width="300"/>
+<img src="creens/friendships.png" width="300"/>
 </p>
 
 
 ---
-![Login](Screens/login.png)
-
----
-
-![Profile](Screens/profile.png)
-
----
-
-![Friends](Screens/friendships.png)
-
----
 
 
-# QuickSports -V.Español 🏀⚽🎾🏓
+# QuickSports  🏀⚽🎾🏓
 
 **QuickSports** es una aplicación móvil desarrollada en Kotlin con Jetpack Compose, pensada para facilitar la organización de partidos deportivos amateurs en la ciudad de Barcelona.  
 Permite conectar personas interesadas en deportes como fútbol, básquet, pádel y tenis, ofreciendo una experiencia fluida, intuitiva y centrada en la comunidad deportiva.
