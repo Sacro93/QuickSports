@@ -72,8 +72,10 @@ git clone https://github.com/yourusername/QuickSports.git
 
 ```
 ---
+<p align="center">
+  <img src="Screens/main.png" width="300"/>
+</p>
 
-![Start Screen](Screens/main.png)
 
 ---
 ![Login](Screens/login.png)
