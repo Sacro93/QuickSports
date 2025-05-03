@@ -40,7 +40,7 @@ The project follows the **MVVM** pattern, with a clear separation of concerns:
 - `UI`: Composables and navigation between screens.
 
 ---
-![MVVM](Screens/mvvm.png)
+![MVVM](Screens/mvvm.jpg)
 ---
 
 ## 🧠 State Management & Persistence
